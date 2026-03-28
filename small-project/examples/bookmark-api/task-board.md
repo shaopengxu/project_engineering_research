@@ -159,3 +159,34 @@
 | Task | 类型 | 完成时间 | 备注 |
 |------|------|---------|------|
 | | | | |
+
+---
+
+## 附：变更场景示例（展示变更传播规则的实际运作）
+
+> 以下是一个假设的变更场景，用于说明当实现过程中发现接口设计需要调整时，如何按变更传播规则处理。
+
+### 场景：实现 Impl-003 时发现分页设计不合理
+
+**背景**：Implementer agent 在实现 `GET /bookmarks` 时发现，当前契约定义的分页参数是 `page` + `pageSize`，但 SQLite 的 `LIMIT/OFFSET` 语义与 `page` 不直接对应，容易在并发删除时导致跳过或重复记录。技术负责人评估后决定改为 cursor-based 分页。
+
+**处理步骤**：
+
+1. **暂停 Impl-003**，在 task-board 标记为"阻塞：接口变更待确认"
+
+2. **更新 api-contracts.md**（文档优先）：
+   - `GET /bookmarks` 的 Request 参数从 `page + pageSize` 改为 `cursor + limit`
+   - Response 增加 `nextCursor` 字段
+   - commit: `docs: GET /bookmarks 改为 cursor 分页，影响范围: Test-002, Impl-003`
+
+3. **更新契约测试**（测试跟进）：
+   - 新会话中 Tester agent 更新 Test-002 的测试用例
+   - 修改分页相关的请求参数和响应断言
+   - commit: `test: 更新 Test-002 适配 cursor 分页`
+
+4. **继续实现**（实现最后）：
+   - 新会话中 Implementer agent 基于更新后的契约和测试继续 Impl-003
+   - 实现 cursor-based 分页逻辑
+
+5. **更新 task-board 记录**：
+   - 在完成记录中注明：`Impl-003 因分页方案变更暂停，变更 api-contracts.md 和 Test-002 后恢复`
