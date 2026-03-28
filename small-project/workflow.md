@@ -56,8 +56,14 @@ Step 2: 架构设计
 Step 3: 环境初始化 + 拆分任务
 ├── 技术负责人: 项目脚手架初始化（依赖安装、配置文件、目录结构）
 └── 技术负责人: 根据架构文档拆 Task → 写入 task-board.md
+    拆分原则：
+    ├── 被依赖模块优先（shared/infra → 业务模块）
+    ├── 每个 Task 对应明确的契约测试集（task-board 中标注"需通过测试"）
+    ├── 有依赖关系的 Task 不能并行
+    ├── 单个 Task: < 15 个文件、< 500 行改动、一句话可描述、单会话可完成
+    └── 如果拆不到这个粒度，说明模块划分可能需要回退到 Step 2 调整
 
-Step 4: 契约测试先行（按模块拆分，每个模块一个会话）
+Step 4: 契约测试先行（按模块拆分，每个模块一个会话）  ← 见下方"术语说明"
 ├── 会话2 [Tester agent]: 读 api-contracts.md + architecture.md → 写模块A的契约测试
 ├── 会话3 [Tester agent]: 读 api-contracts.md + architecture.md → 写模块B的契约测试
 ├── ...（模块间无依赖的测试可并行）
@@ -83,6 +89,10 @@ Step 6: E2E 测试（如需要）
 Step 7: 验收
 └── 产品经理: 对照 PRD 验收标准逐项确认
 ```
+
+## 术语说明
+
+> **契约测试（Specification Test）**：本文中的"契约测试"指基于 api-contracts.md 定义验证接口输入输出的**规格测试**，即"接口文档说什么，测试就验什么"。这**不是** Pact 风格的消费者驱动契约测试（Consumer-Driven Contract Testing）。选择"契约测试"这个名字是因为测试的依据是接口契约文档，但本质上更接近 Specification Test / Conformance Test。
 
 ## 文档变更传播规则
 
@@ -115,7 +125,9 @@ Step 7: 验收
 | 集成测试 | Implementer agent | Step 5，实现过程中 | 涉及跨模块调用或外部依赖时补充 |
 | E2E 测试 | Tester agent | Step 6，所有 Task Review 通过后 | PRD 验收标准 |
 
-- **契约测试**：验证接口的输入输出是否符合 api-contracts.md 的定义，在实现之前编写，是 TDD 的驱动力。本文中的契约测试指基于 api-contracts.md 定义验证接口输入输出的规格测试（Specification Test），非 Pact 风格的消费者驱动契约测试。
+- **契约测试**：验证接口的输入输出是否符合 api-contracts.md 的定义，在实现之前编写，是 TDD 的驱动力（术语详见"术语说明"一节）。
+  - **Step 4 完成时的预期状态**：测试代码能编译/加载，但执行时全部失败（因为实现代码还不存在）。这是 TDD 的正常状态——先红后绿。
+  - **技术负责人 Review 测试时**：审查的是测试用例的覆盖度和正确性，不是执行结果。
 - **单元测试 / 集成测试**：Implementer agent 在实现过程中按需补充，不需要提前规划到 task-board
 - **E2E 测试**：所有 Task Review 通过后，根据 PRD 验收标准覆盖核心用户流程；小项目中如不需要自动化，可跳过由产品经理手动验收代替
 
@@ -130,6 +142,40 @@ Step 7: 验收
 
 - 契约测试阶段模块间互相独立，被依赖模块未实现时使用 Mock
 - 集成测试使用真实模块交互，验证模块间协作是否正确
+
+### 测试 Review Checklist（技术负责人在 Step 4 使用）
+
+- [ ] 每条业务规则是否有对应测试用例（对照 api-contracts.md 逐条检查）
+- [ ] 是否覆盖了正常流程和异常流程（错误码、边界值、空输入等）
+- [ ] 测试之间是否真的独立（无共享状态、不依赖执行顺序）
+- [ ] 测试注释是否标注了对应的业务规则来源
+- [ ] 测试文件路径是否与 task-board.md 中规划的一致
+- [ ] Mock/Stub 的使用是否符合 Mock 策略表的规定
+
+## 会话管理
+
+### 基本原则
+
+- **每个角色、每个任务使用独立的新会话**。不要在一个会话中让 agent 切换角色或跨 Task 工作。
+- 原因：AI agent 的上下文窗口有限，混合多个角色或任务的上下文会导致 agent 迷失方向、遗忘约定。
+- CLAUDE.md 在每个会话开始时自动加载，是 agent 获取项目上下文的主要入口。
+
+### 什么时候必须开新会话
+
+1. **切换角色时** — 比如从 Tester agent 切换到 Implementer agent
+2. **切换 Task 时** — 即使是同一个角色，不同 Task 也应该用新会话
+3. **Review 不通过需要修复时** — 修复应在新会话中进行，避免 Review 的上下文干扰实现
+4. **agent 表现异常时** — 如反复犯同一个错误、忽略 CLAUDE.md 的约定、输出质量明显下降
+
+### 什么时候可以继续当前会话
+
+- 当前 Task 的实现还没完成，且 agent 表现正常
+- 正在调试一个具体的测试失败，上下文连续性有价值
+
+### 多会话并行
+
+- 模块间无依赖的契约测试（Step 4）可以在多个终端中并行执行
+- 使用 Git Worktree 隔离并行会话，避免文件冲突：`git worktree add ../project-module-a feature/module-a`
 
 ## 目录结构
 
@@ -155,14 +201,64 @@ project/
 - commit message 格式：`<type>: <描述为什么改>`
 - type: feat / fix / docs / refactor / test
 
-## 速查：每步的输入输出
+## 速查：每步的输入、产出与退出标准
 
-| Step | 执行者 | 输入 | 产出 | 质量门禁 |
-|------|--------|------|------|---------|
-| 1 | 人 | — | PRD, CLAUDE.md | 无 |
-| 2 | Architect Agent | PRD | architecture.md, api-contracts.md | 技术负责人 Review |
-| 3 | 人 | architecture.md | task-board.md, 项目脚手架 | 无 |
-| 4 | Tester Agent | api-contracts.md, architecture.md | 契约测试代码 | 技术负责人 Review |
-| 5 | Implementer + Reviewer Agent | 文档 + 测试 | 业务代码（逐 Task） | 测试通过 + LGTM |
-| 6 | Tester Agent | PRD 验收标准 | E2E 测试 | 测试通过 |
-| 7 | 产品经理 | PRD | 验收确认 | 全部通过 |
+| Step | 执行者 | 输入 | 产出 | 退出标准（全部满足才能进入下一步） |
+|------|--------|------|------|------|
+| 1 | 人 | — | PRD, CLAUDE.md | PRD 包含所有模块的功能需求和验收标准；CLAUDE.md 包含技术栈和常用命令 |
+| 2 | Architect Agent | PRD | architecture.md, api-contracts.md | 技术负责人确认：每个 PRD 功能点都能映射到至少一个接口；模块依赖单向无环；数据模型完整 |
+| 3 | 人 | architecture.md | task-board.md, 项目脚手架 | 脚手架能运行（`npm install` 或等价命令成功）；task-board 中每个实现任务都标注了"需通过测试" |
+| 4 | Tester Agent | api-contracts.md, architecture.md | 契约测试代码 | 测试代码能编译/加载；执行时失败（因实现不存在）；技术负责人确认：每条业务规则有对应测试、覆盖正常和异常流程 |
+| 5 | Implementer + Reviewer Agent | 文档 + 测试 | 业务代码（逐 Task） | 当前 Task 的所有契约测试通过；Reviewer 输出 LGTM（无 MUST FIX / SHOULD FIX） |
+| 6 | Tester Agent | PRD 验收标准 | E2E 测试 | E2E 测试全部通过；覆盖 PRD 中每条验收标准 |
+| 7 | 产品经理 | PRD | 验收确认 | PRD 验收标准逐项确认通过 |
+
+## 增量开发（已有项目加新功能）
+
+本流程不仅适用于从零开始的项目。在已有项目中增加新模块或新功能时，按以下方式裁剪：
+
+| 场景 | 起始步骤 | 可跳过 |
+|------|---------|--------|
+| 新增业务模块 | Step 2（更新 architecture.md 和 api-contracts.md） | Step 1 的 git init 和 CLAUDE.md 初始化；Step 3 的脚手架初始化 |
+| 已有模块增加接口 | Step 2（仅更新 api-contracts.md 中对应模块） | Step 1 全部；Step 3 的脚手架初始化 |
+| 重构不改接口 | Step 5（直接实现 + Review） | Step 2, 4（接口没变，契约测试应该已存在且不需要改） |
+| 修复 bug | 不走流程 | 直接改代码、补测试、提交 |
+
+关键原则：**变了什么文档，就从那个文档对应的步骤开始往后走**。改了接口 → 从 Step 4 更新测试开始；只改实现 → 从 Step 5 开始。
+
+## 常见故障与恢复
+
+### Agent 会话中途崩溃
+
+1. 检查 git 状态：`git status` 和 `git log` 确认最后一次 commit 的内容
+2. 如果有未提交的改动且质量可接受 → 提交后在新会话中继续下一个 Task
+3. 如果有未提交的改动但质量不确定 → `git stash` 保存现场，在新会话中重新开始当前 Task，完成后对比 stash 内容
+4. 如果没有未提交的改动 → 直接在新会话中重新开始当前 Task
+
+### 实现过程中发现架构有问题
+
+1. 停止当前 Task 的实现
+2. 在 task-board.md 中记录问题和受影响的 Task
+3. 回退到 Step 2：在新会话中让 Architect agent 修订文档
+4. 按变更传播规则处理：文档 → 测试 → 实现
+
+### 契约测试与 api-contracts.md 不一致
+
+1. 以 api-contracts.md 为准（文档是 single source of truth）
+2. 在新会话中让 Tester agent 修正测试
+3. 如果是 api-contracts.md 本身有问题 → 先修文档，再修测试
+
+### 多个 Task 间出现意外的依赖冲突
+
+1. 检查是否存在未在 task-board.md 中声明的隐式依赖
+2. 更新 task-board.md 的依赖关系
+3. 调整执行顺序，确保被依赖的 Task 先完成
+
+## CI 集成建议
+
+小项目不一定需要 CI，但如果配置了 CI，建议按以下策略处理：
+
+- **Step 4 期间**：契约测试预期失败，不要将其加入 CI 必过检查
+- **Step 5 每个 Task 完成后**：将该 Task 对应的契约测试加入 CI 必过检查（逐步开启，而非一次性全部开启）
+- **Step 6 之后**：E2E 测试加入 CI 必过检查
+- **CI 最小配置**：`lint` + `已完成 Task 的契约测试` + `单元测试`
