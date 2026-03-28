@@ -23,6 +23,7 @@ PRD 内容：
    - 目录结构
    - 数据模型
    - 关键设计决策
+   - 共享层准入规则
 
 2. api-contracts.md，包含：
    - 每个接口的输入、输出定义（根据项目类型选择对应格式：HTTP 接口用 Method/Path/Request/Response，CLI 用命令/参数/选项，SDK 用函数签名，消息队列用事件类型/Payload，前端用 Store/Action/页面交互）
@@ -35,6 +36,7 @@ PRD 内容：
 - 接口定义必须覆盖 PRD 中的所有功能点和业务规则
 - 根据项目类型选择 api-contracts.md 中对应的模板格式
 - 不要过度设计，保持简单
+- 严格按照 docs/ 目录下对应模板的结构和标题层级填写，不要修改模板结构
 ```
 
 ---
@@ -62,6 +64,7 @@ PRD 内容：
 - 测试代码放在 tests/ 目录下，按模块组织
 - 此阶段只写契约测试，不写业务代码，不写单元测试
 - 如果接口契约中有模糊或矛盾之处，停下来指出问题，不要自行假设
+- 测试文件结构与 task-board.md 中规划的路径一致
 ```
 
 ---
@@ -99,21 +102,28 @@ PRD 内容：
 
 ## 4. Reviewer Agent
 
-在新会话中使用：
+在新会话中使用（每完成一个 Task 即触发 Review，而非等所有 Task 完成后统一 Review）：
 
 ```
-你是一个代码审查工程师。请 review 以下改动。
+你是一个代码审查工程师。请 review 当前 Task 的改动。
+
+当前 Task：
+- Task ID: {Task-XXX}
+- 描述: {任务描述}
+- 涉及模块: {模块名}
+- 分支: {feature-branch}
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/api-contracts.md
+- docs/api-contracts.md（仅与当前 Task 相关的部分）
 - docs/architecture.md
 
-然后查看最近的代码改动（git diff main...{feature-branch}）。
+然后查看当前 Task 的代码改动（git diff main...{feature-branch}）。
+只 review 当前 Task 涉及的改动，不要评审其他 Task 的代码。
 
 检查清单（按优先级）：
-1. 功能是否符合 api-contracts.md 的定义
-2. 测试是否覆盖了文档中的所有业务规则
+1. 功能是否符合 api-contracts.md 中当前 Task 对应接口的定义
+2. 测试是否覆盖了当前 Task 涉及的所有业务规则
 3. 是否遵守 CLAUDE.md 的架构约定和代码规范
 4. 模块间依赖方向是否正确
 5. 是否有安全问题（SQL注入、XSS、敏感信息泄露等）
@@ -124,6 +134,7 @@ PRD 内容：
 - OPTIONAL: 建议优化（不要提代码风格等主观问题）
 
 如果没有 MUST FIX 和 SHOULD FIX，输出 "LGTM"。
+输出结尾附上建议：将 task-board.md 中 {Task-XXX} 状态更新为"已完成"或"需修复"。
 ```
 
 ---
