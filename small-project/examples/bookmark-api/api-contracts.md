@@ -517,3 +517,37 @@ Path Parameters:
 | 404 | BOOKMARK_NOT_FOUND | 指定 ID 的书签不存在 |
 | 404 | TAG_NOT_FOUND | 指定 ID 的标签不存在 |
 | 404 | BOOKMARK_TAG_NOT_FOUND | 该书签未关联该标签 |
+
+---
+
+## 需求追溯表
+
+| PRD 来源 | 业务规则 / 验收标准原文 | 对应契约章节 | 备注 |
+|---------|----------------------|------------|------|
+| 书签管理 - 规则1 | URL 必须是合法的 HTTP/HTTPS 格式 | 添加书签#业务规则, 更新书签#业务规则 | |
+| 书签管理 - 规则2 | URL 不允许重复 | 添加书签#错误码 DUPLICATE_URL, 更新书签#错误码 DUPLICATE_URL | |
+| 书签管理 - 规则3 | 标题最长 200 字符，描述最长 1000 字符 | 添加书签#错误码, 更新书签#错误码 | |
+| 书签管理 - 规则4 | 删除书签时自动清除与所有标签的关联 | 删除书签#业务规则 | ON DELETE CASCADE |
+| 书签管理 - 规则5 | 书签列表默认按创建时间倒序排列 | 查询书签列表#业务规则 | |
+| 书签管理 - 验收1 | POST /bookmarks 添加书签，返回完整信息 | 添加书签#Response 201 | |
+| 书签管理 - 验收2 | GET /bookmarks 分页列表，默认第 1 页每页 20 条 | 查询书签列表#Request + 通用约定#分页约定 | |
+| 书签管理 - 验收3 | GET /bookmarks?tag=前端 按标签筛选 | 查询书签列表#业务规则 | |
+| 书签管理 - 验收4 | GET /bookmarks?keyword=TypeScript 搜索 | 查询书签列表#业务规则 | |
+| 书签管理 - 验收5 | GET /bookmarks/:id 详情含标签列表 | 查看书签详情#Response 200 | |
+| 书签管理 - 验收6 | PUT /bookmarks/:id 更新标题、URL 或描述 | 更新书签#业务规则 | |
+| 书签管理 - 验收7 | DELETE /bookmarks/:id 删除书签，关联被清除 | 删除书签#业务规则 | |
+| 书签管理 - 验收8 | 重复 URL 返回 409 | 添加书签#错误码 DUPLICATE_URL | |
+| 书签管理 - 验收9 | 不存在的 ID 返回 404 | 查看书签详情#错误码 BOOKMARK_NOT_FOUND | 其他接口同理 |
+| 标签管理 - 规则1 | 标签名不允许重复（大小写不敏感，统一小写） | 创建标签#业务规则 | |
+| 标签管理 - 规则2 | 标签名最长 50 字符，只允许中英文、数字、连字符 | 创建标签#错误码 INVALID_TAG_NAME | |
+| 标签管理 - 规则3 | 删除标签时自动清除与所有书签的关联 | 删除标签#业务规则 | ON DELETE CASCADE |
+| 标签管理 - 规则4 | 同一书签不能重复关联同一标签 | 给书签添加标签#错误码 DUPLICATE_BOOKMARK_TAG | |
+| 标签管理 - 规则5 | 一个书签最多关联 10 个标签 | 给书签添加标签#错误码 TAG_LIMIT_EXCEEDED | |
+| 标签管理 - 验收1 | POST /tags 创建标签 | 创建标签#Response 201 | |
+| 标签管理 - 验收2 | GET /tags 获取标签列表及书签数量 | 查询所有标签#Response 200 | |
+| 标签管理 - 验收3 | DELETE /tags/:id 删除标签，解除关联 | 删除标签#业务规则 | |
+| 标签管理 - 验收4 | POST /bookmarks/:id/tags 为书签添加标签 | 给书签添加标签#Response 201 | |
+| 标签管理 - 验收5 | DELETE /bookmarks/:id/tags/:tagId 移除标签 | 移除书签的标签#Response 200 | |
+| 标签管理 - 验收6 | 重复标签名返回 409 | 创建标签#错误码 DUPLICATE_TAG_NAME | |
+| 标签管理 - 验收7 | 重复关联返回 409 | 给书签添加标签#错误码 DUPLICATE_BOOKMARK_TAG | |
+| 标签管理 - 验收8 | 10 个标签限制返回 400 | 给书签添加标签#错误码 TAG_LIMIT_EXCEEDED | |

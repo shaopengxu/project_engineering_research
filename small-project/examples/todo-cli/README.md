@@ -12,7 +12,7 @@ Todo CLI 是一个命令行 Todo 管理工具（Node.js + TypeScript），包含
 |------|---------|------|
 | prd.md | templates/prd.md | 已填写的产品需求文档 |
 | architecture.md | templates/architecture.md | 已填写的架构文档 |
-| api-contracts.md | templates/api-contracts.md (模板 B) | 已填写的接口契约（CLI 工具格式） |
+| api-contracts.md | templates/api-contracts-cli.md | 已填写的接口契约（CLI 工具格式） |
 | task-board.md | templates/task-board.md | 已填写的任务看板 |
 | CLAUDE.md | templates/CLAUDE.md | 已填写的项目配置 |
 

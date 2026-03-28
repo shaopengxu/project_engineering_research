@@ -10,7 +10,22 @@
 | [api-contracts-mq.md](api-contracts-mq.md) | 消息消费者、事件处理器 | Kafka / RabbitMQ / SQS |
 | [api-contracts-frontend.md](api-contracts-frontend.md) | SPA、管理后台 | React / Vue / Next.js（无自建后端） |
 
-如果项目混合了多种类型（如后端 API + CLI 管理工具），可以合并多个模板的内容到同一个 `docs/api-contracts.md` 中。
+## 混合类型项目（如后端 + 前端）
+
+如果项目包含多种类型（如后端 REST API + 前端 SPA），将多个模板的内容合并到同一个 `docs/api-contracts.md` 中，用一级标题分隔：
+
+```markdown
+# 后端 API 接口
+（从 api-contracts-rest.md 模板填写）
+
+# 前端 Store/页面
+（从 api-contracts-frontend.md 模板填写）
+
+# 需求追溯表
+（一张表覆盖所有 PRD 规则，"对应契约章节"指向上方对应的标题）
+```
+
+保持单个 `docs/api-contracts.md` 文件，不拆成多个——整个流程中所有 agent 和文档都引用这一个路径。
 
 ## 所有模板的共同要求
 
