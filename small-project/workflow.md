@@ -107,7 +107,8 @@ Step 5: 实现 + Review（按 Task 循环推进）
 Step 6: E2E 测试（如需要）
 ├── Tester agent: 根据 PRD 验收标准编写 E2E 测试，覆盖核心用户流程
 ├── 技术负责人: 确认 E2E 测试通过
-└── 如不需要自动化 E2E → 跳过，由 Step 7 产品经理手动验收覆盖
+├── 技术负责人: 编写 README.md（推荐，项目稳定后基于 CLAUDE.md 和 architecture.md 整理）
+└── 如不需要自动化 E2E → 跳过 E2E，由 Step 7 产品经理手动验收覆盖；README.md 仍建议在此阶段编写
 
 Step 7: 验收
 └── 产品经理: 对照 PRD 验收标准逐项确认
