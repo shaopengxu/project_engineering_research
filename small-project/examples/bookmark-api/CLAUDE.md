@@ -71,6 +71,11 @@ tests/
 - infra/ 目录负责基础设施（数据库、错误处理、配置），不包含业务逻辑
 - 所有接口统一使用 { data } / { error: { code, message } } 响应格式
 
+## 测试环境
+- 测试数据库: 内存 SQLite（`:memory:`），每个测试文件使用独立的数据库实例
+- 测试数据隔离: 每个测试文件创建独立的内存数据库，测试结束后自动销毁
+- 环境变量: TEST_DB_PATH=:memory:
+
 ## Git 规则
 - 每次完成一个有意义的改动后，主动 commit
 - commit message 格式：`<type>: <描述为什么改>`
@@ -80,7 +85,7 @@ tests/
 ## 不要做的事
 - 不要添加用户认证和权限管理
 - 不要引入 ORM（直接使用 better-sqlite3 的同步 API）
-- 不要修改契约测试代码
+- 不要修改契约测试代码（仅限 Implementer agent；Tester agent 负责编写和更新契约测试）
 - 不要在 repository 层以外直接操作数据库
 - 不要在 bookmark 模块和 tag 模块之间创建直接的 import 依赖
 - 不要使用异步数据库驱动（better-sqlite3 是同步 API，不需要 async/await 操作数据库）

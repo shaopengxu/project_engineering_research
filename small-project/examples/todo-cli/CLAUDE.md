@@ -48,6 +48,10 @@ tests/
 - task 模块不直接操作文件系统，通过 storage 模块间接访问
 - cli 模块不包含业务逻辑，只做参数解析和输出格式化
 
+## 测试环境
+- 测试数据隔离: 每个测试使用独立的临时目录，测试结束后自动清理
+- 环境变量: TODO_FILE=/tmp/test-{random}.json（每个测试文件使用不同的临时文件路径）
+
 ## Git 规则
 - 每次完成一个有意义的改动后，主动 commit
 - commit message 格式：`<type>: <描述为什么改>`
@@ -57,7 +61,7 @@ tests/
 ## 不要做的事
 - 不要引入数据库（SQLite 等），使用 JSON 文件即可
 - 不要添加网络功能（云同步、HTTP 接口等）
-- 不要修改契约测试代码
+- 不要修改契约测试代码（仅限 Implementer agent；Tester agent 负责编写和更新契约测试）
 - 不要在 storage 模块中引入业务逻辑
 - 不要使用 console.log 替代 process.stdout/stderr
 

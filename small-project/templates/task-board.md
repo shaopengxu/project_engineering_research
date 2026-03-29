@@ -11,6 +11,7 @@
 | 待 Review | 实现完成，等待审查 | 触发 Reviewer Agent |
 | 需修复 | Review 发现问题 | 在新会话中修复 |
 | 已完成 | Review 通过并合并 | — |
+| 需更新 | 文档变更后需要重新处理 | 按变更传播规则重新执行 |
 | 阻塞 | 被文档变更或依赖阻塞 | 在"阻塞原因"中记录详情 |
 
 ## 项目阶段
@@ -80,7 +81,7 @@
 ### {模块A}
 
 - [ ] **Impl-001**: {任务描述}
-  - 分支: feature/impl-001
+  - 分支: feature/impl-001（分支模式填写；简单模式删除此行）
   - 涉及文件: src/modules/{module-a}/
   - **需通过测试**: Test-001, Test-002  ← 必填，是 Implementer agent 的完成标准
   - 依赖: 无
@@ -91,7 +92,7 @@
 ### {模块B}
 
 - [ ] **Impl-002**: {任务描述}
-  - 分支: feature/impl-002
+  - 分支: feature/impl-002（分支模式填写；简单模式删除此行）
   - 涉及文件: src/modules/{module-b}/
   - **需通过测试**: Test-003  ← 必填，是 Implementer agent 的完成标准
   - 依赖: Impl-001

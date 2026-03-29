@@ -4,7 +4,7 @@
 
 ---
 
-## 1a. Architect Agent（Step 1 CLAUDE.md 基础部分）
+## Step 1 — Architect Agent（CLAUDE.md 基础部分）
 
 在新会话中使用：
 
@@ -31,7 +31,7 @@
 
 ---
 
-## 1b. Architect Agent（Step 2 架构设计）
+## Step 2 — Architect Agent（架构设计）
 
 在新会话中使用：
 
@@ -42,9 +42,9 @@
 - CLAUDE.md
 - docs/prd.md
 
-请产出两份文档：
+请完成以下工作：
 
-1. architecture.md，包含：
+1. 产出 architecture.md，包含：
    - 技术选型及理由
    - 模块划分和职责
    - 模块依赖关系图
@@ -53,7 +53,7 @@
    - 关键设计决策
    - 共享层准入规则
 
-2. api-contracts.md，包含：
+2. 产出 api-contracts.md，包含：
    - 每个接口的输入、输出定义（根据项目类型选择对应格式：HTTP 接口用 Method/Path/Request/Response，CLI 用命令/参数/选项，SDK 用函数签名，消息队列用事件类型/Payload，前端用 Store/Action/页面交互）
    - 每个接口的业务规则
    - 错误处理定义
@@ -76,7 +76,7 @@
 
 ---
 
-## 1c. Architect Agent（Step 3 脚手架 + 任务拆分）
+## Step 3 — Architect Agent（脚手架 + 任务拆分）
 
 在新会话中使用：
 
@@ -98,6 +98,7 @@
      - lint 命令（即使无源码）
      - 测试框架启动命令（即使无测试文件）
    - 只创建目录结构和配置文件，不写业务代码，不写测试代码
+   - 对于强类型语言（如 TypeScript），为每个模块创建**导出桩文件**（只声明函数签名，函数体 `throw new Error('Not implemented')`），确保 Step 4 的契约测试能编译/加载
    - 回填 CLAUDE.md: 根据实际脚手架配置填写"常用命令"和"测试环境"章节
 
 2. 拆分开发任务，产出 task-board.md：
@@ -117,7 +118,7 @@
 
 ---
 
-## 2. Tester Agent
+## Step 4 — Tester Agent（契约测试）
 
 在新会话中使用：
 
@@ -145,7 +146,7 @@
 
 ---
 
-## 3. Implementer Agent
+## Step 5a — Implementer Agent
 
 在新会话中使用：
 
@@ -176,7 +177,7 @@
 
 ---
 
-## 4. Reviewer Agent
+## Step 5b — Reviewer Agent
 
 在新会话中使用（每完成一个 Task 即触发 Review，而非等所有 Task 完成后统一 Review）：
 
@@ -187,14 +188,17 @@
 - Task ID: {Task-XXX}
 - 描述: {任务描述}
 - 涉及模块: {模块名}
-- 分支: {feature-branch}
+- Git 模式: {简单模式 / 分支模式}
+- 分支: {feature-branch}（分支模式填写；简单模式删除此行）
 
 请先阅读以下文件：
 - CLAUDE.md
 - docs/api-contracts.md（仅与当前 Task 相关的部分）
 - docs/architecture.md
 
-然后查看当前 Task 的代码改动（git diff main...{feature-branch}）。
+然后查看当前 Task 的代码改动：
+- 简单模式：`git diff HEAD~N..HEAD`（N = 当前 Task 的 commit 数量）
+- 分支模式：`git diff main...{feature-branch}`
 只 review 当前 Task 涉及的改动，不要评审其他 Task 的代码。
 
 检查清单（按优先级）：
@@ -216,7 +220,7 @@
 
 ---
 
-## 5. Tester Agent（E2E 测试）
+## Step 6 — Tester Agent（E2E 测试）
 
 在新会话中使用：
 
@@ -249,7 +253,7 @@
 
 ---
 
-## 6. 技术负责人操作指南
+## 技术负责人操作指南（贯穿所有 Step）
 
 技术负责人是整个流程中唯一贯穿所有步骤的角色。以下是各关键节点的操作 Checklist。
 

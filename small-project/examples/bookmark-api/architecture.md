@@ -52,7 +52,7 @@ bookmark    tag（各自依赖 shared + infra，互不直接依赖）
 - bookmark 和 tag 都依赖 shared + infra 获取数据库连接和工具函数
 - bookmark 和 tag 之间不直接互相调用，通过 bookmark_tag 关联表在数据库层面交互
 - 书签-标签关联的业务逻辑（添加标签、移除标签）放在 bookmark 模块中
-- 删除标签时，tag 模块通过直接操作 bookmark_tag 表清除关联，不调用 bookmark 模块
+- 删除标签时，bookmark_tag 表中的关联记录通过 ON DELETE CASCADE 自动清除，tag 模块无需显式处理
 
 ### 2.4 共享层准入规则
 
