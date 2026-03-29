@@ -49,13 +49,12 @@
 
 **认证**: {需要 / 不需要}
 
-**Request**:
-```json
-{
-  "field1": "string, 必填, 描述",
-  "field2": "number, 可选, 描述"
-}
-```
+**Request Body**:
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| field1 | string | 是 | {描述} |
+| field2 | number | 否 | {描述，默认值: {默认值}} |
 
 **Response 200**:
 ```json

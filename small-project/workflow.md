@@ -51,11 +51,14 @@
 |------|------|-----------|---------|
 | PRD (prd.md) | 产品经理 | 产品经理 | 必须 |
 | CLAUDE.md | 技术负责人 | 技术负责人 | 必须 |
+| README.md | 技术负责人 | 无需 review | 推荐 |
 | 架构文档 (architecture.md) | Architect agent | 技术负责人 | 必须 |
 | 接口契约 (api-contracts.md) | Architect agent | 技术负责人 | 必须 |
 | 任务看板 (task-board.md) | 技术负责人 | 无需 review | 必须 |
 | 测试代码 | Tester agent | 技术负责人 | 必须 |
 | 业务代码 | Implementer agent | Reviewer agent | 必须 |
+
+> **CLAUDE.md vs README.md**：CLAUDE.md 面向 AI Agent，包含 Agent 需要遵守的约定、禁止事项和错误处理规则；README.md 面向人类开发者，包含快速上手指南和项目概述。两者内容有交叉（如技术栈、项目结构），但定位不同，不可互相替代。
 
 ## 开发流程
 
@@ -94,7 +97,7 @@ Step 5: 实现 + Review（按 Task 循环推进）
     ├── 会话N [Implementer agent]: 读文档 + 契约测试 → 写代码 → 契约测试通过
     │   └── 实现过程中为复杂内部逻辑补充单元测试，为跨模块交互补充集成测试
     ├── 会话N+1 [Reviewer agent]: 对照文档 + 测试 review 业务代码
-    │   ├── LGTM → 更新 task-board，进入下一个 Task
+    │   ├── LGTM → 合并代码（分支模式下合并分支，见 Git 策略），更新 task-board，进入下一个 Task
     │   ├── MUST FIX / SHOULD FIX → Implementer agent 在新会话中修复 → 重新 Review
     │   └── 涉及架构/接口变更 → 回退到 Step 2 修订文档，按变更传播规则更新测试和相关 Task
     └── 技术负责人: 更新 task-board.md
@@ -161,6 +164,20 @@ Step 7: 验收
 - 契约测试阶段模块间互相独立，被依赖模块未实现时使用 Mock
 - 集成测试使用真实模块交互，验证模块间协作是否正确
 
+### 前端项目的测试分层
+
+前端项目（使用 api-contracts-frontend.md 模板）的测试策略与后端略有不同：
+
+| 测试层级 | 对应契约内容 | Step | 说明 |
+|---------|------------|------|------|
+| 契约测试 | Store Actions | Step 4 | 调用 action，验证状态变更和返回值，纯逻辑层测试 |
+| 组件交互测试 | 页面交互（核心交互表） | Step 5 | Implementer 在实现中按需补充，使用 Testing Library 等 |
+| E2E 测试 | PRD 验收标准 | Step 6 | 覆盖完整用户流程，使用 Playwright / Cypress 等 |
+
+- **Step 4 契约测试只覆盖 Store Actions**（纯逻辑层），不涉及 DOM 渲染
+- **页面交互测试**归入 Step 5 由 Implementer 按需补充，性质接近集成测试
+- **外部 API** 在契约测试和组件测试中一律 Mock；E2E 测试中使用真实连接或 Mock Server
+
 ### 测试 Review Checklist（技术负责人在 Step 4 使用）
 
 - [ ] 每条业务规则是否有对应测试用例（对照 api-contracts.md 逐条检查）
@@ -200,6 +217,7 @@ Step 7: 验收
 ```
 project/
 ├── CLAUDE.md
+├── README.md
 ├── docs/
 │   ├── prd.md
 │   ├── architecture.md
@@ -213,11 +231,39 @@ project/
 
 ## Git 策略
 
-- 分支模型：main + feature branches
-- 每个 Task 一个 feature 分支
+### 提交规范
+
 - commit 粒度：每个有意义的改动一个 commit
 - commit message 格式：`<type>: <描述为什么改>`
 - type: feat / fix / docs / refactor / test
+
+### 分支策略（二选一）
+
+根据项目实际情况选择：
+
+#### 简单模式（推荐：1 人开发、无并行 Task）
+
+- 直接在 main 分支开发
+- 每个 Task 完成后 commit，Reviewer Agent 使用 `git diff HEAD~N..HEAD` 审查
+- 适合大多数小项目，省去分支管理开销
+
+#### 分支模式（需要并行 Task 或多人协作）
+
+- 分支模型：main + feature branches
+- 每个 Task 一个 feature 分支：`git checkout -b feature/{task-id} main`
+- Reviewer Agent 使用 `git diff main...feature/{task-id}` 审查
+
+### Task 合并流程
+
+**简单模式**：Reviewer 输出 LGTM 后，Task 即视为完成（代码已在 main 上），更新 task-board 即可。
+
+**分支模式**：
+
+1. Reviewer 输出 LGTM 后，技术负责人执行合并
+2. 合并方式：`git checkout main && git merge feature/{task-id} --no-ff`（保留合并记录）
+3. 合并后删除 feature 分支：`git branch -d feature/{task-id}`
+4. 下一个 Task 从最新的 main 创建新分支
+5. 如果合并时出现冲突（多个并行 Task），技术负责人手动解决冲突后再合并
 
 ## 速查：每步的输入、产出与退出标准
 
@@ -272,6 +318,14 @@ project/
 2. 更新 task-board.md 的依赖关系
 3. 调整执行顺序，确保被依赖的 Task 先完成
 
+### Agent 产出质量不达标
+
+当 Review 发现 Agent 的输出不符合预期（测试覆盖不全、实现方式不理想、架构设计不合理等）：
+
+1. **给出具体修改要求**：在新会话中提供明确的修改指令（引用具体的测试用例编号、契约章节、代码行号），避免泛泛的"重做"
+2. **反复出现同类问题**：在 CLAUDE.md 中增加针对性约束条目（如"所有 repository 方法必须处理数据库异常"），让后续会话中的 Agent 自动遵守
+3. **质量仍不达标**：考虑将该 Task 拆得更小，或由技术负责人手动完成关键部分后让 Agent 补全剩余部分
+
 ## CI 集成建议
 
 小项目不一定需要 CI，但如果配置了 CI，建议按以下策略处理：
@@ -280,3 +334,24 @@ project/
 - **Step 5 每个 Task 完成后**：将该 Task 对应的契约测试加入 CI 必过检查（逐步开启，而非一次性全部开启）
 - **Step 6 之后**：E2E 测试加入 CI 必过检查
 - **CI 最小配置**：`lint` + `已完成 Task 的契约测试` + `单元测试`
+
+### GitHub Actions 最小配置示例
+
+```yaml
+# .github/workflows/ci.yml
+name: CI
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+```
+
+> 以上为 Node.js 项目示例。其他技术栈替换对应的 setup 和命令即可。测试命令应只运行已完成 Task 的测试（如通过测试目录或标签过滤）。
