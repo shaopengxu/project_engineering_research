@@ -254,7 +254,7 @@ Reviewer 输出 LGTM 后，Task 即视为完成（代码已在 main 上），更
 
 | Step | 执行者 | 输入 | 产出 | 退出标准（全部满足才能进入下一步） |
 |------|--------|------|------|------|
-| 1 | 人 + Architect Agent | — | PRD, CLAUDE.md（基础部分） | PRD 包含所有模块的功能需求和验收标准；技术负责人确认：CLAUDE.md 包含技术栈、代码规范和 Git 规则 |
+| 1 | 人 + Architect Agent | — | PRD, CLAUDE.md（基础部分） | PRD 包含所有模块的功能需求和验收标准；技术负责人确认：CLAUDE.md 包含一句话描述、技术栈、项目文档、代码规范、Git 规则、不要做的事、错误处理规则 |
 | 2 | Architect Agent | PRD, CLAUDE.md（基础部分） | architecture.md, api-contracts.md, CLAUDE.md（+项目结构、架构约定） | 技术负责人确认：每个 PRD 功能点都能映射到至少一个接口；模块依赖单向无环；数据模型完整；CLAUDE.md 项目结构和架构约定与 architecture.md 一致 |
 | 3 | Architect Agent | architecture.md, api-contracts.md | task-board.md, 项目脚手架, CLAUDE.md（+常用命令、测试环境） | 技术负责人确认：脚手架能运行（`npm install` 或等价命令成功）；task-board 中每个实现任务都标注了"需通过测试"；CLAUDE.md 常用命令与脚手架实际配置一致 |
 | 4 | Tester Agent | api-contracts.md, architecture.md | 契约测试代码 | 测试代码能编译/加载；执行时失败（因实现不存在）；技术负责人确认：每条业务规则有对应测试、覆盖正常和异常流程 |
