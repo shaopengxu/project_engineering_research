@@ -188,17 +188,12 @@
 - Task ID: {Task-XXX}
 - 描述: {任务描述}
 - 涉及模块: {模块名}
-- Git 模式: {简单模式 / 分支模式}
-- 分支: {feature-branch}（分支模式填写；简单模式删除此行）
-
 请先阅读以下文件：
 - CLAUDE.md
 - docs/api-contracts.md（仅与当前 Task 相关的部分）
 - docs/architecture.md
 
-然后查看当前 Task 的代码改动：
-- 简单模式：`git diff HEAD~N..HEAD`（N = 当前 Task 的 commit 数量）
-- 分支模式：`git diff main...{feature-branch}`
+然后查看当前 Task 的代码改动：`git diff HEAD~N..HEAD`（N = 当前 Task 的 commit 数量）。
 只 review 当前 Task 涉及的改动，不要评审其他 Task 的代码。
 
 检查清单（按优先级）：

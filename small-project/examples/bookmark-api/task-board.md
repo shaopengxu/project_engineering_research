@@ -118,7 +118,6 @@
 ### shared + infra
 
 - [ ] **Impl-001**: 实现基础设施层（数据库连接、错误处理、响应格式、配置）
-  - 分支: feature/impl-001
   - 涉及文件: src/infra/database.ts, src/infra/error.ts, src/infra/response.ts, src/infra/config.ts, src/shared/types.ts, src/shared/utils/validation.ts
   - 需通过测试: 无（基础设施层无独立契约测试，由上层模块测试间接覆盖）
   - 依赖: 无
@@ -127,7 +126,6 @@
   - 阻塞原因:
 
 - [ ] **Impl-002**: 实现 Express 应用入口和中间件注册
-  - 分支: feature/impl-002
   - 涉及文件: src/app.ts
   - 需通过测试: 无
   - 依赖: Impl-001
@@ -138,7 +136,6 @@
 ### bookmark
 
 - [ ] **Impl-003**: 实现书签 CRUD（repository + service + controller）
-  - 分支: feature/impl-003
   - 涉及文件: src/modules/bookmark/bookmark.repository.ts, src/modules/bookmark/bookmark.service.ts, src/modules/bookmark/bookmark.controller.ts, src/modules/bookmark/bookmark.types.ts, src/modules/bookmark/index.ts
   - 需通过测试: Test-001, Test-002, Test-003, Test-004, Test-005
   - 依赖: Impl-002
@@ -147,7 +144,6 @@
   - 阻塞原因:
 
 - [ ] **Impl-004**: 实现书签-标签关联管理
-  - 分支: feature/impl-004
   - 涉及文件: src/modules/bookmark/bookmark.repository.ts, src/modules/bookmark/bookmark.service.ts, src/modules/bookmark/bookmark.controller.ts
   - 需通过测试: Test-006, Test-007
   - 依赖: Impl-003, Impl-005（需要 tag 模块的基本数据支持）
@@ -158,7 +154,6 @@
 ### tag
 
 - [ ] **Impl-005**: 实现标签 CRUD（repository + service + controller）
-  - 分支: feature/impl-005
   - 涉及文件: src/modules/tag/tag.repository.ts, src/modules/tag/tag.service.ts, src/modules/tag/tag.controller.ts, src/modules/tag/tag.types.ts, src/modules/tag/index.ts
   - 需通过测试: Test-008, Test-009, Test-010
   - 依赖: Impl-002

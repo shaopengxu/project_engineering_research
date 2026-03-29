@@ -103,7 +103,7 @@ Step 5: 实现 + Review（按 Task 循环推进）
     ├── 会话N [Implementer agent]: 读文档 + 契约测试 → 写代码 → 契约测试通过
     │   └── 实现过程中为复杂内部逻辑补充单元测试，为跨模块交互补充集成测试
     ├── 会话N+1 [Reviewer agent]: 对照文档 + 测试 review 业务代码
-    │   ├── LGTM → 合并代码（分支模式下合并分支，见 Git 策略），更新 task-board，进入下一个 Task
+    │   ├── LGTM → 更新 task-board，进入下一个 Task
     │   ├── MUST FIX / SHOULD FIX → Implementer agent 在新会话中修复 → 重新 Review
     │   └── 涉及架构/接口变更 → 回退到 Step 2 修订文档，按变更传播规则更新测试和相关 Task
     └── 技术负责人: 更新 task-board.md
@@ -214,7 +214,7 @@ Step 7: 验收
 ### 多会话并行
 
 - 模块间无依赖的契约测试（Step 4）可以在多个终端中并行执行
-- 使用 Git Worktree 隔离并行会话，避免文件冲突：`git worktree add ../project-module-a feature/module-a`
+- 并行时注意避免同时修改同一文件；按模块划分会话范围，完成后逐个 commit
 
 ## 目录结构
 
@@ -241,33 +241,14 @@ project/
 - commit message 格式：`<type>: <描述为什么改>`
 - type: feat / fix / docs / refactor / test
 
-### 分支策略（二选一）
+### 分支策略
 
-根据项目实际情况选择：
-
-#### 简单模式（推荐：1 人开发、无并行 Task）
-
-- 直接在 main 分支开发
-- 每个 Task 完成后 commit，Reviewer Agent 使用 `git diff HEAD~N..HEAD` 审查
-- 适合大多数小项目，省去分支管理开销
-
-#### 分支模式（需要并行 Task 或多人协作）
-
-- 分支模型：main + feature branches
-- 每个 Task 一个 feature 分支：`git checkout -b feature/{task-id} main`
-- Reviewer Agent 使用 `git diff main...feature/{task-id}` 审查
+- 直接在 main 分支开发，不使用 feature 分支
+- 每个 Task 完成后 commit，Reviewer Agent 使用 `git diff HEAD~N..HEAD` 审查（N = 当前 Task 的 commit 数量）
 
 ### Task 合并流程
 
-**简单模式**：Reviewer 输出 LGTM 后，Task 即视为完成（代码已在 main 上），更新 task-board 即可。
-
-**分支模式**：
-
-1. Reviewer 输出 LGTM 后，技术负责人执行合并
-2. 合并方式：`git checkout main && git merge feature/{task-id} --no-ff`（保留合并记录）
-3. 合并后删除 feature 分支：`git branch -d feature/{task-id}`
-4. 下一个 Task 从最新的 main 创建新分支
-5. 如果合并时出现冲突（多个并行 Task），技术负责人手动解决冲突后再合并
+Reviewer 输出 LGTM 后，Task 即视为完成（代码已在 main 上），更新 task-board 即可。
 
 ## 速查：每步的输入、产出与退出标准
 

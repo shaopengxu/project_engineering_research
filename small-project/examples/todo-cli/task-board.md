@@ -88,7 +88,6 @@
 ### storage
 
 - [ ] **Impl-001**: 实现 JSON 文件读写
-  - 分支: feature/impl-001
   - 涉及文件: src/storage.ts, src/types.ts
   - 需通过测试: Test-001
   - 依赖: 无
@@ -99,7 +98,6 @@
 ### task
 
 - [ ] **Impl-002**: 实现任务增删改查业务逻辑
-  - 分支: feature/impl-002
   - 涉及文件: src/task.ts
   - 需通过测试: Test-002, Test-003, Test-004, Test-005
   - 依赖: Impl-001
@@ -110,7 +108,6 @@
 ### cli
 
 - [ ] **Impl-003**: 实现 CLI 命令定义和输出格式化
-  - 分支: feature/impl-003
   - 涉及文件: src/cli.ts
   - 需通过测试: Test-006
   - 依赖: Impl-002

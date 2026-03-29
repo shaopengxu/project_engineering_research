@@ -81,7 +81,6 @@
 ### {模块A}
 
 - [ ] **Impl-001**: {任务描述}
-  - 分支: feature/impl-001（分支模式填写；简单模式删除此行）
   - 涉及文件: src/modules/{module-a}/
   - **需通过测试**: Test-001, Test-002  ← 必填，是 Implementer agent 的完成标准
   - 依赖: 无
@@ -92,7 +91,6 @@
 ### {模块B}
 
 - [ ] **Impl-002**: {任务描述}
-  - 分支: feature/impl-002（分支模式填写；简单模式删除此行）
   - 涉及文件: src/modules/{module-b}/
   - **需通过测试**: Test-003  ← 必填，是 Implementer agent 的完成标准
   - 依赖: Impl-001
