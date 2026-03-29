@@ -215,6 +215,37 @@
 
 ---
 
+## Step 5c — Implementer Agent（Review 修复）
+
+当 Reviewer Agent 输出 MUST FIX 或 SHOULD FIX 后，在新会话中使用：
+
+```
+你是一个开发工程师。请根据 Review 反馈修复当前 Task 的问题。
+
+请先阅读以下文件：
+- CLAUDE.md
+- docs/api-contracts.md（仅与当前 Task 相关的部分）
+
+当前 Task：
+- Task ID: {Task-XXX}
+- 描述: {任务描述}
+- 涉及模块: {模块名}
+- 测试文件: {tests/xxx.test.ts}
+
+Review 反馈：
+{粘贴 Reviewer Agent 输出的完整 Review 结果，包含 MUST FIX / SHOULD FIX 条目}
+
+要求：
+- 逐条修复 MUST FIX 和 SHOULD FIX 问题
+- 修复后确保所有相关契约测试仍然通过
+- 不要修改契约测试代码。如果认为 Review 反馈与 api-contracts.md 矛盾，停下来指出具体矛盾，等待技术负责人确认
+- 不要修复 OPTIONAL 条目，除非修复成本极低（如一行改动）
+- 不要趁修复之机重构或优化 Review 未提及的代码
+- 每个有意义的改动 commit 一次
+```
+
+---
+
 ## Step 6 — Tester Agent（E2E 测试）
 
 在新会话中使用：
