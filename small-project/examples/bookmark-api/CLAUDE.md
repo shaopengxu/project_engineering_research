@@ -19,6 +19,7 @@
 ## 常用命令
 - `npm run dev` — 启动开发服务器（nodemon + ts-node）
 - `npm test` — 跑全部测试
+- `npx vitest run tests/bookmark/ tests/tag/` — 只跑契约测试
 - `npx vitest run tests/bookmark/bookmark-crud.test.ts` — 跑单个文件测试
 - `npm run lint` — lint 检查
 - `npm run build` — 构建

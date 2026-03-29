@@ -19,6 +19,7 @@
 ## 常用命令
 - `npm run dev -- add "test"` — 开发模式运行
 - `npm test` — 跑全部测试
+- `npx vitest run tests/` — 只跑契约测试
 - `npx vitest run tests/task.test.ts` — 跑单个文件测试
 - `npm run lint` — lint 检查
 - `npm run build` — 构建
