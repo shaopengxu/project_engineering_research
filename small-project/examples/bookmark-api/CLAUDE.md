@@ -54,8 +54,9 @@ tests/
 ├── bookmark/
 │   ├── bookmark-crud.test.ts        # 书签 CRUD 契约测试
 │   └── bookmark-tag.test.ts         # 书签-标签关联契约测试
-└── tag/
-    └── tag-crud.test.ts             # 标签 CRUD 契约测试
+├── tag/
+│   └── tag-crud.test.ts             # 标签 CRUD 契约测试
+└── e2e/                             # Step 6 时创建，存放 E2E 测试
 ```
 
 ## 代码规范

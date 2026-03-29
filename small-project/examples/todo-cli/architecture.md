@@ -71,7 +71,8 @@ todo-cli/
 ├── tests/
 │   ├── cli.test.ts         # CLI 命令契约测试
 │   ├── task.test.ts        # 任务管理契约测试
-│   └── storage.test.ts     # 存储模块契约测试
+│   ├── storage.test.ts     # 存储模块契约测试
+│   └── e2e/                # Step 6 时创建
 ├── package.json
 ├── tsconfig.json
 └── vitest.config.ts

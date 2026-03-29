@@ -107,8 +107,9 @@ bookmark-api/
 │   ├── bookmark/
 │   │   ├── bookmark-crud.test.ts
 │   │   └── bookmark-tag.test.ts
-│   └── tag/
-│       └── tag-crud.test.ts
+│   ├── tag/
+│   │   └── tag-crud.test.ts
+│   └── e2e/                         # Step 6 时创建
 ├── package.json
 ├── tsconfig.json
 └── vitest.config.ts

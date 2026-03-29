@@ -25,7 +25,7 @@
 - `{构建命令}` — 构建
 
 ## 项目结构
-{填入 architecture.md 确定后的目录结构}
+{填入 architecture.md 确定后的目录结构，tests/e2e/ 目录在 Step 6 时创建}
 
 ## 代码规范
 - {规范1}
