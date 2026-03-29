@@ -171,7 +171,7 @@
 - [ ] **Impl-004**: 实现书签-标签关联管理
   - 涉及文件: src/modules/bookmark/bookmark.repository.ts, src/modules/bookmark/bookmark.service.ts, src/modules/bookmark/bookmark.controller.ts
   - 需通过测试: Test-006, Test-007
-  - 依赖: Impl-003, Impl-005（需要 tag 模块的基本数据支持）
+  - 依赖: Impl-003, Impl-005（数据依赖：测试书签-标签关联需要标签数据存在，非代码层 import 依赖，bookmark 和 tag 模块仍互不直接调用）
   - 开始时间:
   - 完成时间:
   - 状态: 未开始
