@@ -38,7 +38,7 @@
 |------|------|
 | 产品经理 | 定义需求，验收功能 |
 | 技术负责人 | 技术选型，review 架构，编写 CLAUDE.md |
-| Architect agent | 根据 PRD 设计架构和接口 |
+| Architect agent | 根据 PRD 设计架构和接口，初始化项目脚手架，拆分开发任务 |
 | Tester agent | 根据接口契约编写测试代码 |
 | Implementer agent | 根据文档和测试实现功能 |
 | Reviewer agent | 对照文档 review 代码和测试 |
@@ -54,7 +54,7 @@
 | README.md | 技术负责人 | 无需 review | 推荐 |
 | 架构文档 (architecture.md) | Architect agent | 技术负责人 | 必须 |
 | 接口契约 (api-contracts.md) | Architect agent | 技术负责人 | 必须 |
-| 任务看板 (task-board.md) | 技术负责人 | 无需 review | 必须 |
+| 任务看板 (task-board.md) | Architect agent | 技术负责人 | 必须 |
 | 测试代码 | Tester agent | 技术负责人 | 必须 |
 | 业务代码 | Implementer agent | Reviewer agent | 必须 |
 
@@ -75,18 +75,20 @@ Step 2: 架构设计
     └── 不通过 → 新会话，Architect agent 根据反馈修订
 
 Step 3: 环境初始化 + 拆分任务
-├── 技术负责人: 项目脚手架初始化（依赖安装、配置文件、目录结构）
-└── 技术负责人: 根据架构文档拆 Task → 写入 task-board.md
-    拆分原则：
-    ├── 被依赖模块优先（shared/infra → 业务模块）
-    ├── 每个 Task 对应明确的契约测试集（task-board 中标注"需通过测试"）
-    ├── 有依赖关系的 Task 不能并行
-    ├── 单个 Task: < 15 个文件、< 500 行改动、一句话可描述、单会话可完成
-    └── 如果拆不到这个粒度，说明模块划分可能需要回退到 Step 2 调整
+├── 会话2 [Architect agent]: 读 architecture.md + api-contracts.md → 初始化脚手架 + 拆 Task 写入 task-board.md
+│   拆分原则：
+│   ├── 被依赖模块优先（shared/infra → 业务模块）
+│   ├── 每个 Task 对应明确的契约测试集（task-board 中标注"需通过测试"）
+│   ├── 有依赖关系的 Task 不能并行
+│   ├── 单个 Task: < 15 个文件、< 500 行改动、一句话可描述、单会话可完成
+│   └── 如果拆不到这个粒度，说明模块划分可能需要回退到 Step 2 调整
+└── 技术负责人: review 脚手架和任务拆分
+    ├── 通过 → 进入 Step 4
+    └── 不通过 → 新会话，Architect agent 根据反馈修订
 
 Step 4: 契约测试先行（按模块拆分，每个模块一个会话）  ← 见下方"术语说明"
-├── 会话2 [Tester agent]: 读 api-contracts.md + architecture.md → 写模块A的契约测试
-├── 会话3 [Tester agent]: 读 api-contracts.md + architecture.md → 写模块B的契约测试
+├── 会话3 [Tester agent]: 读 api-contracts.md + architecture.md → 写模块A的契约测试
+├── 会话4 [Tester agent]: 读 api-contracts.md + architecture.md → 写模块B的契约测试
 ├── ...（模块间无依赖的测试可并行）
 └── 技术负责人: review 测试代码
     ├── 通过 → 进入 Step 5
@@ -271,7 +273,7 @@ project/
 |------|--------|------|------|------|
 | 1 | 人 | — | PRD, CLAUDE.md | PRD 包含所有模块的功能需求和验收标准；CLAUDE.md 包含技术栈和常用命令 |
 | 2 | Architect Agent | PRD | architecture.md, api-contracts.md | 技术负责人确认：每个 PRD 功能点都能映射到至少一个接口；模块依赖单向无环；数据模型完整 |
-| 3 | 人 | architecture.md | task-board.md, 项目脚手架 | 脚手架能运行（`npm install` 或等价命令成功）；task-board 中每个实现任务都标注了"需通过测试" |
+| 3 | Architect Agent | architecture.md, api-contracts.md | task-board.md, 项目脚手架 | 技术负责人确认：脚手架能运行（`npm install` 或等价命令成功）；task-board 中每个实现任务都标注了"需通过测试" |
 | 4 | Tester Agent | api-contracts.md, architecture.md | 契约测试代码 | 测试代码能编译/加载；执行时失败（因实现不存在）；技术负责人确认：每条业务规则有对应测试、覆盖正常和异常流程 |
 | 5 | Implementer + Reviewer Agent | 文档 + 测试 | 业务代码（逐 Task） | 当前 Task 的所有契约测试通过；Reviewer 输出 LGTM（无 MUST FIX / SHOULD FIX） |
 | 6 | Tester Agent | PRD 验收标准 | E2E 测试 | E2E 测试全部通过；覆盖 PRD 中每条验收标准 |
