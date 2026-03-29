@@ -37,7 +37,7 @@
 | 角色 | 职责 |
 |------|------|
 | 产品经理 | 定义需求，验收功能 |
-| 技术负责人 | 技术选型，review 架构和文档，编写 CLAUDE.md 基础部分 |
+| 技术负责人 | 技术选型，review 架构和文档，确认 CLAUDE.md |
 | Architect agent | 根据 PRD 设计架构和接口，初始化项目脚手架，拆分开发任务 |
 | Tester agent | 根据接口契约编写测试代码 |
 | Implementer agent | 根据文档和测试实现功能 |
@@ -66,17 +66,18 @@
 Step 1: 初始化
 ├── 技术负责人: git init + 确定 git 策略
 ├── 产品经理: 编写 PRD（含验收标准）
-└── 技术负责人: 编写 CLAUDE.md 基础部分（一句话描述、Tech Stack、项目文档、代码规范、Git 规则、不要做的事、错误处理规则）
+├── 会话1 [Architect agent]: 读 PRD → 产出 CLAUDE.md 基础部分建议（一句话描述、Tech Stack、项目文档、代码规范、Git 规则、不要做的事、错误处理规则）
+└── 技术负责人: review 并确认 CLAUDE.md 基础部分
 
 Step 2: 架构设计
-├── 会话1 [Architect agent]: 读 PRD → 产出 architecture.md + api-contracts.md
+├── 会话2 [Architect agent]: 读 PRD → 产出 architecture.md + api-contracts.md
 │   └── 补充 CLAUDE.md: 项目结构、架构约定、不要做的事（架构相关）
-└── 技术负责人: review 架构文档 + CLAUDE.md 补充内容
+└── 技术负责人: review 架构文档 + CLAUDE.md 项目结构、架构约定、不要做的事（架构相关）
     ├── 通过 → 进入 Step 3
     └── 不通过 → 新会话，Architect agent 根据反馈修订
 
 Step 3: 环境初始化 + 拆分任务
-├── 会话2 [Architect agent]: 读 architecture.md + api-contracts.md → 初始化脚手架 + 拆 Task 写入 task-board.md
+├── 会话3 [Architect agent]: 读 architecture.md + api-contracts.md → 初始化脚手架 + 拆 Task 写入 task-board.md
 │   ├── 回填 CLAUDE.md: 常用命令、测试环境
 │   拆分原则：
 │   ├── 被依赖模块优先（shared/infra → 业务模块）
@@ -89,8 +90,8 @@ Step 3: 环境初始化 + 拆分任务
     └── 不通过 → 新会话，Architect agent 根据反馈修订
 
 Step 4: 契约测试先行（按模块拆分，每个模块一个会话）  ← 见下方"术语说明"
-├── 会话3 [Tester agent]: 读 api-contracts.md + architecture.md → 写模块A的契约测试
-├── 会话4 [Tester agent]: 读 api-contracts.md + architecture.md → 写模块B的契约测试
+├── 会话4 [Tester agent]: 读 api-contracts.md + architecture.md → 写模块A的契约测试
+├── 会话5 [Tester agent]: 读 api-contracts.md + architecture.md → 写模块B的契约测试
 ├── ...（模块间无依赖的测试可并行）
 └── 技术负责人: review 测试代码
     ├── 通过 → 进入 Step 5
@@ -274,7 +275,7 @@ project/
 
 | Step | 执行者 | 输入 | 产出 | 退出标准（全部满足才能进入下一步） |
 |------|--------|------|------|------|
-| 1 | 人 | — | PRD, CLAUDE.md（基础部分） | PRD 包含所有模块的功能需求和验收标准；CLAUDE.md 包含技术栈、代码规范和 Git 规则 |
+| 1 | 人 + Architect Agent | — | PRD, CLAUDE.md（基础部分） | PRD 包含所有模块的功能需求和验收标准；技术负责人确认：CLAUDE.md 包含技术栈、代码规范和 Git 规则 |
 | 2 | Architect Agent | PRD, CLAUDE.md（基础部分） | architecture.md, api-contracts.md, CLAUDE.md（+项目结构、架构约定） | 技术负责人确认：每个 PRD 功能点都能映射到至少一个接口；模块依赖单向无环；数据模型完整；CLAUDE.md 项目结构和架构约定与 architecture.md 一致 |
 | 3 | Architect Agent | architecture.md, api-contracts.md | task-board.md, 项目脚手架, CLAUDE.md（+常用命令、测试环境） | 技术负责人确认：脚手架能运行（`npm install` 或等价命令成功）；task-board 中每个实现任务都标注了"需通过测试"；CLAUDE.md 常用命令与脚手架实际配置一致 |
 | 4 | Tester Agent | api-contracts.md, architecture.md | 契约测试代码 | 测试代码能编译/加载；执行时失败（因实现不存在）；技术负责人确认：每条业务规则有对应测试、覆盖正常和异常流程 |
