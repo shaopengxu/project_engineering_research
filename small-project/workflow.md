@@ -55,7 +55,8 @@
 | 架构文档 (architecture.md) | Architect agent | 技术负责人 | 必须 |
 | 接口契约 (api-contracts.md) | Architect agent | 技术负责人 | 必须 |
 | 任务看板 (task-board.md) | Architect agent | 技术负责人 | 必须 |
-| 测试代码 | Tester agent | 技术负责人 | 必须 |
+| 契约测试 + E2E 测试 | Tester agent | 技术负责人 | 必须 |
+| 单元测试 + 集成测试 | Implementer agent | Reviewer agent | 按需 |
 | 业务代码 | Implementer agent | Reviewer agent | 必须 |
 
 > **CLAUDE.md vs README.md**：CLAUDE.md 面向 AI Agent，包含 Agent 需要遵守的约定、禁止事项和错误处理规则；README.md 面向人类开发者，包含快速上手指南和项目概述。两者内容有交叉（如技术栈、项目结构），但定位不同，不可互相替代。
