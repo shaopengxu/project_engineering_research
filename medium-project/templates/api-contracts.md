@@ -4,8 +4,10 @@
 > 每个接口必须包含五要素：**输入、输出、业务规则、错误处理、consumers**。
 > 每个模块的接口子文件（api-contracts-{module}.md）从本文档提取生成。
 >
-> **项目类型适配**：本模板以 HTTP REST API 为主格式。如果项目涉及其他类型（CLI / SDK / 消息队列 / 前端），
-> 按对应类型的接口格式替换（CLI 用命令/参数/选项，SDK 用函数签名，MQ 用事件/Payload），但必须保留 **consumers 字段**和**接口依赖矩阵**。
+> **构建方式**：本文档在 Step 2b 由 Architect agent 逐模块构建。首个模块会话建立通用约定，
+> 后续模块会话追加各自的接口定义，最后一个模块完成后补充接口依赖矩阵和需求追溯表。
+>
+> **适用类型**：全栈应用（前端 SPA + 后端 API + 管理后台），以 HTTP REST API 为主格式。
 
 ## 通用约定
 
@@ -173,7 +175,7 @@ throw new AppError('ERROR_CODE', 'message')
 
 ## 模块接口子文件生成说明
 
-> Step 3 由 Architect agent 或脚本从本文档生成 api-contracts-{module}.md 子文件。
+> Step 3 由 Architect agent 或脚本从本文档提取生成 api-contracts-{module}.md 子文件。
 
 ### 子文件内容
 

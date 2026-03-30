@@ -8,13 +8,7 @@
 
 ### 典型适用项目
 
-| 项目类型 | 业务模块举例 | 规模参考 |
-|---------|------------|---------|
-| 多资源 REST API | 用户 + 订单 + 支付 + 库存 + 通知 | 20-50 个端点 |
-| 全栈应用 | 前端 SPA + 后端 API + 管理后台 | 10-30 个页面 + 20-40 个端点 |
-| 多租户 SaaS 后端 | 租户 + 用户 + 计费 + 配额 + 审计 | 30-60 个端点 |
-| 数据处理管道 | 采集 + 清洗 + 转换 + 存储 + API | 5-8 个数据源 |
-| 开发者工具链 | CLI + SDK + 文档生成器 + 插件系统 | 20-40 个公开函数 |
+全栈应用：前端 SPA + 后端 API + 管理后台，10-30 个页面 + 20-40 个端点。
 
 ### 边界案例判断
 
@@ -36,14 +30,10 @@
 |------|------|
 | 产品经理 | 定义需求，按模块组分批验收 |
 | 技术负责人 | 技术选型，系统级 + 跨模块 review，任务流转管理 |
-| Architect agent | 初始化 CLAUDE.md、系统级架构设计、脚手架搭建、任务拆分 |
-| Module Designer agent | 模块详细设计（内部分层、数据模型） |
-| API Designer agent | 基于系统架构和模块设计，定义所有模块间接口契约 |
+| Architect agent | 初始化 CLAUDE.md、系统级架构设计、模块详细设计 + 接口契约、脚手架搭建、任务拆分 |
 | Tester agent | 契约测试 + 集成测试规划 + E2E 测试 |
 | Implementer agent | 按模块实现功能，通过 Issue comment 沟通 |
 | Reviewer agent | 逐 Task review + 模块完成后模块级 review |
-
-> 产品经理和技术负责人可以是同一个人。
 
 ## 文档清单
 
@@ -54,8 +44,8 @@
 | CLAUDE.md（模块级） | Architect agent | 技术负责人 | 必须 |
 | README.md | 技术负责人 | 无需 review | 推荐 |
 | 系统架构 (architecture.md) | Architect agent | 技术负责人 | 必须 |
-| 模块设计 (module-design/{module}.md) | Module Designer agent | 技术负责人 | 必须 |
-| 接口契约 (api-contracts.md) | API Designer agent | 技术负责人 | 必须 |
+| 模块设计 (module-design/{module}.md) | Architect agent | 技术负责人 | 必须 |
+| 接口契约 (api-contracts.md) | Architect agent（逐模块构建）| 技术负责人 | 必须 |
 | 接口契约子文件 (api-contracts-{module}.md) | Architect agent / 脚本 | 技术负责人 | 必须 |
 | 架构决策记录 (decision-log.md) | 技术负责人 + agents | 无需 review | 推荐 |
 | GitHub Issues | Architect agent + 技术负责人 | 技术负责人 | 必须 |
@@ -92,22 +82,19 @@ Step 2a: 系统架构设计
     ├── 通过 → 进入 Step 2b
     └── 不通过 → 新会话修订
 
-Step 2b: 模块详细设计
-├── 会话3 [Module Designer agent]: 读 architecture.md + PRD → module-design/module-a.md
-├── 会话4 [Module Designer agent]: 读 architecture.md + PRD → module-design/module-b.md
-├── ...（各模块设计独立，按顺序串行）
-└── 技术负责人: review 所有模块设计
-    ├── 通过 → 进入 Step 2c
-    └── 不通过 → 对应模块新会话修订
-
-Step 2c: 接口契约定义
-├── 会话N [API Designer agent]: 读 architecture.md + 所有 module-design → api-contracts.md
-│   ├── 所有模块间接口定义（含 consumers 字段）
-│   ├── 接口依赖矩阵
-│   └── 需求追溯表（PRD 功能点 → 接口映射）
-└── 技术负责人: review
+Step 2b: 模块详细设计 + 接口契约
+├── 会话3 [Architect agent]: 读 architecture.md + PRD →
+│   ├── module-design/module-a.md
+│   ├── api-contracts.md 中 module-a 的接口定义（含五要素：输入、输出、业务规则、错误码、consumers）
+│   └── 首个模块同时建立 api-contracts.md 通用约定（认证、响应格式、分页、状态码）
+├── 会话4 [Architect agent]: 读 architecture.md + PRD + 已有 api-contracts.md →
+│   ├── module-design/module-b.md
+│   └── api-contracts.md 中 module-b 的接口定义
+├── ...（各模块按依赖顺序串行，后续模块可参考已定义的接口）
+├── 最后一个模块完成后：补充 api-contracts.md 的接口依赖矩阵 + 需求追溯表
+└── 技术负责人: review 所有模块设计 + api-contracts.md
     ├── 通过 → 进入 Step 3
-    └── 不通过 → 新会话修订
+    └── 不通过 → 对应模块新会话修订
 
 Step 3: 环境初始化 + 任务拆分
 ├── 会话N+1 [Architect agent]: 读架构 + 契约文档
