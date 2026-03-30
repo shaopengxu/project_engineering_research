@@ -16,14 +16,6 @@
 - **可能过重**：虽然模块数 4-5，但模块间几乎独立（纯扇出结构）→ 可简化流程
 - **超出适用范围**：模块数 > 8
 
-## 不适用场景
-
-- 探索性原型 → 先做 spike 验证方向
-- 3 个以内业务模块 → 本流程过重
-- 超过 8 个业务模块或多仓库 → 本流程不足以支撑
-- 纯 UI 还原 → 不需要此流程
-- 修 bug / 小改动 → 直接改
-
 ## 角色定义
 
 | 角色 | 职责 |
@@ -79,11 +71,14 @@ Step 2a: 系统架构设计
     └── 不通过 → 新会话修订
 
 Step 2b: 模块详细设计 + 接口契约
-├── 会话3 [Architect agent]: 读 architecture.md + PRD →
-│   └── module-design/module-a.md（含模块设计 + 完整接口契约五要素）
-├── 会话4 [Architect agent]: 读 architecture.md + PRD + 已有 module-design →
-│   └── module-design/module-b.md（后续模块可参考已定义的接口）
-├── ...（各模块按依赖顺序串行）
+├── 后端模块（按依赖顺序串行）：
+│   ├── 会话3 [Architect agent]: → module-design/module-a.md（含接口契约五要素）
+│   ├── 会话4 [Architect agent]: → module-design/module-b.md
+│   └── ...
+├── 前端模块（后端模块全部完成后）：
+│   ├── 会话N [Architect agent]: → module-design/web-app.md（页面、路由、组件、调用的后端接口）
+│   ├── 会话N+1 [Architect agent]: → module-design/admin.md
+│   └── ...
 ├── 最后一个模块完成后：补充 architecture.md 的接口依赖矩阵 + 需求追溯表
 └── 技术负责人: review 所有模块设计
     ├── 通过 → 进入 Step 3

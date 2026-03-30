@@ -17,14 +17,15 @@
 
 ### 2.1 模块总览
 
-| 模块 | 类型 | 职责（一句话） |
-|------|------|--------------|
-| shared | 技术模块 | 跨模块共享的类型定义和工具函数 |
-| infra | 技术模块 | 基础设施（数据库、配置、错误处理、响应格式） |
-| {module-a} | 业务模块 | {职责} |
-| {module-b} | 业务模块 | {职责} |
-| {module-c} | 业务模块 | {职责} |
-| ... | ... | ... |
+| 模块 | 类型 | 端 | 职责（一句话） |
+|------|------|-----|--------------|
+| shared | 技术模块 | — | 跨模块共享的类型定义和工具函数 |
+| infra | 技术模块 | 后端 | 基础设施（数据库、配置、错误处理、响应格式） |
+| {module-a} | 业务模块 | 后端 | {职责} |
+| {module-b} | 业务模块 | 后端 | {职责} |
+| web-app | 业务模块 | 前端 | 用户端 SPA（{N} 个页面） |
+| admin | 业务模块 | 前端 | 管理后台（{N} 个页面） |
+| ... | ... | ... | ... |
 
 ### 2.2 业务模块与 PRD 映射
 
@@ -56,6 +57,20 @@
 - **对外接口**: {列出暴露的关键接口名称}
 - **详细设计**: module-design/{module-b}.md
 
+#### web-app（前端）
+- **职责**: {一句话描述，如：用户端 SPA，提供 XXX 功能}
+- **边界**: {什么页面属于这个模块}
+- **页面数**: {N} 个页面
+- **调用的后端模块**: {module-a}, {module-b}
+- **详细设计**: module-design/web-app.md
+
+#### admin（前端）
+- **职责**: {一句话描述，如：管理后台，提供 XXX 管理功能}
+- **边界**: {什么页面属于这个模块}
+- **页面数**: {N} 个页面
+- **调用的后端模块**: {module-a}, {module-b}
+- **详细设计**: module-design/admin.md
+
 {... 每个模块一节}
 
 ## 3. 模块依赖关系
@@ -65,9 +80,12 @@
 ```
 shared + infra
   ↑    ↑    ↑    ↑
-{module-a}  {module-b}  {module-c}  {module-d}
+{module-a}  {module-b}  {module-c}  {module-d}    ← 后端模块
               ↑            ↑
-              └── {module-e}（依赖 module-b + module-c）
+              └── {module-e}
+                                    ↑ HTTP API ↑
+                              web-app    admin                ← 前端模块
+                              （调用后端 API）
 ```
 
 ### 3.2 依赖规则
@@ -114,23 +132,20 @@ shared + infra
 
 ## 5. 目录结构
 
-> 以下为常见技术栈的目录结构示例，根据实际技术选型选择或调整。
-
-**示例 A: Node.js + Express 后端**
+> 根据实际技术选型调整。以下为全栈应用典型结构。
 
 ```
-src/
+server/                        # 后端
 ├── modules/
 │   ├── {module-a}/
-│   │   ├── {module-a}.controller.ts
-│   │   ├── {module-a}.service.ts
-│   │   ├── {module-a}.repository.ts
-│   │   ├── {module-a}.types.ts
+│   │   ├── controller.ts
+│   │   ├── service.ts
+│   │   ├── repository.ts
+│   │   ├── types.ts
 │   │   └── index.ts
 │   ├── {module-b}/
 │   │   └── ...
 │   └── shared/
-│       ├── CLAUDE.md
 │       ├── types/
 │       └── utils/
 ├── infra/
@@ -139,53 +154,25 @@ src/
 │   ├── error-handler.ts
 │   └── response.ts
 └── app.ts
-```
 
-**示例 B: Python + FastAPI 后端**
-
-```
-src/
-├── modules/
-│   ├── {module_a}/
-│   │   ├── CLAUDE.md
-│   │   ├── router.py
-│   │   ├── service.py
-│   │   ├── repository.py
-│   │   ├── schemas.py
-│   │   └── models.py
-│   ├── {module_b}/
+web/                           # 前端 SPA
+├── pages/
+│   ├── {page-a}/
+│   │   ├── index.tsx
+│   │   └── components/
+│   ├── {page-b}/
 │   │   └── ...
-│   └── shared/
-│       ├── CLAUDE.md
-│       ├── dependencies.py
-│       └── utils.py
-├── infra/
-│   ├── database.py
-│   └── config.py
-└── main.py
-```
+│   └── layout.tsx
+├── components/                # 全局共享组件
+├── hooks/                     # 全局共享 hooks
+├── api/                       # API 调用层
+├── stores/                    # 全局状态管理
+├── types/                     # 共享类型定义
+├── routes.ts
+└── main.tsx
 
-**示例 C: Go + Gin 后端**
-
-```
-cmd/
-└── server/
-    └── main.go
-internal/
-├── {module_a}/
-│   ├── CLAUDE.md
-│   ├── handler.go
-│   ├── service.go
-│   ├── repository.go
-│   └── model.go
-├── {module_b}/
-│   └── ...
-└── shared/
-    ├── CLAUDE.md
-    ├── middleware/
-    └── response/
-config/
-└── config.go
+admin/                         # 管理后台（结构同 web/）
+└── ...
 ```
 
 ## 6. 数据模型概览
