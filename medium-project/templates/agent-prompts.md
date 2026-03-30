@@ -18,7 +18,7 @@
 请按 CLAUDE.md 模板格式（参考 medium-project/templates/CLAUDE.md），填写以下章节：
 - 一句话描述（从 PRD 的核心价值提炼）
 - Tech Stack（根据项目类型和需求建议技术栈，给出选择理由）
-- 项目文档（固定链接：docs/prd.md, docs/architecture.md, docs/api-contracts.md, docs/module-design/, GitHub Projects）
+- 项目文档（固定链接：docs/prd.md, docs/architecture.md, docs/module-design/, GitHub Projects）
 - 代码规范（根据技术栈建议合适的代码规范）
 - Git 规则（使用标准模板，commit 格式为 `<type>(<module>): <描述>`）
 - 共享代码修改规则（使用标准模板）
@@ -89,36 +89,31 @@
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/architecture.md（重点关注：{模块名} 的职责定义、依赖关系、跨模块数据流中涉及本模块的部分）
+- docs/architecture.md（重点关注：{模块名} 的职责定义、依赖关系、跨模块数据流中涉及本模块的部分、接口通用约定）
 - docs/prd.md（重点关注：与 {模块名} 对应的业务需求部分）
 
-请产出两个文件：
+请产出 module-design/{module-name}.md（参考 medium-project/templates/module-design.md），包含：
 
-**1. module-design/{module-name}.md**（参考 medium-project/templates/module-design.md），包含：
 1. 模块概述（职责、PRD 映射）
 2. 内部架构（分层结构、控制流）
 3. 数据模型（本模块拥有的表/模型，字段、类型、约束）
-4. 公开接口清单（接口名称和一句话描述，完整定义在 api-contracts.md）
+4. **接口契约** — 本模块的所有接口定义，每个接口包含五要素：
+   - 输入（参数/请求体）
+   - 输出（响应格式，遵循 architecture.md 的通用约定）
+   - 业务规则
+   - 错误码
+   - **Consumers 字段**（从 architecture.md 的依赖关系中确定消费方）
+   - 内部接口（非 HTTP 暴露，用于 Service 层跨模块调用的方法）
 5. 消费的外部接口（调用哪些其他模块的接口、什么场景下调用）
 6. 关键业务逻辑（状态机、计算规则、复杂分支等）
 7. 模块特有约定（安全要求、性能约束等）
 
-**2. api-contracts.md**（参考 medium-project/templates/api-contracts.md），包含：
-1. 通用约定（认证方式、响应格式、分页约定、HTTP 状态码）— 作为首个模块，需建立通用约定
-2. {模块名} 的所有接口定义，每个接口包含五要素：
-   - 输入（参数/请求体）
-   - 输出（响应格式）
-   - 业务规则
-   - 错误码
-   - **Consumers 字段**（从 architecture.md 的依赖关系中确定消费方）
-3. 模块内部接口（非 HTTP 暴露，用于 Service 层跨模块调用的方法）
-
 要求：
 - 内部分层遵循 architecture.md 中的目录结构约定
 - 数据模型的外键关系如果跨模块，通过接口调用访问，不直接访问其他模块的表
-- 公开接口清单必须与 architecture.md 中"对外接口"一致
+- 接口定义必须与 architecture.md 中"对外接口"一致
 - 消费的外部接口必须在 architecture.md 的依赖关系中有体现
-- 每个接口的 Consumers 字段不能为空（从 architecture.md 依赖关系确定，如果没有外部消费方则标注"仅内部"）
+- 每个接口的 Consumers 字段不能为空（如果没有外部消费方则标注"仅内部"）
 - 错误码在本模块内不重复、含义明确
 - 接口格式使用 HTTP REST API
 - 不要设计其他模块的内容
@@ -131,51 +126,34 @@
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/architecture.md（重点关注：{模块名} 的职责定义、依赖关系、跨模块数据流中涉及本模块的部分）
+- docs/architecture.md（重点关注：{模块名} 的职责定义、依赖关系、跨模块数据流中涉及本模块的部分、接口通用约定）
 - docs/prd.md（重点关注：与 {模块名} 对应的业务需求部分）
-- docs/api-contracts.md（已有的接口契约，了解通用约定和已定义模块的接口）
+- docs/module-design/（已有模块的设计文件，了解已定义的接口）
 
-请产出两个文件：
+请产出 module-design/{module-name}.md（参考 medium-project/templates/module-design.md），内容同上。
 
-**1. module-design/{module-name}.md**（参考 medium-project/templates/module-design.md），包含：
-1. 模块概述（职责、PRD 映射）
-2. 内部架构（分层结构、控制流）
-3. 数据模型（本模块拥有的表/模型，字段、类型、约束）
-4. 公开接口清单（接口名称和一句话描述，完整定义在 api-contracts.md）
-5. 消费的外部接口（调用哪些其他模块的接口、什么场景下调用）
-6. 关键业务逻辑（状态机、计算规则、复杂分支等）
-7. 模块特有约定（安全要求、性能约束等）
-
-**2. 追加 api-contracts.md**，在已有内容之后添加 {模块名} 的接口定义：
-1. {模块名} 的所有接口定义（五要素：输入、输出、业务规则、错误码、consumers）
-2. 模块内部接口（非 HTTP 暴露，用于 Service 层跨模块调用的方法）
-
-要求：
-- 内部分层遵循 architecture.md 中的目录结构约定
-- 数据模型的外键关系如果跨模块，通过接口调用访问，不直接访问其他模块的表
-- 公开接口清单必须与 architecture.md 中"对外接口"一致
-- 消费的外部接口必须在 architecture.md 的依赖关系中有体现
-- 接口签名与已有模块的接口保持风格一致（遵循 api-contracts.md 中的通用约定）
+额外要求（基于已有模块设计）：
+- 接口风格与已有模块保持一致（遵循 architecture.md 中的通用约定）
 - 如果本模块消费了已定义模块的接口，确认调用方式与已有定义一致
-- 每个接口的 Consumers 字段不能为空
 - 错误码全局不重复（检查已有模块的错误码）
-- 不要修改已有模块的接口定义。如发现不一致，停下来指出问题
+- 不要修改已有模块的设计文件。如发现不一致，停下来指出问题
 - 不要设计其他模块的内容
 ```
 
 ### 最后一个模块完成后（同一会话或新会话）
 
 ```
-所有模块的接口定义已完成。请补充 api-contracts.md 的跨模块汇总部分：
+所有模块设计已完成。请补充 architecture.md 的跨模块汇总部分：
 
 请先阅读以下文件：
-- docs/api-contracts.md（已有的所有模块接口定义）
+- docs/architecture.md
+- docs/module-design/（所有模块设计文件）
 - docs/prd.md
 
-请在 api-contracts.md 末尾补充：
+请在 architecture.md 中补充：
 
 1. **接口依赖矩阵**（接口 × 提供方 × 消费方 × 变更影响级别）— 汇总所有模块的 consumers 字段
-2. **需求追溯表**（PRD 每条业务规则/验收标准 → 对应契约章节）— 确保 PRD 全覆盖
+2. **需求追溯表**（PRD 每条业务规则/验收标准 → 对应 module-design 中的接口定义）— 确保 PRD 全覆盖
 
 要求：
 - 接口依赖矩阵必须完整，覆盖所有跨模块调用
@@ -195,7 +173,6 @@
 请先阅读以下文件：
 - CLAUDE.md
 - docs/architecture.md
-- docs/api-contracts.md
 - docs/module-design/（所有模块设计文件）
 
 请完成以下工作：
@@ -206,18 +183,14 @@
    - 为每个模块创建**导出桩文件**（只声明函数签名，函数体 `throw new Error('Not implemented')`）
    - 确保安装、lint、测试框架启动命令都能成功
 
-2. 生成 api-contracts 子文件：
-   - 从 api-contracts.md 为每个模块提取 api-contracts-{module}.md
-   - 包含：本模块提供的接口（完整）+ 本模块消费的外部接口（只含签名）
-
-3. 创建 GitHub Issues：
-   - 契约测试任务：api-contracts.md 中每个接口对应一个测试 Issue
+2. 创建 GitHub Issues：
+   - 契约测试任务：每个模块的接口契约对应契约测试 Issue
    - 实现任务：按模块拆分，每个 Issue 标注依赖（Depends on #N）和需通过的测试
    - 集成测试任务：为 architecture.md 中的每条关键路径创建 L2 集成测试 Issue
    - 使用标签：type:contract-test / type:impl / type:integration-test / type:e2e / type:infra + module:{name}
    - 使用 Milestone 标注迭代（如需多迭代）
 
-4. 回填 CLAUDE.md：
+3. 回填 CLAUDE.md：
    - 常用命令（与实际脚手架配置一致）
    - 测试环境（隔离方式、环境变量）
 
@@ -242,13 +215,12 @@
 ```
 你是一个测试工程师。请为 {模块名} 编写契约测试。
 
-契约测试的目的是：验证接口的输入输出是否符合 api-contracts 的定义。
+契约测试的目的是：验证接口的输入输出是否符合接口契约的定义。
 这些测试将在实现之前编写，作为 TDD 的驱动力。
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/api-contracts-{module}.md（本模块的接口契约子文件）
-- docs/module-design/{module}.md（了解数据模型和内部结构）
+- docs/module-design/{module}.md（重点关注：接口契约部分 + 数据模型）
 - src/modules/{module}/index.ts（导出桩文件，确认可用的函数签名）
 
 要求：
@@ -261,7 +233,7 @@
 - 如果接口契约有模糊或矛盾之处，停下来指出问题，不要自行假设
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "契约测试编写完成"` 报告
 
-注意：你只需要阅读本模块的接口文档（api-contracts-{module}.md），不需要阅读完整的 api-contracts.md 或其他模块的文档。
+注意：你只需要阅读本模块的设计文档（module-design/{module}.md），不需要阅读其他模块的文档。
 ```
 
 ---
@@ -275,8 +247,7 @@
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/api-contracts-{module}.md（本模块的接口契约）
-- docs/module-design/{module}.md（本模块的详细设计）
+- docs/module-design/{module}.md（本模块的设计 + 接口契约）
 
 当前 Task：
 - Issue: #{issue-number}
@@ -313,13 +284,13 @@
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/api-contracts-{module}.md（本模块接口契约）
+- docs/module-design/{module}.md（本模块设计 + 接口契约）
 
 然后查看当前 Task 的代码改动：`git diff HEAD~N..HEAD`（N = 当前 Task 的 commit 数量）。
 只 review 当前 Task 涉及的改动，不要评审其他 Task 的代码。
 
 检查清单：
-1. 功能是否符合 api-contracts-{module}.md 中当前 Task 对应接口的定义
+1. 功能是否符合 module-design/{module}.md 中当前 Task 对应接口的定义
 2. L1 集成测试是否覆盖了 controller → service → repository 的真实串联
 3. 是否遵守 CLAUDE.md 的规范
 4. 模块间依赖方向是否正确（不反向依赖）
@@ -349,7 +320,6 @@
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/api-contracts-{module}.md
 - docs/module-design/{module}.md
 
 然后阅读该模块的全部源代码：src/modules/{module}/
@@ -357,7 +327,7 @@
 检查清单：
 1. 模块内命名风格是否一致（变量、函数、文件命名）
 2. 错误处理方式是否统一（错误码格式、异常抛出方式）
-3. api-contracts-{module}.md 中的所有接口是否都已实现
+3. module-design/{module}.md 中的所有接口是否都已实现
 4. 模块内各层职责是否清晰（controller 不含业务逻辑、repository 不含校验逻辑等）
 5. 是否有跨层泄漏（如 controller 直接调用 repository）
 6. 是否有不必要的代码重复
@@ -378,7 +348,7 @@
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/api-contracts-{module}.md
+- docs/module-design/{module}.md
 
 当前 Task：
 - Issue: #{issue-number}
@@ -410,7 +380,7 @@ Review 反馈：
 请先阅读以下文件：
 - CLAUDE.md
 - docs/architecture.md（重点关注：跨模块数据流 > {关键路径名称}）
-- docs/api-contracts.md（涉及的接口定义）
+- docs/module-design/（涉及模块的接口定义）
 
 当前 Task：
 - Issue: #{issue-number}
@@ -521,8 +491,7 @@ Review 反馈：
 - [ ] 依赖安装成功
 - [ ] lint 命令能跑通
 - [ ] 测试框架能启动
-- [ ] 导出桩文件存在且函数签名与 api-contracts 一致
-- [ ] api-contracts 子文件已生成且与完整版一致
+- [ ] 导出桩文件存在且函数签名与 module-design 中的接口契约一致
 
 GitHub Issues：
 - [ ] 每个接口都有对应的契约测试 Issue
@@ -537,7 +506,7 @@ GitHub Issues：
 ### Step 4 测试 Review Checklist
 
 ```
-- [ ] 每条业务规则有对应测试用例（对照 api-contracts 逐条检查）
+- [ ] 每条业务规则有对应测试用例（对照 module-design 接口契约逐条检查）
 - [ ] 覆盖正常流程和异常流程（错误码全覆盖）
 - [ ] 测试独立（无共享状态、不依赖执行顺序）
 - [ ] 测试注释标注了业务规则来源
@@ -578,14 +547,15 @@ GitHub Issues：
 
 ```
 收到 Agent 的接口变更请求时：
-1. 查看 api-contracts.md 的接口依赖矩阵，确定消费方
+1. 查看 architecture.md 的接口依赖矩阵，确定消费方
 2. 评估变更影响：
    - [ ] 变更是否向后兼容？
    - [ ] 影响了哪些模块的契约测试？
    - [ ] 影响了哪些模块的已完成实现？
 3. 更新文档：
-   - [ ] 更新 api-contracts.md 完整版
-   - [ ] 同步更新受影响的 api-contracts-{module}.md 子文件
+   - [ ] 更新提供方的 module-design/{module}.md 接口契约
+   - [ ] 更新消费方的 module-design 中的"消费的外部接口"
+   - [ ] 同步更新 architecture.md 的接口依赖矩阵（如影响范围变化）
 4. 通知受影响模块：
    - [ ] 在受影响模块的 Issue 中 comment 变更通知
    - [ ] 后续 Task 使用最新文档

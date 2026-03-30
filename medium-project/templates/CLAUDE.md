@@ -13,8 +13,7 @@
 ## 项目文档
 - docs/prd.md — 产品需求
 - docs/architecture.md — 系统架构
-- docs/api-contracts.md — 接口契约（完整版）
-- docs/module-design/ — 模块详细设计
+- docs/module-design/ — 模块详细设计 + 接口契约
 - 任务管理 — GitHub Projects（`gh issue list` 查看）
 
 ## 常用命令

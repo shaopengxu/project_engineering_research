@@ -85,7 +85,7 @@ gh issue create \
 无（契约测试可独立编写）
 
 ## 对应契约章节
-api-contracts.md / api-contracts-{module}.md 中的 "{接口名称}" 章节
+module-design/{module}.md 中的 "{接口名称}" 章节
 
 ## 需通过测试
 - [ ] 正常流程测试

@@ -43,9 +43,7 @@
 | CLAUDE.md | 技术负责人 + Architect agent | 技术负责人 | 必须 |
 | README.md | 技术负责人 | 无需 review | 推荐 |
 | 系统架构 (architecture.md) | Architect agent | 技术负责人 | 必须 |
-| 模块设计 (module-design/{module}.md) | Architect agent | 技术负责人 | 必须 |
-| 接口契约 (api-contracts.md) | Architect agent（逐模块构建）| 技术负责人 | 必须 |
-| 接口契约子文件 (api-contracts-{module}.md) | Architect agent / 脚本 | 技术负责人 | 必须 |
+| 模块设计 + 接口契约 (module-design/{module}.md) | Architect agent | 技术负责人 | 必须 |
 | GitHub Issues | Architect agent + 技术负责人 | 技术负责人 | 必须 |
 | 契约测试 + 集成测试 + E2E 测试 | Tester agent | 技术负责人 | 必须 |
 | 单元测试 | Implementer agent | Reviewer agent | 按需 |
@@ -82,22 +80,18 @@ Step 2a: 系统架构设计
 
 Step 2b: 模块详细设计 + 接口契约
 ├── 会话3 [Architect agent]: 读 architecture.md + PRD →
-│   ├── module-design/module-a.md
-│   ├── api-contracts.md 中 module-a 的接口定义（含五要素：输入、输出、业务规则、错误码、consumers）
-│   └── 首个模块同时建立 api-contracts.md 通用约定（认证、响应格式、分页、状态码）
-├── 会话4 [Architect agent]: 读 architecture.md + PRD + 已有 api-contracts.md →
-│   ├── module-design/module-b.md
-│   └── api-contracts.md 中 module-b 的接口定义
-├── ...（各模块按依赖顺序串行，后续模块可参考已定义的接口）
-├── 最后一个模块完成后：补充 api-contracts.md 的接口依赖矩阵 + 需求追溯表
-└── 技术负责人: review 所有模块设计 + api-contracts.md
+│   └── module-design/module-a.md（含模块设计 + 完整接口契约五要素）
+├── 会话4 [Architect agent]: 读 architecture.md + PRD + 已有 module-design →
+│   └── module-design/module-b.md（后续模块可参考已定义的接口）
+├── ...（各模块按依赖顺序串行）
+├── 最后一个模块完成后：补充 architecture.md 的接口依赖矩阵 + 需求追溯表
+└── 技术负责人: review 所有模块设计
     ├── 通过 → 进入 Step 3
     └── 不通过 → 对应模块新会话修订
 
 Step 3: 环境初始化 + 任务拆分
-├── 会话N+1 [Architect agent]: 读架构 + 契约文档
+├── 会话N+1 [Architect agent]: 读架构 + 模块设计文档
 │   ├── 初始化脚手架（含模块目录结构、导出桩文件）
-│   ├── 生成 api-contracts-{module}.md 子文件
 │   ├── 创建 GitHub Issues（含依赖关系）
 │   ├── 规划集成测试用例（识别 L2 关键路径）
 │   └── 回填 CLAUDE.md: 常用命令、测试环境
@@ -160,13 +154,13 @@ Step 7: 验收（分批）
 
 ## 术语说明
 
-> **契约测试（Specification Test）**：基于 api-contracts.md 验证接口输入输出的规格测试，即"接口文档说什么，测试就验什么"。这**不是** Pact 风格的消费者驱动契约测试（CDCT）。
+> **契约测试（Specification Test）**：基于 module-design/{module}.md 中的接口契约验证接口输入输出的规格测试，即"接口文档说什么，测试就验什么"。这**不是** Pact 风格的消费者驱动契约测试（CDCT）。
 >
 > **L1 集成测试（模块内）**：验证模块内部各层（如 controller → service → repository）的真实串联，使用真实依赖（如内存数据库），不 Mock 模块内部组件。
 >
 > **L2 集成测试（跨模块 / 关键路径）**：验证关键业务路径上多个模块的真实协作（如 下单 → 扣库存 → 创建支付单），不 Mock 其他模块。在被依赖模块实现完成后编写。
 >
-> **consumers 字段**：api-contracts.md 中每个接口标注的消费方列表，用于变更影响评估。
+> **consumers 字段**：接口契约中每个接口标注的消费方列表，用于变更影响评估。
 
 ## 任务管理：GitHub Projects
 
@@ -308,19 +302,9 @@ Reviewer 输出 LGTM 后，Task 即视为完成（代码已在 main 上），更
 
 ### 文档拆分
 
-**api-contracts.md 拆分**：
+**architecture.md**：系统级内容（模块划分、依赖关系图、部署架构、跨模块数据流、接口通用约定、接口依赖矩阵、需求追溯表）。
 
-保留完整版 `api-contracts.md` 作为 single source of truth。同时为每个模块生成子文件 `api-contracts-{module}.md`，内容包含：
-
-1. 本模块提供的所有接口定义（完整，含业务规则和错误码）
-2. 本模块消费的其他模块接口（只含函数签名和返回类型，不含完整业务规则）
-3. 相关的数据模型定义
-
-**完整版变更时，子文件必须同步更新。** 技术负责人或脚本负责同步。
-
-**architecture.md 收缩**：
-
-收缩为系统级内容（模块划分、依赖关系图、部署架构、跨模块数据流）。每个模块的详细设计（内部分层、关键类、模块内数据模型）下沉到 `module-design/{module}.md`。
+**module-design/{module}.md**：每个模块的内部设计（分层、数据模型）+ 该模块的完整接口契约（五要素）。
 
 ### 跨模块 agent 的信息边界
 
@@ -334,20 +318,21 @@ Module-B 的 agent 关于 Module-A **需要知道的**：
 
 - 内部实现逻辑、目录结构、单元测试、技术债
 
-这些信息通过 `api-contracts-{module-b}.md` 中的"消费的外部接口"一节提供，通常 < 100 行。
+这些信息通过 `module-design/{module-a}.md` 中的"接口契约"和"消费的外部接口"部分提供。
 
 ## 文档变更传播规则
 
 核心原则：**先更新文档 → 再更新测试 → 最后更新实现。** 按模块依赖顺序处理，被依赖的模块优先。
 
-### api-contracts.md 变更
+### 接口契约变更
 
-1. 查看**接口依赖矩阵**，识别所有受影响的消费方模块
-2. 更新 api-contracts.md 完整版
-3. 同步更新相关 api-contracts-{module}.md 子文件
-4. 在受影响模块的 GitHub Issue 中 comment 变更通知
-5. Tester agent 新会话更新契约测试
-6. 已完成的实现如涉及变更接口，标记 Issue 为"需更新"
+1. 查看 architecture.md 的**接口依赖矩阵**，识别所有受影响的消费方模块
+2. 更新提供方的 module-design/{module}.md 中的接口定义
+3. 更新消费方的 module-design 中的"消费的外部接口"
+4. 同步更新 architecture.md 的接口依赖矩阵（如影响范围变化）
+5. 在受影响模块的 GitHub Issue 中 comment 变更通知
+6. Tester agent 新会话更新契约测试
+7. 已完成的实现如涉及变更接口，标记 Issue 为"需更新"
 
 ### architecture.md 变更
 
@@ -366,7 +351,7 @@ Module-B 的 agent 关于 Module-A **需要知道的**：
 
 | 测试层级 | 谁写 | 什么时候 | 依据 | 是否必须 |
 |---------|------|---------|------|---------|
-| 契约测试 | Tester agent | Step 4（实现前） | api-contracts.md | 必须 |
+| 契约测试 | Tester agent | Step 4（实现前） | module-design/{module}.md 接口契约 | 必须 |
 | 单元测试 | Implementer agent | Step 5（实现中） | 复杂内部逻辑 | 按需 |
 | L1 模块内集成 | Implementer agent | Step 5（实现中） | controller → service → repository 串联 | **必须** |
 | L2 关键路径集成 | Implementer agent（调用方） | Step 5（被依赖模块已实现后） | 跨模块真实调用 | **必须** |
@@ -440,8 +425,8 @@ tests/
 
 ### 上下文加载规则
 
-- **模块 agent 只加载必要文档**：CLAUDE.md + api-contracts-{module}.md + module-design/{module}.md
-- 不需要加载完整的 api-contracts.md 或其他模块的设计文档
+- **模块 agent 只加载必要文档**：CLAUDE.md + module-design/{module}.md
+- 需要了解其他模块接口时，只读对应 module-design 的"接口契约"部分
 
 ### 什么时候必须开新会话
 
@@ -458,11 +443,8 @@ project/
 ├── README.md
 ├── docs/
 │   ├── prd.md                       # PRD（> 500 行时可拆为 prd/ 目录）
-│   ├── architecture.md              # 系统级架构
-│   ├── api-contracts.md             # 完整接口契约（single source of truth）
-│   ├── api-contracts-{module-a}.md  # 模块 A 接口子文件
-│   ├── api-contracts-{module-b}.md  # 模块 B 接口子文件
-│   ├── module-design/               # 模块详细设计
+│   ├── architecture.md              # 系统级架构（含接口通用约定、依赖矩阵、需求追溯表）
+│   ├── module-design/               # 模块详细设计 + 接口契约
 │   │   ├── module-a.md
 │   │   └── module-b.md
 ├── src/
@@ -530,9 +512,8 @@ Milestone 3: 辅助模块
 | 1 | 人 + Architect | — | PRD, CLAUDE.md（基础）, GitHub Project | PRD 按模块组织含验收标准；CLAUDE.md 基础部分确认；Project 已创建 |
 | 2a | Architect | PRD, CLAUDE.md | architecture.md | 模块划分清晰；依赖单向无环；数据流完整 |
 | 2b | Module Designer | architecture.md, PRD | module-design/*.md | 每模块内部设计完整；数据模型清晰 |
-| 2c | API Designer | architecture + module-designs | api-contracts.md | 每个 PRD 功能映射到接口；consumers 完整；依赖矩阵完整；追溯表完整 |
-| 3 | Architect | 架构 + 契约 | 脚手架, Issues, 模块 CLAUDE.md | 脚手架能运行；Issues 含依赖关系；模块 CLAUDE.md < 50 行 |
-| 4 | Tester | api-contracts | 契约测试代码 | 测试能编译；执行时失败（TDD）；覆盖正常+异常流程 |
+| 3 | Architect | 架构 + 模块设计 | 脚手架, Issues | 脚手架能运行；Issues 含依赖关系 |
+| 4 | Tester | module-design/{module}.md | 契约测试代码 | 测试能编译；执行时失败（TDD）；覆盖正常+异常流程 |
 | 5 | Impl + Reviewer | 文档 + 测试 | 业务代码 | 契约测试 + L1 通过；L2 通过；全量测试通过 |
 | 6 | Tester | PRD 验收标准 | E2E 测试 | 核心路径 E2E 通过 |
 | 7 | 产品经理 | PRD | 验收确认 | 分批验收全部通过 |
@@ -541,9 +522,9 @@ Milestone 3: 辅助模块
 
 | 场景 | 起始步骤 | 说明 |
 |------|---------|------|
-| 新增业务模块 | Step 2a（评估对现有架构影响） | 可能只需更新 architecture.md 的依赖图，然后 2b → 2c → ... |
-| 已有模块增加接口 | Step 2c（更新 api-contracts.md） | 同时更新依赖矩阵和子文件 |
-| 跨多模块的新功能 | Step 2a（影响评估） | 查接口依赖矩阵确定影响范围 → 2c → 4 → 5 |
+| 新增业务模块 | Step 2a（评估对现有架构影响） | 更新 architecture.md 依赖图，然后 2b → 3 → ... |
+| 已有模块增加接口 | Step 2b（更新 module-design/{module}.md） | 同时更新 architecture.md 依赖矩阵 |
+| 跨多模块的新功能 | Step 2a（影响评估） | 查接口依赖矩阵确定影响范围 → 2b → 4 → 5 |
 | 模块内重构不改接口 | Step 5 | 契约测试不需要改（接口没变） |
 | 修 bug | 不走流程 | 直接改 + 补测试 + 提交 |
 
