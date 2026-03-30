@@ -208,7 +208,11 @@
 
 ---
 
-## Step 4 — Tester Agent（契约测试）
+## Step 4+5 — 按模块串行：契约测试 → 实现 → Review
+
+每个模块按以下顺序完成后，再推进下一个模块。
+
+### 4a. Tester Agent（契约测试）
 
 **每个模块一个独立会话**，按依赖顺序串行推进。在新会话中使用：
 
@@ -238,7 +242,7 @@
 
 ---
 
-## Step 5a — Implementer Agent（实现）
+### 5a. Implementer Agent（实现）
 
 在新会话中使用：
 
@@ -270,7 +274,7 @@
 
 ---
 
-## Step 5b — Reviewer Agent（Task Review）
+### 5b. Reviewer Agent（Task Review）
 
 每个 Task 完成后触发。在新会话中使用：
 
@@ -309,7 +313,7 @@
 
 ---
 
-## Step 5c — Reviewer Agent（模块 Review）
+### 5c. Reviewer Agent（模块 Review）
 
 模块所有 Task 完成后触发。在新会话中使用：
 
@@ -339,7 +343,7 @@
 
 ---
 
-## Step 5d — Implementer Agent（Review 修复）
+### 5d. Implementer Agent（Review 修复）
 
 当 Reviewer 输出 MUST FIX 或 SHOULD FIX 后。在新会话中使用：
 
@@ -370,7 +374,7 @@ Review 反馈：
 
 ---
 
-## Step 5e — Implementer Agent（L2 关键路径集成测试）
+### 5e. Implementer Agent（L2 关键路径集成测试）
 
 当被依赖模块已实现完成后。在新会话中使用：
 
@@ -503,7 +507,7 @@ GitHub Issues：
 - [ ] 标签（type + module）正确
 ```
 
-### Step 4 测试 Review Checklist
+### Step 4+5 测试 Review Checklist
 
 ```
 - [ ] 每条业务规则有对应测试用例（对照 module-design 接口契约逐条检查）
@@ -514,7 +518,7 @@ GitHub Issues：
 - [ ] 测试能编译/加载（允许执行失败）
 ```
 
-### Step 5 Task 流转管理
+### Step 4+5 Task 流转管理
 
 ```
 每个 Task Review 通过后：

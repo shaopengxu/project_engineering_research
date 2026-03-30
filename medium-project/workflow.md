@@ -113,29 +113,29 @@ Step 3: 环境初始化 + 任务拆分
     ├── 通过 → 进入 Step 4
     └── 不通过 → 新会话修订
 
-Step 4: 契约测试先行（按模块串行）
-├── 会话 [Tester agent]: 写模块 A 的契约测试
-├── 会话 [Tester agent]: 写模块 B 的契约测试
-├── ...（每个模块一个会话，按依赖顺序串行推进）
-├── 技术负责人: review 测试代码
-│   ├── 通过 → 进入 Step 5
-│   └── 不通过 → Tester agent 新会话修改
-└── 技术负责人: 更新 GitHub Issues 状态
+Step 4+5: 契约测试 + 实现 + Review（按模块串行推进）
+└── 循环 [按依赖顺序逐模块执行]：shared/infra → 被依赖模块 → 依赖方模块
+    │
+    ├── 4a. 会话 [Tester agent]: 写当前模块的契约测试
+    ├── 技术负责人: review 测试代码
+    │   ├── 通过 → 继续实现
+    │   └── 不通过 → Tester agent 新会话修改
+    │
+    ├── 5a. 循环 [按 Task 依赖顺序逐 Task 执行]:
+    │   ├── 会话 [Implementer agent]: 实现当前 Task
+    │   │   ├── 契约测试通过
+    │   │   ├── L1 模块内集成测试通过
+    │   │   ├── 被依赖模块已实现时 → 补充 L2 关键路径集成测试
+    │   │   └── 完成后 gh issue comment 报告
+    │   ├── 会话 [Reviewer agent]: 对照文档 + 测试 review
+    │   │   ├── LGTM → 进入下一个 Task
+    │   │   ├── MUST FIX / SHOULD FIX → Implementer 新会话修复 → 重新 Review
+    │   │   └── 涉及接口变更 → 停止，按变更传播规则处理
+    │   └── 技术负责人: 更新 Issue 状态
+    │
+    ├── 5b. 当前模块所有 Task 完成 → 模块级 Review
+    └── 技术负责人: 确认当前模块完成，推进下一个模块
 
-Step 5: 实现 + Review（按 Task 依赖顺序串行推进）
-└── 循环 [按依赖顺序逐 Task 执行]:
-    ├── 会话 [Implementer agent]: 实现当前 Task
-    │   ├── 契约测试通过
-    │   ├── L1 模块内集成测试通过
-    │   ├── 被依赖模块已实现时 → 补充 L2 关键路径集成测试
-    │   └── 完成后 gh issue comment 报告
-    ├── 会话 [Reviewer agent]: 对照文档 + 测试 review
-    │   ├── LGTM → 技术负责人更新 Issue 状态，进入下一个 Task
-    │   ├── MUST FIX / SHOULD FIX → Implementer 新会话修复 → 重新 Review
-    │   └── 涉及接口变更 → 停止，按变更传播规则处理
-    └── 技术负责人: 更新 Issue 状态
-
-    执行顺序：shared/infra → 被依赖的业务模块 → 依赖方业务模块
     L2 集成测试时机：当模块 B 依赖模块 A，且模块 A 已实现完成，
     模块 B 的 Implementer 在实现过程中编写跨模块集成测试（真实调用模块 A）
 
@@ -351,10 +351,10 @@ Module-B 的 agent 关于 Module-A **需要知道的**：
 
 | 测试层级 | 谁写 | 什么时候 | 依据 | 是否必须 |
 |---------|------|---------|------|---------|
-| 契约测试 | Tester agent | Step 4（实现前） | module-design/{module}.md 接口契约 | 必须 |
-| 单元测试 | Implementer agent | Step 5（实现中） | 复杂内部逻辑 | 按需 |
-| L1 模块内集成 | Implementer agent | Step 5（实现中） | controller → service → repository 串联 | **必须** |
-| L2 关键路径集成 | Implementer agent（调用方） | Step 5（被依赖模块已实现后） | 跨模块真实调用 | **必须** |
+| 契约测试 | Tester agent | Step 4+5（每个模块实现前） | module-design/{module}.md 接口契约 | 必须 |
+| 单元测试 | Implementer agent | Step 4+5（实现中） | 复杂内部逻辑 | 按需 |
+| L1 模块内集成 | Implementer agent | Step 4+5（实现中） | controller → service → repository 串联 | **必须** |
+| L2 关键路径集成 | Implementer agent（调用方） | Step 4+5（被依赖模块已实现后） | 跨模块真实调用 | **必须** |
 | E2E 测试 | Tester agent | Step 6 | PRD 验收标准 | 核心路径必须 |
 
 ### Mock 策略
@@ -393,7 +393,7 @@ tests/
 └── fixtures/               # 共享测试数据（工厂函数，非硬编码）
 ```
 
-### 契约测试 Step 4 预期状态
+### 契约测试预期状态
 
 测试代码能编译/加载，但执行时全部失败（因为实现不存在）— 这是 TDD 的正常状态（先红后绿）。强类型语言通过 Step 3 的导出桩文件解决编译问题。
 
@@ -511,10 +511,9 @@ Milestone 3: 辅助模块
 |------|--------|------|------|---------|
 | 1 | 人 + Architect | — | PRD, CLAUDE.md（基础）, GitHub Project | PRD 按模块组织含验收标准；CLAUDE.md 基础部分确认；Project 已创建 |
 | 2a | Architect | PRD, CLAUDE.md | architecture.md | 模块划分清晰；依赖单向无环；数据流完整 |
-| 2b | Module Designer | architecture.md, PRD | module-design/*.md | 每模块内部设计完整；数据模型清晰 |
+| 2b | Architect | architecture.md, PRD | module-design/*.md | 每模块内部设计 + 接口契约完整；数据模型清晰 |
 | 3 | Architect | 架构 + 模块设计 | 脚手架, Issues | 脚手架能运行；Issues 含依赖关系 |
-| 4 | Tester | module-design/{module}.md | 契约测试代码 | 测试能编译；执行时失败（TDD）；覆盖正常+异常流程 |
-| 5 | Impl + Reviewer | 文档 + 测试 | 业务代码 | 契约测试 + L1 通过；L2 通过；全量测试通过 |
+| 4+5 | Tester + Impl + Reviewer | module-design + 测试 | 契约测试 + 业务代码 | 按模块串行：契约测试通过 → L1 通过 → L2 通过 → 模块 Review 通过 |
 | 6 | Tester | PRD 验收标准 | E2E 测试 | 核心路径 E2E 通过 |
 | 7 | 产品经理 | PRD | 验收确认 | 分批验收全部通过 |
 
@@ -525,10 +524,10 @@ Milestone 3: 辅助模块
 | 新增业务模块 | Step 2a（评估对现有架构影响） | 更新 architecture.md 依赖图，然后 2b → 3 → ... |
 | 已有模块增加接口 | Step 2b（更新 module-design/{module}.md） | 同时更新 architecture.md 依赖矩阵 |
 | 跨多模块的新功能 | Step 2a（影响评估） | 查接口依赖矩阵确定影响范围 → 2b → 4 → 5 |
-| 模块内重构不改接口 | Step 5 | 契约测试不需要改（接口没变） |
+| 模块内重构不改接口 | Step 4+5（实现阶段） | 契约测试不需要改（接口没变） |
 | 修 bug | 不走流程 | 直接改 + 补测试 + 提交 |
 
-关键原则：**变了什么文档，就从那个文档对应的步骤开始往后走。** 改了接口 → 从 Step 4 更新测试开始；只改实现 → 从 Step 5 开始。
+关键原则：**变了什么文档，就从那个文档对应的步骤开始往后走。** 改了接口 → 从契约测试开始更新；只改实现 → 直接进入实现阶段。
 
 ## 常见故障与恢复
 
