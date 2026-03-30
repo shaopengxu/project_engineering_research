@@ -31,8 +31,7 @@
 src/
 ├── modules/
 │   ├── {module-a}/    # {一句话职责}
-│   ├── {module-b}/    # {一句话职责}
-│   └── shared/        # 跨模块共享类型和工具
+│   └── {module-b}/    # {一句话职责}
 └── ...
 tests/
 ├── contracts/         # 契约测试
@@ -60,9 +59,8 @@ tests/
 - type: feat / fix / docs / refactor / test
 - 不要把无关改动放在同一个 commit
 
-## 共享代码修改规则
-- 修改 shared/ 或 infra/ 前，先在 Issue comment 中说明需求，获得技术负责人确认
-- 如果需要使用 shared/ 中不存在的功能，可先在本模块内部实现，标注 `TODO: 提取到 shared`
+## infra 修改规则
+- 修改 infra/ 前，先在 Issue comment 中说明需求，获得技术负责人确认
 
 ## 不要做的事
 > 注意：CLAUDE.md 会被所有 Agent 加载。如果某条规则只针对特定角色，请标注适用角色。
@@ -71,7 +69,7 @@ tests/
 - {禁止事项2}
 - 不要修改契约测试代码（仅限 Implementer agent）
 - 不要修改其他模块目录下的文件（仅限 Implementer agent）
-- 修改 shared/ 或 infra/ 前需确认（仅限 Implementer agent）
+- 修改 infra/ 前需确认（仅限 Implementer agent）
 
 ## 错误处理规则
 - 修改一个问题超过 2 次仍未解决时，停止修改，分析根本原因

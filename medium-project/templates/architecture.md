@@ -19,7 +19,6 @@
 
 | 模块 | 类型 | 端 | 职责（一句话） |
 |------|------|-----|--------------|
-| shared | 技术模块 | — | 跨模块共享的类型定义和工具函数 |
 | infra | 技术模块 | 后端 | 基础设施（数据库、配置、错误处理、响应格式） |
 | {module-a} | 业务模块 | 后端 | {职责} |
 | {module-b} | 业务模块 | 后端 | {职责} |
@@ -36,14 +35,9 @@
 
 ### 2.3 模块定义
 
-#### shared
-- **职责**: 跨模块共享的类型和工具
-- **准入规则**: 只放被 2 个以上模块使用的代码；不放业务逻辑；每个文件 < 100 行
-- **修改权限**: 仅技术负责人审批后修改（业务模块开发期间）
-
 #### infra
 - **职责**: 数据库连接、配置管理、全局错误处理、标准响应格式
-- **修改权限**: 同 shared
+- **修改权限**: 仅技术负责人审批后修改（业务模块开发期间）
 
 #### {module-a}
 - **职责**: {一句话描述}
@@ -78,7 +72,7 @@
 ### 3.1 依赖关系图
 
 ```
-shared + infra
+       infra
   ↑    ↑    ↑    ↑
 {module-a}  {module-b}  {module-c}  {module-d}    ← 后端模块
               ↑            ↑
@@ -90,7 +84,7 @@ shared + infra
 
 ### 3.2 依赖规则
 
-- 所有业务模块依赖 shared + infra（省略不画）
+- 所有后端业务模块依赖 infra（省略不画）
 - 业务模块间依赖方向**单向**，禁止循环
 - 当出现双向需求时，使用事件通知 / 回调 / 中间模块解耦
 
@@ -98,11 +92,11 @@ shared + infra
 
 | 模块 | 依赖（调用方） | 被依赖（提供方） |
 |------|-------------|----------------|
-| {module-a} | shared, infra | {module-c}, {module-e} |
-| {module-b} | shared, infra | {module-e} |
-| {module-c} | shared, infra, {module-a} | {module-e} |
-| {module-d} | shared, infra | 无 |
-| {module-e} | shared, infra, {module-b}, {module-c} | 无 |
+| {module-a} | infra | {module-c}, {module-e} |
+| {module-b} | infra | {module-e} |
+| {module-c} | infra, {module-a} | {module-e} |
+| {module-d} | infra | 无 |
+| {module-e} | infra, {module-b}, {module-c} | 无 |
 
 ## 4. 跨模块数据流
 
@@ -143,11 +137,8 @@ server/                        # 后端
 │   │   ├── repository.ts
 │   │   ├── types.ts
 │   │   └── index.ts
-│   ├── {module-b}/
-│   │   └── ...
-│   └── shared/
-│       ├── types/
-│       └── utils/
+│   └── {module-b}/
+│       └── ...
 ├── infra/
 │   ├── database.ts
 │   ├── config.ts
