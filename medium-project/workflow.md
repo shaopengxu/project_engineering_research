@@ -46,7 +46,6 @@
 | 模块设计 (module-design/{module}.md) | Architect agent | 技术负责人 | 必须 |
 | 接口契约 (api-contracts.md) | Architect agent（逐模块构建）| 技术负责人 | 必须 |
 | 接口契约子文件 (api-contracts-{module}.md) | Architect agent / 脚本 | 技术负责人 | 必须 |
-| 架构决策记录 (decision-log.md) | 技术负责人 + agents | 无需 review | 推荐 |
 | GitHub Issues | Architect agent + 技术负责人 | 技术负责人 | 必须 |
 | 契约测试 + 集成测试 + E2E 测试 | Tester agent | 技术负责人 | 必须 |
 | 单元测试 | Implementer agent | Reviewer agent | 按需 |
@@ -355,11 +354,9 @@ Module-B 的 agent 关于 Module-A **需要知道的**：
 1. 评估是否影响模块划分和依赖关系
 2. 更新受影响的 module-design/{module}.md
 3. 更新 CLAUDE.md 中的项目结构（如有变化）
-4. 记录到 decision-log.md
 
 ### 变更记录
 
-- 重大架构变更 → decision-log.md
 - 在相关 GitHub Issue 中 comment 变更原因和影响范围
 - commit message 标注：`docs(<module>): {变更内容}，影响范围: #{issue-list}`
 
@@ -424,7 +421,7 @@ tests/
 | Task Review | 每个 Task 完成 | Reviewer Agent | 功能正确性、代码规范、测试覆盖 |
 | 模块 Review | 模块所有 Task 完成 | Reviewer Agent（模块级 prompt） | 模块内一致性、命名/风格统一、接口覆盖完整性 |
 | 跨模块 Review | 涉及跨模块变更时 | 技术负责人 | 接口一致性、依赖方向、shared 修改合理性 |
-| 架构 Review | 架构变更提议时 | 技术负责人 | 决策合理性、影响范围、是否记录到 decision-log |
+| 架构 Review | 架构变更提议时 | 技术负责人 | 决策合理性、影响范围 |
 
 **分层原则**：技术负责人只做系统级和跨模块 review，模块内 review 委托 Reviewer Agent。
 
@@ -468,7 +465,6 @@ project/
 │   ├── module-design/               # 模块详细设计
 │   │   ├── module-a.md
 │   │   └── module-b.md
-│   └── decision-log.md              # 架构决策记录
 ├── src/
 │   └── modules/
 │       ├── module-a/
@@ -567,8 +563,7 @@ Milestone 3: 辅助模块
 1. Agent 停止实现，在 Issue comment 中报告
 2. 技术负责人评估影响范围
 3. 回退到 Step 2a/2b：新会话修订架构文档
-4. 在 decision-log.md 记录变更原因
-5. 按变更传播规则：文档 → 测试 → 实现
+4. 按变更传播规则：文档 → 测试 → 实现
 
 ### 共享层变更需求
 

@@ -18,7 +18,7 @@
 请按 CLAUDE.md 模板格式（参考 medium-project/templates/CLAUDE.md），填写以下章节：
 - 一句话描述（从 PRD 的核心价值提炼）
 - Tech Stack（根据项目类型和需求建议技术栈，给出选择理由）
-- 项目文档（固定链接：docs/prd.md, docs/architecture.md, docs/api-contracts.md, docs/module-design/, docs/decision-log.md, GitHub Projects）
+- 项目文档（固定链接：docs/prd.md, docs/architecture.md, docs/api-contracts.md, docs/module-design/, GitHub Projects）
 - 代码规范（根据技术栈建议合适的代码规范）
 - Git 规则（使用标准模板，commit 格式为 `<type>(<module>): <描述>`）
 - 共享代码修改规则（使用标准模板）
@@ -586,7 +586,6 @@ GitHub Issues：
 3. 更新文档：
    - [ ] 更新 api-contracts.md 完整版
    - [ ] 同步更新受影响的 api-contracts-{module}.md 子文件
-   - [ ] 在 decision-log.md 记录（如果是重大变更）
 4. 通知受影响模块：
    - [ ] 在受影响模块的 Issue 中 comment 变更通知
    - [ ] 后续 Task 使用最新文档

@@ -15,7 +15,6 @@
 - docs/architecture.md — 系统架构
 - docs/api-contracts.md — 接口契约（完整版）
 - docs/module-design/ — 模块详细设计
-- docs/decision-log.md — 架构决策记录
 - 任务管理 — GitHub Projects（`gh issue list` 查看）
 
 ## 常用命令
