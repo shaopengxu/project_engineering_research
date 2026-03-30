@@ -19,7 +19,6 @@ gh project list --owner "@me"
 | 字段名 | 类型 | 选项 |
 |--------|------|------|
 | Status | Single select | `Todo`, `In Progress`, `Review`, `Done`, `Blocked` |
-| Phase | Single select | `Phase 1 (Shared)`, `Phase 2 (Parallel)`, `Phase 3 (Integration)`, `Phase 4 (E2E)` |
 | Module | Single select | `shared`, `{module-a}`, `{module-b}`, ... |
 | Priority | Single select | `P0`, `P1`, `P2` |
 
@@ -57,12 +56,12 @@ gh api repos/{owner}/{repo}/milestones -f title="Milestone 2: 业务模块" -f d
 - 用于日常 Task 状态追踪
 
 **Table 视图**：
-- 显示所有字段（Status, Phase, Module, Priority）
-- 支持按 Module 或 Phase 分组和筛选
+- 显示所有字段（Status, Module, Priority）
+- 支持按 Module 分组和筛选
 - 用于全局进度概览
 
 **Roadmap 视图**（可选）：
-- 按 Phase 或 Milestone 组织时间线
+- 按 Milestone 组织时间线
 - 用于向产品经理展示进度
 
 ## 6. Issue 创建模板
@@ -190,34 +189,3 @@ gh issue list --state open --search "阻塞 in:comments"
 gh issue close {NUMBER} --comment "Review 通过，Task 完成。"
 ```
 
-## 8. 并行调度计划 Issue（可选）
-
-创建一个固定 Issue 记录并行调度计划和关键路径：
-
-```bash
-gh issue create \
-  --title "[调度] 并行开发计划" \
-  --label "type:infra" \
-  --project "{project-name}" \
-  --pin \
-  --body "$(cat <<'EOF'
-## 并行调度计划
-
-| Phase | 可并行任务 | 需要的 worktree 数 |
-|-------|-----------|-------------------|
-| 1 | #N shared | 1 |
-| 2 | #N1 module-a, #N2 module-b, #N3 module-c | 3 |
-| 3 | #N4 (依赖 #N1), #N5 (依赖 #N2) | 2 |
-
-## 关键路径
-#N → #N1 → #N4
-
-## 当前状态
-Phase: {当前 Phase}
-活跃 Worktree: {列表}
-
----
-*由技术负责人维护，每次 Phase 切换时更新。*
-EOF
-)"
-```

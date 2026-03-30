@@ -1,7 +1,7 @@
 # Agent Prompt 模板（中型项目）
 
 以下是各角色 agent 在每个阶段的提示词模板。
-架构设计分为三步（2a/2b/2c），支持并行开发约束、模块级上下文加载、GitHub Issues 交互。
+架构设计分为三步（2a/2b/2c），模块级上下文加载、GitHub Issues 交互。串行推进，无需 Worktree 或分支管理。
 
 ---
 
@@ -80,7 +80,7 @@
 
 ## Step 2b — Module Designer Agent（模块详细设计）
 
-**每个模块一个独立会话**，可并行执行。在新会话中使用：
+**每个模块一个独立会话**。在新会话中使用：
 
 ```
 你是一个模块设计师。请为 {模块名} 设计内部架构。
@@ -183,13 +183,9 @@
    - 实现任务：按模块拆分，每个 Issue 标注依赖（Depends on #N）和需通过的测试
    - 集成测试任务：为 architecture.md 中的每条关键路径创建 L2 集成测试 Issue
    - 使用标签：type:contract-test / type:impl / type:integration-test / type:e2e + module:{name}
-   - 使用 Milestone 标注 Phase
+   - 使用 Milestone 标注迭代（如需多迭代）
 
-5. 规划并行调度：
-   - 创建一个"并行开发计划" Issue，记录 Phase 划分、可并行任务、关键路径
-   - 标注每个 Phase 需要的 worktree 数量
-
-6. 回填 CLAUDE.md：
+5. 回填 CLAUDE.md：
    - 常用命令（与实际脚手架配置一致）
    - 测试环境（隔离方式、环境变量）
    - 模块文档索引
@@ -210,7 +206,7 @@
 
 ## Step 4 — Tester Agent（契约测试）
 
-**每个模块一个独立会话**，可在独立 Worktree 中并行。在新会话中使用：
+**每个模块一个独立会话**，按依赖顺序串行推进。在新会话中使用：
 
 ```
 你是一个测试工程师。请为 {模块名} 编写契约测试。
@@ -241,7 +237,7 @@
 
 ## Step 5a — Implementer Agent（实现）
 
-**每个模块在独立 Worktree 中工作**。在新会话中使用：
+在新会话中使用：
 
 ```
 你是一个开发工程师。请完成以下 Task。
@@ -379,7 +375,7 @@ Review 反馈：
 
 ## Step 5e — Implementer Agent（L2 关键路径集成测试）
 
-当关键路径上的模块已合并到 develop 后。在新会话中使用：
+当被依赖模块已实现完成后。在新会话中使用：
 
 ```
 你是一个开发工程师。请编写跨模块集成测试。
@@ -507,7 +503,7 @@ GitHub Issues：
 - [ ] 每个实现 Issue 标注了需通过的测试
 - [ ] 共享层任务优先级最高
 - [ ] 关键路径有 L2 集成测试 Issue
-- [ ] 并行调度计划 Issue 存在且合理
+- [ ] Issues 按依赖顺序可串行推进
 - [ ] 标签（type + module）正确
 ```
 
@@ -531,12 +527,10 @@ GitHub Issues：
 - [ ] 如果涉及文档变更，按变更传播规则处理
 - [ ] 如果模块所有 Task 完成，触发模块级 Review
 
-Phase 切换时：
-- [ ] 确认当前 Phase 的所有必要 Task 已完成
-- [ ] 创建/销毁 Worktree
-- [ ] 合并 feature 分支到 develop（按依赖顺序）
-- [ ] 跑集成测试确认合并无问题
-- [ ] 更新并行调度计划 Issue
+模块完成时：
+- [ ] 确认该模块所有 Task 已完成
+- [ ] 触发模块级 Review
+- [ ] 跑全量测试确认无回归
 ```
 
 ### 共享层变更处理
@@ -544,13 +538,13 @@ Phase 切换时：
 ```
 收到 Agent 的 shared 变更请求时：
 1. 评估需求：
-   - 确实需要放 shared → 在主工作树创建，通知所有 worktree rebase
+   - 确实需要放 shared → 直接在 shared/ 中创建
    - 只有一个模块用 → 告知 Agent 放在模块内部
    - 多模块需要但各自已实现 → 标记"合并时提取到 shared"
 2. 如果创建了 shared 代码：
    - [ ] 代码符合 shared 准入规则
    - [ ] 更新 shared/CLAUDE.md
-   - [ ] 通知所有活跃 worktree rebase
+   - [ ] 后续 Task 自动使用最新代码
 ```
 
 ### 接口变更处理
@@ -568,6 +562,6 @@ Phase 切换时：
    - [ ] 在 decision-log.md 记录（如果是重大变更）
 4. 通知受影响模块：
    - [ ] 在受影响模块的 Issue 中 comment 变更通知
-   - [ ] 受影响 worktree rebase
+   - [ ] 后续 Task 使用最新文档
 5. 按变更传播规则执行：文档 → 测试 → 实现
 ```
