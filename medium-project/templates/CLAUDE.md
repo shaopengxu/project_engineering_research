@@ -80,7 +80,3 @@ tests/
 - 给出不同方案或建议寻求帮助
 - 不要在同一个方向上尝试超过 3 次
 
-## 模块文档索引
-- {Module-A}: src/modules/{module-a}/CLAUDE.md
-- {Module-B}: src/modules/{module-b}/CLAUDE.md
-- Shared: src/modules/shared/CLAUDE.md

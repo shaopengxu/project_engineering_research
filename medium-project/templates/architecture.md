@@ -122,7 +122,6 @@ shared + infra
 src/
 ├── modules/
 │   ├── {module-a}/
-│   │   ├── CLAUDE.md                # 模块级 CLAUDE.md
 │   │   ├── {module-a}.controller.ts
 │   │   ├── {module-a}.service.ts
 │   │   ├── {module-a}.repository.ts

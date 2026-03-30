@@ -40,8 +40,7 @@
 | 文档 | 谁写 | 谁 Review | 是否必须 |
 |------|------|-----------|---------|
 | PRD (prd.md) | 产品经理 | 产品经理 | 必须 |
-| CLAUDE.md（全局） | 技术负责人 + Architect agent | 技术负责人 | 必须 |
-| CLAUDE.md（模块级） | Architect agent | 技术负责人 | 必须 |
+| CLAUDE.md | 技术负责人 + Architect agent | 技术负责人 | 必须 |
 | README.md | 技术负责人 | 无需 review | 推荐 |
 | 系统架构 (architecture.md) | Architect agent | 技术负责人 | 必须 |
 | 模块设计 (module-design/{module}.md) | Architect agent | 技术负责人 | 必须 |
@@ -99,7 +98,6 @@ Step 2b: 模块详细设计 + 接口契约
 Step 3: 环境初始化 + 任务拆分
 ├── 会话N+1 [Architect agent]: 读架构 + 契约文档
 │   ├── 初始化脚手架（含模块目录结构、导出桩文件）
-│   ├── 创建模块级 CLAUDE.md
 │   ├── 生成 api-contracts-{module}.md 子文件
 │   ├── 创建 GitHub Issues（含依赖关系）
 │   ├── 规划集成测试用例（识别 L2 关键路径）
@@ -307,20 +305,6 @@ Reviewer 输出 LGTM 后，Task 即视为完成（代码已在 main 上），更
 ## 共享代码修改规则
 ## 不要做的事
 ## 错误处理规则
-## 模块文档索引
-```
-
-**模块级 CLAUDE.md（< 50 行）** — 仅该模块的 agent 加载：
-
-```markdown
-# Module: {模块名}
-## 职责（一句话）
-## 依赖的模块（列出公开接口引用）
-## 被依赖的模块（谁在调用本模块）
-## 当前模块的接口文档: docs/api-contracts-{module}.md
-## 当前模块的设计文档: docs/module-design/{module}.md
-## 模块内目录结构
-## 模块特有的约定
 ```
 
 ### 文档拆分
@@ -459,7 +443,7 @@ tests/
 
 ### 上下文加载规则
 
-- **模块 agent 只加载必要文档**：全局 CLAUDE.md + 模块级 CLAUDE.md + api-contracts-{module}.md + module-design/{module}.md
+- **模块 agent 只加载必要文档**：CLAUDE.md + api-contracts-{module}.md + module-design/{module}.md
 - 不需要加载完整的 api-contracts.md 或其他模块的设计文档
 
 ### 什么时候必须开新会话
@@ -488,17 +472,14 @@ project/
 ├── src/
 │   └── modules/
 │       ├── module-a/
-│       │   ├── CLAUDE.md            # 模块级 CLAUDE.md（< 50 行）
 │       │   ├── controller.ts
 │       │   ├── service.ts
 │       │   ├── repository.ts
 │       │   ├── types.ts
 │       │   └── index.ts             # 导出桩（Step 3 创建）
 │       ├── module-b/
-│       │   ├── CLAUDE.md
 │       │   └── ...
 │       └── shared/
-│           ├── CLAUDE.md
 │           ├── types/
 │           └── utils/
 └── tests/

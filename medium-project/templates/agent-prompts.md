@@ -26,7 +26,7 @@
 - 错误处理规则（使用标准模板）
 
 要求：
-- 以下章节留空，由后续步骤补充：项目结构、架构约定、常用命令、测试环境、模块文档索引
+- 以下章节留空，由后续步骤补充：项目结构、架构约定、常用命令、测试环境
 - 技术栈选择需说明理由，便于技术负责人评估
 - 不要创建项目文件或安装依赖，只产出 CLAUDE.md 文件
 ```
@@ -206,26 +206,20 @@
    - 为每个模块创建**导出桩文件**（只声明函数签名，函数体 `throw new Error('Not implemented')`）
    - 确保安装、lint、测试框架启动命令都能成功
 
-2. 创建模块级 CLAUDE.md：
-   - 为每个模块创建 CLAUDE.md（参考 medium-project/templates/CLAUDE-module.md）
-   - 填写职责、依赖、被依赖、接口文档指向、目录结构
-   - 每个文件 < 50 行
-
-3. 生成 api-contracts 子文件：
+2. 生成 api-contracts 子文件：
    - 从 api-contracts.md 为每个模块提取 api-contracts-{module}.md
    - 包含：本模块提供的接口（完整）+ 本模块消费的外部接口（只含签名）
 
-4. 创建 GitHub Issues：
+3. 创建 GitHub Issues：
    - 契约测试任务：api-contracts.md 中每个接口对应一个测试 Issue
    - 实现任务：按模块拆分，每个 Issue 标注依赖（Depends on #N）和需通过的测试
    - 集成测试任务：为 architecture.md 中的每条关键路径创建 L2 集成测试 Issue
    - 使用标签：type:contract-test / type:impl / type:integration-test / type:e2e / type:infra + module:{name}
    - 使用 Milestone 标注迭代（如需多迭代）
 
-5. 回填 CLAUDE.md：
+4. 回填 CLAUDE.md：
    - 常用命令（与实际脚手架配置一致）
    - 测试环境（隔离方式、环境变量）
-   - 模块文档索引
 
 任务拆分原则：
 - 共享层（shared/infra）独立为最高优先级 Task
@@ -281,7 +275,6 @@
 
 请先阅读以下文件：
 - CLAUDE.md
-- src/modules/{module}/CLAUDE.md
 - docs/api-contracts-{module}.md（本模块的接口契约）
 - docs/module-design/{module}.md（本模块的详细设计）
 
@@ -294,7 +287,7 @@
 要求：
 - 让相关契约测试全部通过
 - 编写 L1 模块内集成测试（controller → service → repository 真实串联），放在 tests/integration/{module}/ 下
-- 遵守 CLAUDE.md 和模块级 CLAUDE.md 中的规范
+- 遵守 CLAUDE.md 中的规范
 - 不要修改契约测试代码。如果发现不一致，在 Issue comment 中指出具体矛盾，等待确认
 - 不要实现当前 Task 以外的功能
 - 不要修改其他模块目录下的文件
@@ -320,7 +313,6 @@
 
 请先阅读以下文件：
 - CLAUDE.md
-- src/modules/{module}/CLAUDE.md
 - docs/api-contracts-{module}.md（本模块接口契约）
 
 然后查看当前 Task 的代码改动：`git diff HEAD~N..HEAD`（N = 当前 Task 的 commit 数量）。
@@ -329,7 +321,7 @@
 检查清单：
 1. 功能是否符合 api-contracts-{module}.md 中当前 Task 对应接口的定义
 2. L1 集成测试是否覆盖了 controller → service → repository 的真实串联
-3. 是否遵守 CLAUDE.md 和模块级 CLAUDE.md 的规范
+3. 是否遵守 CLAUDE.md 的规范
 4. 模块间依赖方向是否正确（不反向依赖）
 5. 是否有安全问题（SQL 注入、XSS、敏感信息泄露等）
 6. 是否违反了共享代码修改规则（修改 shared/ 前是否获得确认、不应修改其他模块文件）
@@ -357,7 +349,6 @@
 
 请先阅读以下文件：
 - CLAUDE.md
-- src/modules/{module}/CLAUDE.md
 - docs/api-contracts-{module}.md
 - docs/module-design/{module}.md
 
@@ -370,7 +361,7 @@
 4. 模块内各层职责是否清晰（controller 不含业务逻辑、repository 不含校验逻辑等）
 5. 是否有跨层泄漏（如 controller 直接调用 repository）
 6. 是否有不必要的代码重复
-7. 模块级 CLAUDE.md 中的约定是否都被遵守
+7. CLAUDE.md 中的约定是否都被遵守
 
 输出格式（同 Task Review）：
 - MUST FIX / SHOULD FIX / OPTIONAL / LGTM
@@ -387,7 +378,6 @@
 
 请先阅读以下文件：
 - CLAUDE.md
-- src/modules/{module}/CLAUDE.md
 - docs/api-contracts-{module}.md
 
 当前 Task：
@@ -532,7 +522,6 @@ Review 反馈：
 - [ ] lint 命令能跑通
 - [ ] 测试框架能启动
 - [ ] 导出桩文件存在且函数签名与 api-contracts 一致
-- [ ] 模块级 CLAUDE.md 都已创建且 < 50 行
 - [ ] api-contracts 子文件已生成且与完整版一致
 
 GitHub Issues：
