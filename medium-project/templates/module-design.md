@@ -31,7 +31,7 @@
 |----|------|------|
 | Controller | 接收请求、参数校验、调用 Service、格式化响应 | Service |
 | Service | 业务逻辑、业务规则执行、跨层编排 | Repository, 其他模块的 Service（通过接口） |
-| Repository | 数据库操作、查询封装 | Database（infra） |
+| Repository | 数据库操作、Prisma 查询封装 | Prisma Client（infra） |
 
 #### 控制流
 
@@ -60,16 +60,16 @@
 
 | 层 | 职责 | 依赖 |
 |----|------|------|
-| Pages | 页面组件，组合子组件，处理页面级状态和交互 | Components, Hooks |
-| Components | 可复用 UI 组件，只接收 props，不直接调用 API | — |
-| Hooks | 数据获取、状态逻辑封装 | API, Stores |
-| API | 封装后端接口调用，处理请求/响应转换 | 后端模块接口 |
-| Stores | 跨页面共享状态（仅在需要时使用） | — |
+| Pages | 页面组件（React Router 路由对应），组合子组件 | Components, Hooks |
+| Components | Ant Design 基础上的业务组件，只接收 props，不直接调用 API | — |
+| Hooks | TanStack Query 数据获取 + 业务逻辑封装 | API, Stores |
+| API | 封装后端接口调用（axios / fetch），处理请求/响应转换 | 后端模块接口 |
+| Stores | Zustand 跨页面共享状态（仅在需要时使用） | — |
 
 #### 控制流
 
 ```
-用户操作 → Page（交互处理）→ Hook（状态/数据逻辑）→ API（后端调用）→ 更新状态 → 重新渲染
+用户操作 → Page → Hook（useQuery/useMutation）→ API 层（fetch）→ TanStack Query 缓存更新 → 重新渲染
 ```
 
 ---
@@ -119,7 +119,8 @@ interface {PageState} {
 | 状态 | 作用域 | 存储方式 | 说明 |
 |------|--------|---------|------|
 | {状态名} | 页面内 | useState / useReducer | {说明} |
-| {状态名} | 跨页面 | Store（Zustand / Redux 等） | {说明} |
+| {状态名} | 跨页面 | Zustand store | {说明} |
+| {状态名} | 服务端数据 | TanStack Query | {说明，自动缓存/刷新} |
 | {状态名} | 持久化 | localStorage | {说明，如用户偏好} |
 
 ---

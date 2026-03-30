@@ -5,13 +5,20 @@
 
 ## 1. 技术选型
 
-| 类别 | 选择 | 理由 |
-|------|------|------|
-| 语言 | {语言} | {理由} |
-| 框架 | {框架} | {理由} |
-| 数据库 | {数据库} | {理由} |
-| 测试 | {测试框架} | {理由} |
-| 其他 | {如消息队列、缓存等} | {理由} |
+| 类别 | 选择 |
+|------|------|
+| 语言 | TypeScript（全栈） |
+| 运行时 | Node.js |
+| 后端框架 | Express |
+| ORM | Prisma |
+| 数据库 | PostgreSQL |
+| 前端框架 | React + Vite |
+| 路由 | React Router |
+| UI 组件库 | Ant Design |
+| 数据请求 | TanStack Query |
+| 状态管理 | Zustand |
+| 测试 | Vitest + React Testing Library |
+| 代码规范 | ESLint + Prettier |
 
 ## 2. 模块划分
 

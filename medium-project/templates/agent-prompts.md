@@ -17,9 +17,9 @@
 
 请按 CLAUDE.md 模板格式（参考 medium-project/templates/CLAUDE.md），填写以下章节：
 - 一句话描述（从 PRD 的核心价值提炼）
-- Tech Stack（根据项目类型和需求建议技术栈，给出选择理由）
+- Tech Stack（使用固定技术栈：TypeScript 全栈，后端 Express + Prisma + PostgreSQL，前端 React + Vite + React Router + Ant Design + TanStack Query + Zustand，测试 Vitest + React Testing Library）
 - 项目文档（固定链接：docs/prd.md, docs/architecture.md, docs/module-design/, GitHub Projects）
-- 代码规范（根据技术栈建议合适的代码规范）
+- 代码规范（ESLint + Prettier，文件 kebab-case，组件 PascalCase）
 - Git 规则（使用标准模板，commit 格式为 `<type>(<module>): <描述>`）
 - 共享代码修改规则（使用标准模板）
 - 不要做的事（根据 PRD 的"不在范围内"提炼禁止事项）
@@ -27,7 +27,7 @@
 
 要求：
 - 以下章节留空，由后续步骤补充：项目结构、架构约定、常用命令、测试环境
-- 技术栈选择需说明理由，便于技术负责人评估
+- 技术栈已固定，直接使用，不需要选择理由
 - 不要创建项目文件或安装依赖，只产出 CLAUDE.md 文件
 ```
 
@@ -46,7 +46,7 @@
 
 请产出 architecture.md（参考 medium-project/templates/architecture.md），包含：
 
-1. 技术选型及理由
+1. 技术选型（使用固定技术栈，确认写入 architecture.md）
 2. 模块划分：
    - 列出所有模块（业务模块 + 技术模块），每个模块一句话职责
    - 业务模块与 PRD 的映射关系

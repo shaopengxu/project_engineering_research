@@ -4,11 +4,11 @@
 {这个项目是什么，解决什么问题}
 
 ## Tech Stack
-- Language: {语言和版本}
-- Runtime: {运行环境}
-- Framework: {框架}
-- DB: {数据库 + ORM}
-- Test: {测试框架}
+- Language: TypeScript（全栈）
+- Runtime: Node.js
+- Backend: Express + Prisma + PostgreSQL
+- Frontend: React + Vite + React Router + Ant Design + TanStack Query + Zustand
+- Test: Vitest + React Testing Library
 
 ## 项目文档
 - docs/prd.md — 产品需求
@@ -17,22 +17,32 @@
 - 任务管理 — GitHub Projects（`gh issue list` 查看）
 
 ## 常用命令
-- `{启动命令}` — 启动开发服务器
-- `{测试命令}` — 跑全部测试
-- `{契约测试命令}` — 只跑契约测试
-- `{集成测试命令}` — 只跑集成测试
-- `{单文件测试命令}` — 跑单个文件测试
-- `{lint命令}` — lint 检查
-- `{构建命令}` — 构建
+- `npm run dev:server` — 启动后端开发服务器
+- `npm run dev:web` — 启动前端 SPA
+- `npm run dev:admin` — 启动管理后台
+- `npx vitest` — 跑全部测试
+- `npx vitest tests/contracts` — 只跑契约测试
+- `npx vitest tests/integration` — 只跑集成测试
+- `npx vitest {file}` — 跑单个文件测试
+- `npm run lint` — ESLint + Prettier 检查
+- `npm run build` — 构建全部
 
 ## 项目结构
-{只列顶层目录和模块名，不展开模块内部结构}
 ```
-src/
+server/                # 后端 (Express + Prisma)
 ├── modules/
 │   ├── {module-a}/    # {一句话职责}
 │   └── {module-b}/    # {一句话职责}
-└── ...
+├── infra/             # 数据库、配置、错误处理、响应格式
+└── app.ts
+web/                   # 前端 SPA (React + Vite)
+├── pages/
+├── components/
+├── hooks/
+├── api/
+└── stores/
+admin/                 # 管理后台 (React + Vite + Ant Design)
+└── ...                # 结构同 web/
 tests/
 ├── contracts/         # 契约测试
 ├── integration/       # 集成测试（含 paths/ 关键路径）
@@ -41,17 +51,22 @@ tests/
 ```
 
 ## 代码规范
-- {规范1}
-- {规范2}
+- ESLint + Prettier，提交前必须通过 lint
+- 文件命名：kebab-case（如 user-service.ts）
+- 组件命名：PascalCase（如 UserList.tsx）
+- {项目特有规范}
 
 ## 架构约定
-- {约定1: 如模块间依赖方向}
-- {约定2: 如分层规则}
+- 后端模块间依赖单向，禁止循环
+- 后端分层：controller → service → repository，不跳层
+- 前端通过 api/ 层调用后端，组件不直接发请求
+- 前端状态：页面内用 useState，跨页面用 Zustand，服务端数据用 TanStack Query
+- {项目特有约定}
 
 ## 测试环境
-- 测试数据库: {如: 内存 SQLite / 测试容器}
-- 测试数据隔离: {如: 每个测试文件使用独立数据库}
-- 环境变量: {如: TEST_DB_PATH=:memory:}
+- 测试数据库: PostgreSQL 测试库（通过 DATABASE_URL 环境变量区分）
+- 测试数据隔离: 每个测试文件使用事务回滚
+- 前端测试: Vitest + React Testing Library + jsdom
 
 ## Git 规则
 - 每次完成一个有意义的改动后，主动 commit
