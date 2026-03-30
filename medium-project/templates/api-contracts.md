@@ -5,7 +5,7 @@
 > 每个模块的接口子文件（api-contracts-{module}.md）从本文档提取生成。
 >
 > **项目类型适配**：本模板以 HTTP REST API 为主格式。如果项目涉及其他类型（CLI / SDK / 消息队列 / 前端），
-> 请参考 small-project/templates/api-contracts-{type}.md 中的格式，但保留本模板的 **consumers 字段**和**接口依赖矩阵**。
+> 按对应类型的接口格式替换（CLI 用命令/参数/选项，SDK 用函数签名，MQ 用事件/Payload），但必须保留 **consumers 字段**和**接口依赖矩阵**。
 
 ## 通用约定
 
