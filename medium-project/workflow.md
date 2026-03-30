@@ -36,7 +36,7 @@
 |------|------|
 | 产品经理 | 定义需求，按模块组分批验收 |
 | 技术负责人 | 技术选型，系统级 + 跨模块 review，任务流转管理 |
-| System Architect agent | 系统级架构设计（模块划分、依赖关系、数据流） |
+| Architect agent | 初始化 CLAUDE.md、系统级架构设计、脚手架搭建、任务拆分 |
 | Module Designer agent | 模块详细设计（内部分层、数据模型） |
 | API Designer agent | 基于系统架构和模块设计，定义所有模块间接口契约 |
 | Tester agent | 契约测试 + 集成测试规划 + E2E 测试 |
@@ -53,7 +53,7 @@
 | CLAUDE.md（全局） | 技术负责人 + Architect agent | 技术负责人 | 必须 |
 | CLAUDE.md（模块级） | Architect agent | 技术负责人 | 必须 |
 | README.md | 技术负责人 | 无需 review | 推荐 |
-| 系统架构 (architecture.md) | System Architect agent | 技术负责人 | 必须 |
+| 系统架构 (architecture.md) | Architect agent | 技术负责人 | 必须 |
 | 模块设计 (module-design/{module}.md) | Module Designer agent | 技术负责人 | 必须 |
 | 接口契约 (api-contracts.md) | API Designer agent | 技术负责人 | 必须 |
 | 接口契约子文件 (api-contracts-{module}.md) | Architect agent / 脚本 | 技术负责人 | 必须 |
@@ -72,11 +72,11 @@ Step 1: 初始化
 ├── 技术负责人: git init + GitHub 仓库创建 + GitHub Project 创建
 ├── 产品经理: 编写 PRD（含验收标准，按模块组织）
 ├── 会话1 [Architect agent]: 读 PRD → 产出 CLAUDE.md 基础部分建议
-│   └── 一句话描述、Tech Stack、项目文档、代码规范、Git 规则、不要做的事、错误处理规则
+│   └── 一句话描述、Tech Stack、项目文档、代码规范、Git 规则、共享代码修改规则、不要做的事、错误处理规则
 └── 技术负责人: review 并确认 CLAUDE.md 基础部分
 
 Step 2a: 系统架构设计
-├── 会话2 [System Architect agent]: 读 PRD → 产出 architecture.md（系统级）
+├── 会话2 [Architect agent]: 读 PRD → 产出 architecture.md（系统级）
 │   ├── 模块划分与职责定义
 │   ├── 模块依赖关系图（有向无环）
 │   ├── 跨模块数据流
@@ -206,6 +206,7 @@ Step 7: 验收（分批）
 | `type:impl` | 实现任务 |
 | `type:integration-test` | 集成测试任务 |
 | `type:e2e` | E2E 测试任务 |
+| `type:infra` | 基础设施任务 |
 | `module:{name}` | 所属模块 |
 
 **Issue body 模板**：
@@ -303,16 +304,17 @@ Reviewer 输出 LGTM 后，Task 即视为完成（代码已在 main 上），更
 # Project: {项目名}
 ## 一句话描述
 ## Tech Stack
+## 项目文档
 ## 常用命令
 ## 项目结构（只列顶层目录和模块名，不展开）
 ## 代码规范
+## 架构约定
+## 测试环境
 ## Git 规则
+## 共享代码修改规则
 ## 不要做的事
 ## 错误处理规则
 ## 模块文档索引
-- Module-A: src/modules/module-a/CLAUDE.md
-- Module-B: src/modules/module-b/CLAUDE.md
-- Shared: src/modules/shared/CLAUDE.md
 ```
 
 **模块级 CLAUDE.md（< 50 行）** — 仅该模块的 agent 加载：
@@ -556,7 +558,7 @@ Milestone 3: 辅助模块
 | Step | 执行者 | 输入 | 产出 | 退出标准 |
 |------|--------|------|------|---------|
 | 1 | 人 + Architect | — | PRD, CLAUDE.md（基础）, GitHub Project | PRD 按模块组织含验收标准；CLAUDE.md 基础部分确认；Project 已创建 |
-| 2a | System Architect | PRD, CLAUDE.md | architecture.md | 模块划分清晰；依赖单向无环；数据流完整 |
+| 2a | Architect | PRD, CLAUDE.md | architecture.md | 模块划分清晰；依赖单向无环；数据流完整 |
 | 2b | Module Designer | architecture.md, PRD | module-design/*.md | 每模块内部设计完整；数据模型清晰 |
 | 2c | API Designer | architecture + module-designs | api-contracts.md | 每个 PRD 功能映射到接口；consumers 完整；依赖矩阵完整；追溯表完整 |
 | 3 | Architect | 架构 + 契约 | 脚手架, Issues, 模块 CLAUDE.md | 脚手架能运行；Issues 含依赖关系；模块 CLAUDE.md < 50 行 |

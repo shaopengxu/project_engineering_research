@@ -33,12 +33,12 @@
 
 ---
 
-## Step 2a — System Architect Agent（系统架构设计）
+## Step 2a — Architect Agent（系统架构设计）
 
 在新会话中使用：
 
 ```
-你是一个系统架构师。请根据 PRD 设计系统级架构。
+你是一个软件架构师。请根据 PRD 设计系统级架构。
 
 请先阅读以下文件：
 - CLAUDE.md
@@ -182,7 +182,7 @@
    - 契约测试任务：api-contracts.md 中每个接口对应一个测试 Issue
    - 实现任务：按模块拆分，每个 Issue 标注依赖（Depends on #N）和需通过的测试
    - 集成测试任务：为 architecture.md 中的每条关键路径创建 L2 集成测试 Issue
-   - 使用标签：type:contract-test / type:impl / type:integration-test / type:e2e + module:{name}
+   - 使用标签：type:contract-test / type:impl / type:integration-test / type:e2e / type:infra + module:{name}
    - 使用 Milestone 标注迭代（如需多迭代）
 
 5. 回填 CLAUDE.md：
@@ -261,7 +261,7 @@
 - 不要修改契约测试代码。如果发现不一致，在 Issue comment 中指出具体矛盾，等待确认
 - 不要实现当前 Task 以外的功能
 - 不要修改其他模块目录下的文件
-- 不要修改 shared/ 或 infra/ 下的文件。如需新增共享功能，在 Issue comment 中说明需求，当前在本模块内部临时实现并标注 TODO
+- 修改 shared/ 或 infra/ 前，先在 Issue comment 中说明需求，获得技术负责人确认后再修改。如暂时无法确认，可先在本模块内部实现并标注 `TODO: 提取到 shared`
 - 对复杂内部逻辑补充单元测试
 - 每个有意义的改动 commit 一次
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "实现完成，契约测试和 L1 集成测试全部通过"` 报告
@@ -295,7 +295,7 @@
 3. 是否遵守 CLAUDE.md 和模块级 CLAUDE.md 的规范
 4. 模块间依赖方向是否正确（不反向依赖）
 5. 是否有安全问题（SQL 注入、XSS、敏感信息泄露等）
-6. 是否违反了共享代码修改规则（不应直接修改 shared/、不应修改其他模块文件）
+6. 是否违反了共享代码修改规则（修改 shared/ 前是否获得确认、不应修改其他模块文件）
 7. 实现质量 — 明显的性能问题、未处理的边界条件、过度设计
 
 输出格式：
@@ -451,7 +451,7 @@ Review 反馈：
 **可"信任 Agent + 测试"的场景**：简单 CRUD、测试全部通过且 Agent 未报告异常。
 **必须人工逐行过的场景**：安全相关、复杂业务规则、跨模块数据一致性。
 
-### Step 2a 系统架构 Review Checklist
+### Step 2a 架构 Review Checklist
 
 ```
 - [ ] 模块划分符合单一职责，每个模块职责一句话说清
