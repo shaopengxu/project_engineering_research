@@ -19,9 +19,9 @@ argument-hint: "<module-name> <issue-number> [feature-name]"
 
 要求：
 - 让相关契约测试全部通过
-- 编写 L1 集成测试，放在 tests/integration/{module}/ 下：
-  - 后端模块：controller → service → repository 真实串联，Mock 其他模块，数据库使用真实连接或测试容器
-  - 前端模块：页面 → hooks → API 层串联，Mock 后端 API（MSW 或手动 mock）
+- 编写 L1 集成测试：
+  - 后端模块：放在 tests/integration/{module}/ 下，controller → service → repository 真实串联，Mock 其他模块，数据库使用真实连接或测试容器
+  - 前端模块：放在 tests/integration/{module}/{feature}/ 下（与契约测试目录结构对齐），页面 → hooks → API 层串联，Mock 后端 API（MSW 或手动 mock）
 - 遵守 CLAUDE.md 中的规范
 - 不要修改契约测试代码。如果发现不一致，在 Issue comment 中指出具体矛盾，等待确认
 - 不要实现当前 Task 以外的功能
