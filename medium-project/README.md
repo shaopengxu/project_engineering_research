@@ -180,6 +180,13 @@ git init && gh repo create {项目名} --private
 
 产品经理分批验收。
 
+## 术语说明
+
+- **契约测试（Specification Test）**：基于 module-design/{module}.md 中的接口契约验证接口输入输出的规格测试，即"接口文档说什么，测试就验什么"。这**不是** Pact 风格的消费者驱动契约测试（CDCT）。
+- **L1 集成测试（模块内）**：验证模块内部各层（如 controller → service → repository）的真实串联，使用真实依赖（如内存数据库），不 Mock 模块内部组件。
+- **L2 集成测试（跨模块 / 关键路径）**：验证关键业务路径上多个模块的真实协作（如 下单 → 扣库存 → 创建支付单），不 Mock 其他模块。
+- **consumers 字段**：接口契约中每个接口标注的消费方列表，用于变更影响评估。
+
 ## 随时查看进度
 
 ```
@@ -193,31 +200,25 @@ git init && gh repo create {项目名} --private
 ```
 medium-project/                         # 工作流定义
 ├── README.md                           # 本文件
-├── workflow.md                         # 核心流程（角色、7 步流程、术语）
 ├── tech-lead-guide.md                  # 技术负责人操作指南
-└── templates/
-    └── CLAUDE.md                       # CLAUDE.md 模板
-
-.claude/skills/                         # Skill 定义（15 个）
-├── mp-workflow/                        # 流程查询
-├── mp-workflow-update/                 # 状态更新
-├── mp-architecture/                    # Step 2: 架构设计
-│   ├── SKILL.md
-│   └── architecture-template.md        # 架构文档模板
-├── mp-module-design/                   # Step 3: 模块设计
-│   ├── SKILL.md
-│   └── module-design-template.md       # 模块设计模板
-├── mp-scaffold/                        # Step 4a: 脚手架
-├── mp-task-split/                      # Step 4b: 任务拆分
-├── mp-impl-infra/                      # Step 5a: infra 实现
-├── mp-test-contract/                   # Step 5b: 后端契约测试
-├── mp-test-frontend/                   # Step 5b: 前端测试
-├── mp-impl/                            # Step 5c: 业务实现
-├── mp-review-task/                     # Step 5d: Task Review
-├── mp-review-fix/                      # Step 5e: Review 修复
-├── mp-review-module/                   # Step 5f: 模块 Review
-├── mp-test-integration/                # Step 5g: L2 集成测试
-└── mp-test-e2e/                        # Step 6: E2E 测试
+├── templates/
+│   └── CLAUDE.md                       # CLAUDE.md 模板
+└── skills/                             # Skill 定义（15 个）
+    ├── mp-workflow/                     # 流程查询
+    ├── mp-workflow-update/              # 状态更新
+    ├── mp-architecture/                # Step 2: 架构设计
+    ├── mp-module-design/               # Step 3: 模块设计
+    ├── mp-scaffold/                    # Step 4a: 脚手架
+    ├── mp-task-split/                  # Step 4b: 任务拆分
+    ├── mp-impl-infra/                  # Step 5a: infra 实现
+    ├── mp-test-contract/               # Step 5b: 后端契约测试
+    ├── mp-test-frontend/               # Step 5b: 前端测试
+    ├── mp-impl/                        # Step 5c: 业务实现
+    ├── mp-review-task/                 # Step 5d: Task Review
+    ├── mp-review-fix/                  # Step 5e: Review 修复
+    ├── mp-review-module/               # Step 5f: 模块 Review
+    ├── mp-test-integration/            # Step 5g: L2 集成测试
+    └── mp-test-e2e/                    # Step 6: E2E 测试
 ```
 
 ## 目标项目结构
