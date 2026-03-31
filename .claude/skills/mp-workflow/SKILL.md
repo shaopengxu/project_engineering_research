@@ -6,6 +6,7 @@ description: "Medium-project 流程管控：查看当前阶段、指导下一步
 你是中型项目的流程管控助手。你的职责是：
 1. 读取项目状态，告诉技术负责人当前在哪个阶段
 2. 指导下一步：技术负责人需要做什么、需要调用哪个 skill
+3. 当轮到技术负责人操作时，输出对应的操作指引和 checklist
 
 **注意：本 skill 只查询，不修改状态文件。状态更新请使用 `/mp-workflow-update`。**
 
@@ -15,77 +16,15 @@ description: "Medium-project 流程管控：查看当前阶段、指导下一步
 
 如果文件不存在，提示用户先调用 `/mp-workflow-update init` 初始化。
 
-## 流程定义
-
-```
-Step 1: PRD 审查 + 初始化
-  技术负责人操作：
-  - 审查 PRD（验收标准明确、按模块组织、非功能需求已说明）
-  - git init + GitHub 仓库 + GitHub Project 创建（标签、字段、视图配置见 tech-lead-guide.md）
-  - 填写 CLAUDE.md 项目名称和一句话描述
-  退出条件：PRD 通过审查，CLAUDE.md 基础部分确认，Project 已创建
-
-Step 2: 系统架构设计
-  调用：/mp-architecture
-  技术负责人操作：review architecture.md（checklist 见 tech-lead-guide.md）
-  不通过 → 再次调用 /mp-architecture 修订
-  退出条件：architecture.md 通过 review
-
-Step 3: 模块详细设计 + 接口契约
-  按依赖顺序串行，每个模块调用：/mp-module-design {module}
-  前端模块：
-    /mp-module-design web-app → 整体设计
-    /mp-module-design web-app {feature} → 逐 feature
-    admin 同上
-  所有模块完成后：/mp-module-design --summary
-  技术负责人操作：review 每个模块设计（checklist 见 tech-lead-guide.md）
-  退出条件：所有模块设计 + 汇总通过 review
-
-Step 4a: 脚手架
-  调用：/mp-scaffold
-  技术负责人操作：review 脚手架（checklist 见 tech-lead-guide.md）
-  退出条件：脚手架能运行
-
-Step 4b: 任务拆分
-  调用：/mp-task-split
-  技术负责人操作：review Issues（checklist 见 tech-lead-guide.md）
-  退出条件：Issues 含依赖关系，标签正确
-
-Step 5: 契约测试 + 实现 + Review（按模块串行）
-  5a. /mp-impl-infra {issue} → 技术负责人 review → 继续
-  
-  循环 [按依赖顺序逐模块]：
-    5b. 后端 → /mp-test-contract {module} {issue}
-        前端 → /mp-test-frontend {module} {feature} {issue}（按 feature 逐个）
-        技术负责人 review 测试代码
-    
-    循环 [按 Task 依赖顺序]：
-      5c. /mp-impl {module} {issue} [feature]
-      5d. /mp-review-task {module} {issue}
-          LGTM → 下一个 Task
-          MUST FIX / SHOULD FIX → 5e. /mp-review-fix {module} {issue} → 重新 5d
-      技术负责人更新 Issue 状态
-    
-    5f. /mp-review-module {module}
-    5g. /mp-test-integration {issue}（当被依赖模块已完成时）
-    技术负责人确认模块完成
-
-Step 6: E2E 测试
-  调用：/mp-test-e2e
-  技术负责人确认 E2E 通过
-  技术负责人编写 README.md（推荐）
-
-Step 7: 验收
-  产品经理按模块组分批验收
-  最终全量验收
-```
-
 ## 查询逻辑
 
 1. 读取 `docs/workflow-state.md`
 2. 根据 `step` 和 `substep` 确定当前位置
 3. 查看模块进度表确定哪些模块已完成、当前在处理哪个
-4. 输出：
+4. 输出当前阶段、下一步操作
+5. **如果下一步是技术负责人操作，输出下方对应的操作指引和 checklist**
+
+## 输出格式
 
 ```
 当前阶段: Step {N} - {阶段名称}
@@ -95,6 +34,258 @@ Step 7: 验收
 下一步:
 {具体操作描述或 skill 调用命令}
 
+{如果是技术负责人操作，附上对应的操作指引/checklist}
+
 模块进度:
 {进度摘要}
 ```
+
+---
+
+## 流程定义与技术负责人操作指引
+
+### Step 1: PRD 审查 + 初始化
+
+调用 skill：无（技术负责人手动操作）
+
+**技术负责人操作**：
+
+1. 审查 PRD（验收标准明确可测试、功能点按模块组织且无遗漏、非功能需求已说明）
+2. git init + GitHub 仓库创建
+3. GitHub Project 初始化：
+   ```bash
+   gh project create --title "{项目名称}" --owner "@me"
+   ```
+4. 配置自定义字段（GitHub Web UI → Project → Settings → Custom fields）：
+   - Status: Todo, In Progress, Review, Done, Blocked
+   - Module: infra, {module-a}, {module-b}, web-app, admin, ...
+   - Priority: P0, P1, P2
+5. 创建标签：
+   ```bash
+   gh label create "type:contract-test" --color "1d76db" --description "契约测试任务"
+   gh label create "type:impl" --color "0e8a16" --description "实现任务"
+   gh label create "type:integration-test" --color "5319e7" --description "集成测试任务"
+   gh label create "type:e2e" --color "d93f0b" --description "E2E 测试任务"
+   gh label create "type:infra" --color "c5def5" --description "基础设施任务"
+   gh label create "module:{name}" --color "fbca04" --description "{name} 模块"
+   ```
+6. 配置 Project 视图（Board / Table / Roadmap）
+7. 填写 CLAUDE.md 项目名称和一句话描述
+
+退出条件：PRD 通过审查，CLAUDE.md 基础部分确认，Project 已创建
+完成后：`/mp-workflow-update Step 1 完成`
+
+---
+
+### Step 2: 系统架构设计
+
+调用 skill：`/mp-architecture`
+
+**技术负责人 review** — 架构 Review Checklist：
+```
+- [ ] 模块划分符合单一职责，每个模块职责一句话说清
+- [ ] 模块间依赖方向单向，无循环依赖
+- [ ] 业务模块数量在 4-8 个（过多需拆迭代、过少则本流程过重）
+- [ ] 关键业务路径的数据流完整
+- [ ] infra 职责边界明确
+- [ ] 跨模块数据关系清晰（关联管理方、外键策略）
+- [ ] 架构决策有理由说明
+- [ ] 接口通用约定已定义（认证、响应格式、分页、状态码）
+- [ ] 部署概要已说明（如影响模块设计）
+```
+通过 → `/mp-workflow-update Step 2 review 通过`
+不通过 → 再次调用 `/mp-architecture` 修订
+
+---
+
+### Step 3: 模块详细设计 + 接口契约
+
+调用 skill（按依赖顺序串行）：
+- 后端模块：`/mp-module-design {module}`
+- 前端整体：`/mp-module-design web-app`
+- 前端 feature：`/mp-module-design web-app {feature}`
+- 汇总：`/mp-module-design --summary`
+
+**技术负责人 review** — 模块设计 Review Checklist：
+```
+模块设计：
+- [ ] 内部分层符合 architecture.md 约定
+- [ ] 数据模型完整（字段、类型、约束）
+- [ ] 公开接口清单与 architecture.md 一致
+- [ ] 消费的外部接口在依赖关系中有体现
+- [ ] 关键业务逻辑有详细说明（状态机、计算规则等）
+- [ ] 没有设计其他模块的内容
+
+接口契约（每个模块完成后检查）：
+- [ ] 每个接口都有完整的五要素（输入、输出、业务规则、错误码、consumers）
+- [ ] 接口签名与 module-design 中"公开接口清单"一致
+- [ ] 错误码全局不重复（与已有模块不冲突）
+- [ ] 接口风格与已有模块一致（遵循通用约定）
+
+所有模块完成后检查：
+- [ ] 需求追溯表中列出了 PRD 的每条业务规则和验收标准（无遗漏）
+- [ ] 每一行的"对应契约章节"都已填写（不允许为空）
+- [ ] 抽查 3-5 条：翻到对应契约章节，确认规则完整描述
+- [ ] 接口依赖矩阵完整，覆盖所有跨模块调用
+```
+通过 → `/mp-workflow-update {module} 模块设计 review 通过`
+不通过 → 对应模块再次调用 `/mp-module-design` 修订
+
+---
+
+### Step 4a: 脚手架
+
+调用 skill：`/mp-scaffold`
+
+**技术负责人 review** — 脚手架 Review Checklist：
+```
+- [ ] 依赖安装成功
+- [ ] lint 命令能跑通
+- [ ] 测试框架能启动
+- [ ] 后端模块导出桩文件存在且函数签名与 module-design 中的接口契约一致
+- [ ] .env.example 已创建，.env 已加入 .gitignore
+- [ ] TypeScript 配置正确（根目录 + 各端独立 tsconfig）
+```
+通过 → `/mp-workflow-update 脚手架 review 通过`
+
+---
+
+### Step 4b: 任务拆分
+
+调用 skill：`/mp-task-split`
+
+**技术负责人 review** — Issues Review Checklist：
+```
+- [ ] 每个接口都有对应的契约测试 Issue
+- [ ] 每个实现 Issue 标注了依赖（Depends on #N）
+- [ ] 每个实现 Issue 标注了需通过的测试
+- [ ] 共享层任务优先级最高
+- [ ] 关键路径有 L2 集成测试 Issue
+- [ ] Issues 按依赖顺序可串行推进
+- [ ] 标签（type + module）正确
+```
+通过 → `/mp-workflow-update Issues review 通过`
+
+---
+
+### Step 5: 契约测试 + 实现 + Review（按模块串行）
+
+#### 5a. infra 实现
+
+调用 skill：`/mp-impl-infra {issue-number}`
+技术负责人 review infra 代码（快速扫描：配置正确、依赖合理、能跑通）
+通过 → `/mp-workflow-update infra review 通过`
+
+#### 5b. 测试先行
+
+- 后端模块：`/mp-test-contract {module} {issue-number}`
+- 前端模块：`/mp-test-frontend {module} {feature} {issue-number}`
+
+**技术负责人 review** — 测试 Review Checklist：
+```
+- [ ] 每条业务规则有对应测试用例（对照 module-design 接口契约逐条检查）
+- [ ] 覆盖正常流程和异常流程（错误码全覆盖）
+- [ ] 测试独立（无共享状态、不依赖执行顺序）
+- [ ] 测试注释标注了业务规则来源
+- [ ] 测试能编译/加载（允许执行失败）
+```
+通过 → `/mp-workflow-update {module} 契约测试 review 通过`
+
+#### 5c-5e. 实现 → Review → 修复循环
+
+- 实现：`/mp-impl {module} {issue-number} [feature]`
+- Review：`/mp-review-task {module} {issue-number}`
+- 修复：`/mp-review-fix {module} {issue-number}`
+
+**技术负责人 Task 流转**：
+```
+每个 Task Review 通过后：
+- [ ] 更新 GitHub Issue 状态（gh issue close {NUMBER}）
+- [ ] 检查是否解锁了下游依赖任务
+- [ ] 如果涉及文档变更，按变更传播规则处理
+```
+管理命令：
+```bash
+gh issue list --state open --label "module:{module-name}"    # 按模块筛选
+gh issue close {NUMBER} --comment "Review 通过，Task 完成。"  # 关闭已完成
+```
+
+#### 5f. 模块 Review
+
+调用 skill：`/mp-review-module {module}`
+LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
+
+**技术负责人确认模块完成**：
+```
+- [ ] 该模块所有 Task 已完成
+- [ ] 模块 Review LGTM
+- [ ] 如有跨模块依赖且被依赖模块已完成，触发 L2 集成测试
+- [ ] 跑全量测试确认无回归
+```
+
+#### 5g. L2 集成测试
+
+调用 skill：`/mp-test-integration {issue-number}`
+完成 → `/mp-workflow-update {module} L2 集成测试完成`
+
+---
+
+### Step 6: E2E 测试
+
+调用 skill：`/mp-test-e2e`
+技术负责人确认 E2E 通过，编写 README.md（推荐）
+完成 → `/mp-workflow-update E2E 测试通过`
+
+---
+
+### Step 7: 验收
+
+技术负责人协调产品经理按模块组分批验收，核心模块优先。
+完成 → `/mp-workflow-update 验收通过`
+
+---
+
+## 特殊情况处理
+
+当技术负责人询问以下情况时，输出对应指引：
+
+### 接口变更
+
+**文档变更传播规则**：先更新文档 → 再更新测试 → 最后更新实现。
+1. 查看 architecture.md 的接口依赖矩阵，识别受影响的消费方模块
+2. 更新提供方的 module-design/{module}.md 接口定义
+3. 更新消费方的 module-design 中的"消费的外部接口"
+4. 同步更新 architecture.md 接口依赖矩阵
+5. 在受影响模块的 Issue 中 comment 变更通知
+6. 调用对应 Tester skill 更新契约测试
+7. 已完成的实现如涉及变更接口，标记 Issue 为"需更新"
+
+### infra 变更
+
+收到 Agent 的 infra 变更请求时：
+1. 评估需求，确认后允许修改
+2. 修改后确认：不影响已有模块，后续 Task 自动使用最新代码
+
+### Agent 故障
+
+**会话崩溃**：`git status` + `git log` → 有可接受改动则提交 → 质量不确定则 `git stash` → 新会话重新开始。
+**架构问题**：Agent 停止并报告 → 评估影响 → 回退 Step 2/3 修订。
+**质量不达标**：给具体修改要求 → CLAUDE.md 增加约束 → 拆更小 Task 或手动完成。
+
+### 迭代管理
+
+何时多迭代：4-5 模块 1 迭代，6-8 模块 2-3 迭代。
+使用 GitHub Milestones 管理，每个迭代结束保持 main 可部署。
+前端模块在依赖的后端模块完成后再实现，按 feature 分批。
+
+### 增量开发
+
+| 场景 | 起始步骤 |
+|------|---------|
+| 新增业务模块 | Step 2 |
+| 已有模块增加接口 | Step 3 |
+| 跨多模块新功能 | Step 2 |
+| 模块内重构不改接口 | Step 5 |
+| 修 bug | 不走流程 |
+
+关键原则：**变了什么文档，就从那个文档对应的步骤开始往后走。**
