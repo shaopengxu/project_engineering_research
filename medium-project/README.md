@@ -201,8 +201,6 @@ git init && gh repo create {项目名} --private
 medium-project/                         # 工作流定义
 ├── README.md                           # 本文件
 ├── tech-lead-guide.md                  # 技术负责人操作指南
-├── templates/
-│   └── CLAUDE.md                       # CLAUDE.md 模板
 └── skills/                             # Skill 定义（15 个）
     ├── mp-workflow/                     # 流程查询
     ├── mp-workflow-update/              # 状态更新
@@ -242,6 +240,7 @@ project/
 ├── admin/                              # 管理后台
 └── tests/
     ├── contracts/                      # 契约测试
+    ├── unit/                           # 单元测试（按需）
     ├── integration/                    # L1 + L2 集成测试
     ├── e2e/                            # E2E 测试
     └── fixtures/                       # 共享测试数据
