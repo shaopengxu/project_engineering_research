@@ -14,6 +14,7 @@ description: "Medium-project Step 6: 根据 PRD 验收标准编写 E2E 测试"
 使用 **Playwright**（或 architecture.md 技术选型中指定的 E2E 工具）编写浏览器级端到端测试。
 
 要求：
+- 测试启动前先执行 `npx prisma db seed` 填充基础数据（确保 `prisma/seed.ts` 中已包含所需的种子数据，不足则补充）
 - 每条 PRD 验收标准至少一个 E2E 测试用例
 - 覆盖核心用户流程（从用户操作到最终结果的完整链路）
 - 测试用例用注释标注对应的 PRD 验收标准

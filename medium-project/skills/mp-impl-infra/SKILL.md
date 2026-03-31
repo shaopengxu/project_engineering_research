@@ -37,7 +37,12 @@ argument-hint: "<issue-number>"
    - 认证中间件（如 architecture.md 中有定义）
    - 请求日志中间件
 
-6. Express 应用初始化（server/app.ts）
+6. 数据库种子脚本：
+   - 创建 `prisma/seed.ts` 入口文件（从 `tests/fixtures/` 导入工厂函数填充基础数据）
+   - 在 `package.json` 中配置 `prisma.seed`（`"prisma": { "seed": "npx tsx prisma/seed.ts" }`）
+   - 初始内容可为空壳，后续随 fixtures 积累自然填充
+
+7. Express 应用初始化（server/app.ts）
 
 验收标准：
 - `npm install` 成功

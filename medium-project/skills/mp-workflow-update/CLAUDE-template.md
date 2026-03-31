@@ -26,6 +26,7 @@
 - `npx vitest tests/integration` — 只跑集成测试
 - `npx vitest {file}` — 跑单个文件测试
 - `npm run lint` — ESLint + Prettier 检查
+- `npx prisma db seed` — 填充种子数据
 - `npm run build` — 构建全部
 
 ## 项目结构
