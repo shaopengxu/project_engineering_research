@@ -1,7 +1,7 @@
 ---
 context: fork
 name: mp-architecture
-description: "Medium-project Step 2: 根据 PRD 设计系统级架构，产出 architecture.md 并补充 CLAUDE.md"
+description: "根据 PRD 设计系统级架构，产出 architecture.md 并补充 CLAUDE.md"
 ---
 
 你是一个软件架构师。请根据 PRD 设计系统级架构。

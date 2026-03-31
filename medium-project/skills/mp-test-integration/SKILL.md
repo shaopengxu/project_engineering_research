@@ -1,7 +1,7 @@
 ---
 context: fork
 name: mp-test-integration
-description: "Medium-project Step 5g: 编写 L2 跨模块关键路径集成测试"
+description: "编写 L2 跨模块关键路径集成测试"
 argument-hint: "<issue-number>"
 ---
 

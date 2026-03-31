@@ -1,7 +1,7 @@
 ---
 context: fork
 name: mp-scaffold
-description: "Medium-project Step 4a: 根据架构文档初始化项目脚手架 + 回填 CLAUDE.md"
+description: "根据架构文档初始化项目脚手架 + 回填 CLAUDE.md"
 ---
 
 你是一个软件架构师。请根据架构文档初始化项目脚手架。

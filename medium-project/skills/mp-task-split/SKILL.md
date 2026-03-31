@@ -1,7 +1,7 @@
 ---
 context: fork
 name: mp-task-split
-description: "Medium-project Step 4b: 拆分任务并创建 GitHub Issues"
+description: "拆分任务并创建 GitHub Issues"
 ---
 
 你是一个软件架构师。请根据架构文档和模块设计拆分任务，并创建 GitHub Issues。

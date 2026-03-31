@@ -1,6 +1,6 @@
 ---
 name: mp-workflow-update
-description: "Medium-project 流程状态更新：更新 workflow-state.md 并告知下一步"
+description: "流程状态更新：更新 workflow-state.md 并告知下一步"
 argument-hint: "<状态变更描述> | init"
 ---
 

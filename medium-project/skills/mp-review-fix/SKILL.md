@@ -1,7 +1,7 @@
 ---
 context: fork
 name: mp-review-fix
-description: "Medium-project Step 5e: 根据 Review 反馈修复问题"
+description: "根据 Review 反馈修复问题"
 argument-hint: "<module-name> <issue-number>"
 ---
 

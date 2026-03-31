@@ -1,7 +1,7 @@
 ---
 context: fork
 name: mp-test-e2e
-description: "Medium-project Step 6: 根据 PRD 验收标准编写 E2E 测试"
+description: "根据 PRD 验收标准编写 E2E 测试"
 ---
 
 你是一个测试工程师。请根据 PRD 验收标准编写 E2E 测试。

@@ -1,7 +1,7 @@
 ---
 context: fork
 name: mp-module-design
-description: "Medium-project Step 3: 模块详细设计 + 接口契约，支持后端模块、前端整体、前端 feature、汇总"
+description: "模块详细设计 + 接口契约，支持后端模块、前端整体、前端 feature、汇总"
 argument-hint: "<module-name> [feature-name] | --summary"
 ---
 
