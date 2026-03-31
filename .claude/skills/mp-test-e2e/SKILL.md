@@ -18,3 +18,5 @@ description: "Medium-project Step 6: 根据 PRD 验收标准编写 E2E 测试"
 - E2E 测试放在 tests/e2e/ 目录下
 - 不要重复契约测试和集成测试已覆盖的内容，聚焦于端到端完整流程
 - 使用真实依赖（不 Mock）
+
+完成后更新 `docs/workflow-state.md`：设置 `step: 6`，`substep: review`。

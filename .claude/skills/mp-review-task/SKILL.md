@@ -35,3 +35,5 @@ argument-hint: "<module-name> <issue-number>"
 - 如果没有 MUST FIX 和 SHOULD FIX，输出 "LGTM"
 
 输出结尾建议：在 Issue #{issue-number} 中 comment Review 结果。
+
+完成后更新 `docs/workflow-state.md`：如果 LGTM，设置 `substep: 5c`（下一个 Task）；如果有 MUST FIX / SHOULD FIX，设置 `substep: 5e`（等待修复）。

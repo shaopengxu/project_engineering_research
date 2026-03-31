@@ -28,3 +28,5 @@ argument-hint: "<module-name>"
 
 输出格式（同 Task Review）：
 - MUST FIX / SHOULD FIX / OPTIONAL / LGTM
+
+完成后更新 `docs/workflow-state.md`：如果 LGTM，模块进度表中对应模块的"模块 Review"列设为 `done`，"实现"列设为 `done`。

@@ -27,3 +27,5 @@ argument-hint: "<issue-number>"
 - 每个测试用例标注对应的业务路径
 - 每个有意义的改动 commit 一次，commit message 格式：`test(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "L2 集成测试完成"` 报告
+
+完成后更新 `docs/workflow-state.md`：模块进度表中对应模块的"L2 集成测试"列设为 `done`。

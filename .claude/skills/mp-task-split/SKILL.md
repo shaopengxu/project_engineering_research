@@ -66,3 +66,5 @@ description: "Medium-project Step 4b: 拆分任务并创建 GitHub Issues"
 要求：
 - 不要写业务代码和测试代码
 - Issues 创建完成后在 commit message 中记录
+
+完成后更新 `docs/workflow-state.md`：设置 `step: 4`，`substep: 4b-review`；根据创建的 Issues 填充模块进度表（所有模块初始为空）。

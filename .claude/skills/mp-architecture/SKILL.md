@@ -52,3 +52,5 @@ description: "Medium-project Step 2: 根据 PRD 设计系统级架构，产出 a
 - 每个模块的职责能用一句话说清
 - 不要过度设计
 - 产出文件路径：`docs/architecture.md`
+
+完成后更新 `docs/workflow-state.md`：设置 `step: 2`，`substep: review`（等待技术负责人 review）。

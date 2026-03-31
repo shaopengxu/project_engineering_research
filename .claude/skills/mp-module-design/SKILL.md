@@ -153,3 +153,5 @@ argument-hint: "<module-name> [feature-name] | --summary"
 - 接口依赖矩阵必须完整，覆盖所有跨模块调用
 - 需求追溯表中不允许出现"未覆盖"的条目
 - 如果发现 PRD 中的功能点/业务规则在已有接口中未覆盖，停下来指出遗漏
+
+完成后更新 `docs/workflow-state.md`：更新模块进度表中对应模块的"设计"列为 `review`；如果是 `--summary` 则设置 `step: 3`，`substep: review`。

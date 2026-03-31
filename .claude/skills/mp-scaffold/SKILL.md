@@ -45,3 +45,5 @@ description: "Medium-project Step 4a: 根据架构文档初始化项目脚手架
 要求：
 - 不要写业务代码和测试代码
 - 每个有意义的改动 commit 一次
+
+完成后更新 `docs/workflow-state.md`：设置 `step: 4`，`substep: 4a-review`。

@@ -49,3 +49,5 @@ argument-hint: "<issue-number>"
 要求：
 - 每个有意义的改动 commit 一次，commit message 包含 `[#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "infra 实现完成"` 报告
+
+完成后更新 `docs/workflow-state.md`：设置 `step: 5`，`substep: 5a-review`；模块进度表中 infra 的"实现"列设为 `review`。

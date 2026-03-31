@@ -44,3 +44,5 @@ API 调用层测试：
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "{feature} 前端测试编写完成"` 报告
 
 注意：你只需要阅读本 feature 的设计文档和整体设计文档，不需要阅读其他 feature 的文档。
+
+完成后更新 `docs/workflow-state.md`：模块进度表中对应模块的"契约测试"列设为 `review`。

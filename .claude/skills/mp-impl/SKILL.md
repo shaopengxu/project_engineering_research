@@ -31,3 +31,5 @@ argument-hint: "<module-name> <issue-number> [feature-name]"
 - 如需调整数据模型：先更新 module-design 文档，再更新 schema.prisma，最后运行 `npx prisma migrate dev --name <描述>`，migration 生成后立即 commit
 - 每个有意义的改动 commit 一次，commit message 格式：`<type>(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "实现完成，契约测试和 L1 集成测试全部通过"` 报告
+
+完成后更新 `docs/workflow-state.md`：设置 `substep: 5d`（等待 Task Review）；模块进度表中对应模块的"实现"列设为 `in_progress`。
