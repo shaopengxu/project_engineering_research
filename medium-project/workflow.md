@@ -107,11 +107,11 @@ Step 5: 契约测试 + 实现 + Review（按模块串行推进）
     ├── 5a. 新会话 [Tester agent]: 写当前模块的契约测试
     │   ├── 后端模块：基于接口契约的规格测试
     │   └── 前端模块：API 调用层测试 + 页面渲染测试
-    ├── 技术负责人: review 测试代码
-    │   ├── 通过 → 继续实现
-    │   └── 不通过 → Tester agent 新会话修改
+    ├── 5d. 新会话 [Reviewer agent]: review 契约测试代码
+    │   ├── LGTM → 继续实现
+    │   └── MUST FIX / SHOULD FIX → Tester agent 新会话修改 → 重新 Review
     │
-    ├── 5d. 循环 [按 Task 依赖顺序逐 Task 执行]:
+    ├── 5e. 循环 [按 Task 依赖顺序逐 Task 执行]:
     │   ├── 新会话 [Implementer agent]: 实现当前 Task
     │   │   ├── 契约测试通过
     │   │   ├── L1 集成测试通过（后端：controller→service→repository；前端：页面→hooks→API）
@@ -123,8 +123,8 @@ Step 5: 契约测试 + 实现 + Review（按模块串行推进）
     │   │   └── 涉及接口变更 → 停止，按变更传播规则处理
     │   └── 技术负责人: 更新 Issue 状态
     │
-    ├── 5e. 当前模块所有 Task 完成 → 模块级 Review
-    ├── 5f. L2 关键路径集成测试（当被依赖模块已实现完成时）
+    ├── 5g. 当前模块所有 Task 完成 → 模块级 Review
+    ├── 5i. L2 关键路径集成测试（当被依赖模块已实现完成时）
     │   └── 新会话 [Implementer agent]: 编写跨模块集成测试（真实调用，不 Mock 其他模块）
     └── 技术负责人: 确认当前模块完成，推进下一个模块
 

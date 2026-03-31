@@ -242,7 +242,7 @@
 
 ## Step 5 — 按模块串行：契约测试 → 实现 → Review
 
-执行顺序：infra（使用 5c prompt）→ 后端模块（使用 5a + 5d-5h）→ 前端模块（使用 5b + 5d-5h）。
+执行顺序：infra（使用 5c prompt）→ 后端模块（使用 5a + 5d-5i）→ 前端模块（使用 5b + 5d-5i）。
 每个模块按以下顺序完成后，再推进下一个模块。
 
 ### 5a. Tester Agent（后端模块契约测试）
@@ -367,7 +367,38 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 5d. Implementer Agent（实现）
+### 5d. Reviewer Agent（契约测试 Review）
+
+每个模块的契约测试编写完成后触发。在新会话中使用：
+
+```
+你是一个代码审查工程师。请 review {模块名} 模块的契约测试。
+
+请先阅读以下文件：
+- CLAUDE.md
+- docs/module-design/{module}.md（重点关注：接口契约部分）
+
+然后阅读契约测试代码：tests/contracts/{module}/
+
+检查清单：
+1. 每条业务规则有对应测试用例（对照 module-design 接口契约逐条检查）
+2. 覆盖正常流程和异常流程（错误码全覆盖）
+3. 测试独立（无共享状态、不依赖执行顺序）
+4. 测试注释标注了业务规则来源
+5. Mock/Stub 使用符合测试策略（后端：Mock 模块间依赖；前端：MSW 或手动 mock 后端 API）
+6. 测试能编译/加载（允许执行失败，因为实现尚不存在）
+7. 前端模块额外检查：API 调用层测试是否验证了请求参数和响应处理
+
+输出格式：
+- MUST FIX: 业务规则遗漏、错误码未覆盖
+- SHOULD FIX: 测试不独立、注释缺失
+- OPTIONAL: 建议优化
+- 如果没有 MUST FIX 和 SHOULD FIX，输出 "LGTM"
+```
+
+---
+
+### 5e. Implementer Agent（实现）
 
 在新会话中使用：
 
@@ -401,7 +432,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 5e. Reviewer Agent（Task Review）
+### 5f. Reviewer Agent（Task Review）
 
 每个 Task 完成后触发。在新会话中使用：
 
@@ -443,7 +474,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 5f. Reviewer Agent（模块 Review）
+### 5g. Reviewer Agent（模块 Review）
 
 模块所有 Task 完成后触发。在新会话中使用：
 
@@ -473,7 +504,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 5g. Implementer Agent（Review 修复）
+### 5h. Implementer Agent（Review 修复）
 
 当 Reviewer 输出 MUST FIX 或 SHOULD FIX 后。在新会话中使用：
 
@@ -504,7 +535,7 @@ Review 反馈：
 
 ---
 
-### 5h. Implementer Agent（L2 关键路径集成测试）
+### 5i. Implementer Agent（L2 关键路径集成测试）
 
 当前模块完成模块级 Review 且被依赖模块已实现完成后，开独立会话。在新会话中使用：
 
