@@ -17,6 +17,8 @@ argument-hint: "<issue-number>"
 - docs/architecture.md（重点关注：跨模块数据流中与本关键路径相关的部分）
 - docs/module-design/（涉及模块的接口定义）
 
+触发条件：当前模块完成模块级 Review，且被依赖的模块已实现完成。串行开发天然保证被依赖模块先完成，无需额外协调。
+
 要求：
 - 在 tests/integration/paths/ 目录下创建集成测试文件
 - 使用真实的模块间调用（不 Mock 其他模块）

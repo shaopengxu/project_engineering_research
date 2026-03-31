@@ -106,7 +106,6 @@ Step 7: 验收（分批）
 | [task-management.md](task-management.md) | GitHub Projects 配置、Issue 模板、依赖关系管理 |
 | [conventions.md](conventions.md) | Git 策略、Review 机制、会话管理 |
 | [documentation.md](documentation.md) | 文档分层策略、变更传播规则 |
-| [testing.md](testing.md) | 测试分层、Mock 策略、测试目录结构 |
 | [project-setup.md](project-setup.md) | 目录结构、数据库迁移、开发环境配置 |
 | [iteration.md](iteration.md) | 迭代管理、增量开发 |
 | [reference.md](reference.md) | 速查表、常见故障与恢复、CI 集成建议 |

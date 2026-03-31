@@ -16,6 +16,16 @@ description: "Medium-project Step 4a: 根据架构文档初始化项目脚手架
 1. **项目目录结构**：
    - 根据 architecture.md 的目录结构创建项目框架
    - 创建所有模块目录
+   - 创建测试目录结构：
+     ```
+     tests/
+     ├── contracts/          # 契约测试（按模块组织，前端按 feature 子目录）
+     ├── unit/               # 单元测试（按模块组织）
+     ├── integration/        # 集成测试
+     │   └── paths/          # L2: 关键路径集成
+     ├── e2e/                # E2E 测试（按用户流程）
+     └── fixtures/           # 共享测试数据（工厂函数，非硬编码）
+     ```
 
 2. **依赖安装与构建配置**：
    - 安装依赖（根据 architecture.md 技术选型）

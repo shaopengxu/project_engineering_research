@@ -27,4 +27,10 @@ argument-hint: "<module-name> <issue-number>"
 - 如果接口契约有模糊或矛盾之处，停下来指出问题，不要自行假设
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "契约测试编写完成"` 报告
 
+Mock 策略：
+- 模块间依赖：Mock / Stub
+- 外部依赖（数据库等）：Mock（内存数据库可替代）
+
+预期状态：测试代码能编译/加载，但执行时全部失败（因为实现不存在）— 这是 TDD 的正常状态（先红后绿）。导出桩文件解决编译问题。
+
 注意：你只需要阅读本模块的设计文档（module-design/{module}.md），不需要阅读其他模块的文档。
