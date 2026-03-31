@@ -1,4 +1,5 @@
 ---
+context: fork
 name: mp-review-task
 description: "Medium-project Step 5d: Review 单个 Task 的代码改动"
 argument-hint: "<module-name> <issue-number>"

@@ -1,4 +1,5 @@
 ---
+context: fork
 name: mp-architecture
 description: "Medium-project Step 2: 根据 PRD 设计系统级架构，产出 architecture.md 并补充 CLAUDE.md"
 ---

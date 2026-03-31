@@ -1,4 +1,5 @@
 ---
+context: fork
 name: mp-test-contract
 description: "Medium-project Step 5b: 为后端模块编写契约测试"
 argument-hint: "<module-name> <issue-number>"

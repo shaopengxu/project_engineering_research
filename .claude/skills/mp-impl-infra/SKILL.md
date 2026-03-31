@@ -1,4 +1,5 @@
 ---
+context: fork
 name: mp-impl-infra
 description: "Medium-project Step 5a: 实现 infra 基础设施模块"
 argument-hint: "<issue-number>"

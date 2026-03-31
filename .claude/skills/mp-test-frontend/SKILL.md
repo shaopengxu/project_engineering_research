@@ -1,4 +1,5 @@
 ---
+context: fork
 name: mp-test-frontend
 description: "Medium-project Step 5b: 为前端模块的 feature 编写 API 调用层测试 + 页面渲染测试"
 argument-hint: "<module-name> <feature-name> <issue-number>"

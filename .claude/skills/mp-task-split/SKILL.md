@@ -1,4 +1,5 @@
 ---
+context: fork
 name: mp-task-split
 description: "Medium-project Step 4b: 拆分任务并创建 GitHub Issues"
 ---

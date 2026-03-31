@@ -1,4 +1,5 @@
 ---
+context: fork
 name: mp-review-module
 description: "Medium-project Step 5f: 模块所有 Task 完成后的整体 Review"
 argument-hint: "<module-name>"
