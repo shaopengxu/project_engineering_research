@@ -242,7 +242,7 @@
 
 ## Step 5 — 按模块串行：契约测试 → 实现 → Review
 
-执行顺序：infra（使用 5c prompt）→ 后端模块（使用 5a + 6a-6e）→ 前端模块（使用 5b + 6a-6e）。
+执行顺序：infra（使用 5c prompt）→ 后端模块（使用 5a + 5d-5h）→ 前端模块（使用 5b + 5d-5h）。
 每个模块按以下顺序完成后，再推进下一个模块。
 
 ### 5a. Tester Agent（后端模块契约测试）
@@ -367,7 +367,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 6a. Implementer Agent（实现）
+### 5d. Implementer Agent（实现）
 
 在新会话中使用：
 
@@ -401,7 +401,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 6b. Reviewer Agent（Task Review）
+### 5e. Reviewer Agent（Task Review）
 
 每个 Task 完成后触发。在新会话中使用：
 
@@ -443,7 +443,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 6c. Reviewer Agent（模块 Review）
+### 5f. Reviewer Agent（模块 Review）
 
 模块所有 Task 完成后触发。在新会话中使用：
 
@@ -473,7 +473,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 6d. Implementer Agent（Review 修复）
+### 5g. Implementer Agent（Review 修复）
 
 当 Reviewer 输出 MUST FIX 或 SHOULD FIX 后。在新会话中使用：
 
@@ -504,7 +504,7 @@ Review 反馈：
 
 ---
 
-### 6e. Implementer Agent（L2 关键路径集成测试）
+### 5h. Implementer Agent（L2 关键路径集成测试）
 
 当前模块完成模块级 Review 且被依赖模块已实现完成后，开独立会话。在新会话中使用：
 
