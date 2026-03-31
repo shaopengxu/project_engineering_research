@@ -324,7 +324,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 注意：你只需要阅读本模块的设计文档（module-design/{module}.md），不需要阅读其他模块的文档。
 ```
 
-### 5c. Tester Agent（前端模块测试）
+### 5b. Tester Agent（前端模块测试）
 
 **每个前端模块一个独立会话**，在所有依赖的后端模块完成后执行。在新会话中使用：
 
@@ -367,7 +367,7 @@ API 调用层测试：
 
 ---
 
-### 5d. Implementer Agent（实现）
+### 5c. Implementer Agent（实现）
 
 在新会话中使用：
 
@@ -401,7 +401,7 @@ API 调用层测试：
 
 ---
 
-### 5e. Reviewer Agent（Task Review）
+### 5d. Reviewer Agent（Task Review）
 
 每个 Task 完成后触发。在新会话中使用：
 
@@ -443,7 +443,7 @@ API 调用层测试：
 
 ---
 
-### 5f. Implementer Agent（Review 修复）
+### 5e. Implementer Agent（Review 修复）
 
 当 Reviewer 输出 MUST FIX 或 SHOULD FIX 后。在新会话中使用：
 
@@ -474,7 +474,7 @@ Review 反馈：
 
 ---
 
-### 5g. Reviewer Agent（模块 Review）
+### 5f. Reviewer Agent（模块 Review）
 
 模块所有 Task 完成后触发。在新会话中使用：
 
@@ -504,7 +504,7 @@ Review 反馈：
 
 ---
 
-### 5h. Implementer Agent（L2 关键路径集成测试）
+### 5g. Implementer Agent（L2 关键路径集成测试）
 
 当前模块完成模块级 Review 且被依赖模块已实现完成后，开独立会话。在新会话中使用：
 
