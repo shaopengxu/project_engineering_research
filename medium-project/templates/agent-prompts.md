@@ -1,7 +1,7 @@
 # Agent Prompt 模板（中型项目）
 
 以下是各角色 agent 在每个阶段的提示词模板。
-架构设计分为两步（2a/2b），模块级上下文加载、GitHub Issues 交互。串行推进，无需 Worktree 或分支管理。
+架构设计分为两步（Step 2 系统架构 + Step 3 模块设计），模块级上下文加载、GitHub Issues 交互。串行推进，无需 Worktree 或分支管理。
 
 ---
 
@@ -33,7 +33,7 @@
 
 ---
 
-## Step 2a — Architect Agent（系统架构设计）
+## Step 2 — Architect Agent（系统架构设计）
 
 在新会话中使用：
 
@@ -75,7 +75,7 @@
 - 不要做的事（补充架构相关禁止事项）
 
 要求：
-- 只做系统级设计，不设计模块内部结构（内部设计由 Step 2b 的 Module Designer 完成）
+- 只做系统级设计，不设计模块内部结构（内部设计由 Step 3 的 Module Designer 完成）
 - 模块间依赖方向单向，不能有循环
 - 业务模块数量应在 4-8 个之间，如果超出建议调整粒度
 - 每个模块的职责能用一句话说清
@@ -84,7 +84,7 @@
 
 ---
 
-## Step 2b — Architect Agent（模块详细设计 + 接口契约）
+## Step 3 — Architect Agent（模块详细设计 + 接口契约）
 
 **每个模块一个独立会话**，按依赖顺序串行推进。在新会话中使用：
 
@@ -179,7 +179,7 @@
 
 请在 architecture.md 中补充/完善：
 
-1. **接口通用约定**（如 Step 2a 中未完整定义）— 确认认证方式、响应格式、分页约定、HTTP 状态码
+1. **接口通用约定**（如 Step 2 中未完整定义）— 确认认证方式、响应格式、分页约定、HTTP 状态码
 2. **接口依赖矩阵**（接口 × 提供方 × 消费方 × 变更影响级别）— 汇总所有模块的 consumers 字段
 3. **需求追溯表**（PRD 每条业务规则/验收标准 → 对应 module-design 中的接口定义）— 确保 PRD 全覆盖
 4. **部署概要**（如部署架构影响模块设计）
@@ -193,7 +193,7 @@
 
 ---
 
-## Step 3 — Architect Agent（脚手架 + 任务拆分 + GitHub Issues）
+## Step 4 — Architect Agent（脚手架 + 任务拆分 + GitHub Issues）
 
 在新会话中使用：
 
@@ -240,12 +240,12 @@
 
 ---
 
-## Step 4+5 — 按模块串行：契约测试 → 实现 → Review
+## Step 5+6 — 按模块串行：契约测试 → 实现 → Review
 
-执行顺序：infra（使用 4c prompt）→ 后端模块（使用 4a + 5a-5e）→ 前端模块（使用 4b + 5a-5e）。
+执行顺序：infra（使用 5c prompt）→ 后端模块（使用 5a + 6a-6e）→ 前端模块（使用 5b + 6a-6e）。
 每个模块按以下顺序完成后，再推进下一个模块。
 
-### 4a. Tester Agent（后端模块契约测试）
+### 5a. Tester Agent（后端模块契约测试）
 
 **每个模块一个独立会话**，按依赖顺序串行推进。在新会话中使用：
 
@@ -273,7 +273,7 @@
 注意：你只需要阅读本模块的设计文档（module-design/{module}.md），不需要阅读其他模块的文档。
 ```
 
-### 4b. Tester Agent（前端模块测试）
+### 5b. Tester Agent（前端模块测试）
 
 **每个前端模块一个独立会话**，在所有依赖的后端模块完成后执行。在新会话中使用：
 
@@ -316,7 +316,7 @@ API 调用层测试：
 
 ---
 
-### 4c. Implementer Agent（infra 实现）
+### 5c. Implementer Agent（infra 实现）
 
 infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
@@ -367,7 +367,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 5a. Implementer Agent（实现）
+### 6a. Implementer Agent（实现）
 
 在新会话中使用：
 
@@ -401,7 +401,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 5b. Reviewer Agent（Task Review）
+### 6b. Reviewer Agent（Task Review）
 
 每个 Task 完成后触发。在新会话中使用：
 
@@ -443,7 +443,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 5c. Reviewer Agent（模块 Review）
+### 6c. Reviewer Agent（模块 Review）
 
 模块所有 Task 完成后触发。在新会话中使用：
 
@@ -473,7 +473,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 5d. Implementer Agent（Review 修复）
+### 6d. Implementer Agent（Review 修复）
 
 当 Reviewer 输出 MUST FIX 或 SHOULD FIX 后。在新会话中使用：
 
@@ -504,7 +504,7 @@ Review 反馈：
 
 ---
 
-### 5e. Implementer Agent（L2 关键路径集成测试）
+### 6e. Implementer Agent（L2 关键路径集成测试）
 
 当前模块完成模块级 Review 且被依赖模块已实现完成后，开独立会话。在新会话中使用：
 
@@ -533,7 +533,7 @@ Review 反馈：
 
 ---
 
-## Step 6 — Tester Agent（E2E 测试）
+## Step 7 — Tester Agent（E2E 测试）
 
 在新会话中使用：
 
@@ -583,7 +583,7 @@ Review 反馈：
 **可"信任 Agent + 测试"的场景**：简单 CRUD、测试全部通过且 Agent 未报告异常。
 **必须人工逐行过的场景**：安全相关、复杂业务规则、跨模块数据一致性。
 
-### Step 2a 架构 Review Checklist
+### Step 2 架构 Review Checklist
 
 ```
 - [ ] 模块划分符合单一职责，每个模块职责一句话说清
@@ -597,7 +597,7 @@ Review 反馈：
 - [ ] 部署概要已说明（如影响模块设计）
 ```
 
-### Step 2b 模块设计 + 接口契约 Review Checklist
+### Step 3 模块设计 + 接口契约 Review Checklist
 
 ```
 模块设计：
@@ -621,7 +621,7 @@ Review 反馈：
 - [ ] 接口依赖矩阵完整，覆盖所有跨模块调用
 ```
 
-### Step 3 脚手架 + Issues Review Checklist
+### Step 4 脚手架 + Issues Review Checklist
 
 ```
 脚手架：
@@ -642,7 +642,7 @@ GitHub Issues：
 - [ ] 标签（type + module）正确
 ```
 
-### Step 4+5 测试 Review Checklist
+### Step 5+6 测试 Review Checklist
 
 ```
 - [ ] 每条业务规则有对应测试用例（对照 module-design 接口契约逐条检查）
@@ -653,7 +653,7 @@ GitHub Issues：
 - [ ] 测试能编译/加载（允许执行失败）
 ```
 
-### Step 4+5 Task 流转管理
+### Step 5+6 Task 流转管理
 
 ```
 每个 Task Review 通过后：

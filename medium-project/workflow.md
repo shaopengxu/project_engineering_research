@@ -43,25 +43,25 @@ Step 1: PRD 审查 + 初始化
 │   ├── 不通过 → 退回产品经理修改，修改后重新审查
 │   └── 通过 → 继续初始化
 ├── 技术负责人: git init + GitHub 仓库创建 + GitHub Project 创建
-├── 会话1 [Architect agent]: 读 PRD → 产出 CLAUDE.md 基础部分建议
+├── 新会话 [Architect agent]: 读 PRD → 产出 CLAUDE.md 基础部分建议
 │   └── 一句话描述、Tech Stack、项目文档、代码规范、Git 规则、共享代码修改规则、不要做的事、错误处理规则
 └── 技术负责人: review 并确认 CLAUDE.md 基础部分
 
-Step 2a: 系统架构设计
-├── 会话2 [Architect agent]: 读 PRD → 产出 architecture.md（系统级）
+Step 2: 系统架构设计
+├── 新会话 [Architect agent]: 读 PRD → 产出 architecture.md（系统级）
 │   ├── 模块划分与职责定义
 │   ├── 模块依赖关系图（有向无环）
 │   ├── 跨模块数据流
 │   ├── 部署架构概要
 │   └── 补充 CLAUDE.md: 项目结构概览、架构约定、不要做的事（架构相关）
 └── 技术负责人: review
-    ├── 通过 → 进入 Step 2b
+    ├── 通过 → 进入 Step 3
     └── 不通过 → 新会话修订
 
-Step 2b: 模块详细设计 + 接口契约
+Step 3: 模块详细设计 + 接口契约
 ├── 后端模块（按依赖顺序串行）：
-│   ├── 会话3 [Architect agent]: → module-design/module-a.md（含接口契约五要素）
-│   ├── 会话4 [Architect agent]: → module-design/module-b.md
+│   ├── 新会话 [Architect agent]: → module-design/module-a.md（含接口契约五要素）
+│   ├── 新会话 [Architect agent]: → module-design/module-b.md
 │   └── ...
 ├── 前端模块（后端模块全部完成后）：
 │   ├── 新会话 [Architect agent]: → module-design/web-app.md（页面、路由、组件、调用的后端接口）
@@ -72,7 +72,7 @@ Step 2b: 模块详细设计 + 接口契约
     ├── 通过 → 进入 Step 3
     └── 不通过 → 对应模块新会话修订
 
-Step 3: 环境初始化 + 任务拆分
+Step 4: 环境初始化 + 任务拆分
 ├── 新会话 [Architect agent]: 读架构 + 模块设计文档
 │   ├── 初始化脚手架（含模块目录结构、导出桩文件）
 │   ├── 创建 GitHub Issues（含依赖关系）
@@ -90,13 +90,13 @@ Step 3: 环境初始化 + 任务拆分
 │   模块内 Task 拆分策略：
 │   ├── 按层拆分（CRUD 密集型）: repository → service → controller
 │   ├── 按功能拆分（功能丰富型）: 注册登录 → 个人资料 → 权限管理
-│   └── 拆不到粒度 → 说明模块划分需要回退到 Step 2a 调整
+│   └── 拆不到粒度 → 说明模块划分需要回退到 Step 2 调整
 │
 └── 技术负责人: review 脚手架、Issues
-    ├── 通过 → 进入 Step 4
+    ├── 通过 → 进入 Step 5+6
     └── 不通过 → 新会话修订
 
-Step 4+5: 契约测试 + 实现 + Review（按模块串行推进）
+Step 5+6: 契约测试 + 实现 + Review（按模块串行推进）
 └── 循环 [按依赖顺序逐模块执行]：infra → 被依赖的后端模块 → 依赖方后端模块 → 前端模块
     │
     ├── infra 模块特殊处理：
@@ -104,14 +104,14 @@ Step 4+5: 契约测试 + 实现 + Review（按模块串行推进）
     │   ├── 验收标准：依赖安装成功、lint 通过、数据库连接成功、错误处理中间件可用
     │   └── 技术负责人: review 后继续
     │
-    ├── 4a. 新会话 [Tester agent]: 写当前模块的契约测试
+    ├── 5a. 新会话 [Tester agent]: 写当前模块的契约测试
     │   ├── 后端模块：基于接口契约的规格测试
     │   └── 前端模块：API 调用层测试 + 页面渲染测试
     ├── 技术负责人: review 测试代码
     │   ├── 通过 → 继续实现
     │   └── 不通过 → Tester agent 新会话修改
     │
-    ├── 5a. 循环 [按 Task 依赖顺序逐 Task 执行]:
+    ├── 6a. 循环 [按 Task 依赖顺序逐 Task 执行]:
     │   ├── 新会话 [Implementer agent]: 实现当前 Task
     │   │   ├── 契约测试通过
     │   │   ├── L1 集成测试通过（后端：controller→service→repository；前端：页面→hooks→API）
@@ -123,18 +123,18 @@ Step 4+5: 契约测试 + 实现 + Review（按模块串行推进）
     │   │   └── 涉及接口变更 → 停止，按变更传播规则处理
     │   └── 技术负责人: 更新 Issue 状态
     │
-    ├── 5b. 当前模块所有 Task 完成 → 模块级 Review
-    ├── 5c. L2 关键路径集成测试（当被依赖模块已实现完成时）
+    ├── 6b. 当前模块所有 Task 完成 → 模块级 Review
+    ├── 6c. L2 关键路径集成测试（当被依赖模块已实现完成时）
     │   └── 新会话 [Implementer agent]: 编写跨模块集成测试（真实调用，不 Mock 其他模块）
     └── 技术负责人: 确认当前模块完成，推进下一个模块
 
-Step 6: E2E 测试
+Step 7: E2E 测试
 ├── 会话 [Tester agent]: 根据 PRD 验收标准编写 E2E 测试，覆盖核心用户流程
 ├── 技术负责人: 确认 E2E 测试通过
 ├── 技术负责人: 编写 README.md（推荐，基于 CLAUDE.md 和 architecture.md 整理）
-└── 如不需要自动化 E2E → 跳过，由 Step 7 产品经理手动验收覆盖
+└── 如不需要自动化 E2E → 跳过，由 Step 8 产品经理手动验收覆盖
 
-Step 7: 验收（分批）
+Step 8: 验收（分批）
 ├── 产品经理: 按模块组分批验收
 │   ├── 核心模块优先验收
 │   └── 每批验收后可调整后续模块的优先级和需求
@@ -343,20 +343,20 @@ Module-B 的 agent 关于 Module-A **需要知道的**：
 
 | 测试层级 | 谁写 | 什么时候 | 依据 | 是否必须 |
 |---------|------|---------|------|---------|
-| 契约测试 | Tester agent | Step 4+5（模块实现前） | module-design/{module}.md 接口契约 | 必须 |
-| 单元测试 | Implementer agent | Step 4+5（实现中） | 复杂内部逻辑 | 按需 |
-| L1 模块内集成 | Implementer agent | Step 4+5（实现中） | controller → service → repository 串联 | **必须** |
-| L2 关键路径集成 | Implementer agent | Step 4+5（模块完成后独立会话） | 跨模块真实调用 | **必须** |
-| E2E 测试 | Tester agent | Step 6 | PRD 验收标准 | 核心路径必须 |
+| 契约测试 | Tester agent | Step 5+6（模块实现前） | module-design/{module}.md 接口契约 | 必须 |
+| 单元测试 | Implementer agent | Step 5+6（实现中） | 复杂内部逻辑 | 按需 |
+| L1 模块内集成 | Implementer agent | Step 5+6（实现中） | controller → service → repository 串联 | **必须** |
+| L2 关键路径集成 | Implementer agent | Step 5+6（模块完成后独立会话） | 跨模块真实调用 | **必须** |
+| E2E 测试 | Tester agent | Step 7 | PRD 验收标准 | 核心路径必须 |
 
 #### 前端模块测试分层
 
 | 测试层级 | 谁写 | 什么时候 | 依据 | 是否必须 |
 |---------|------|---------|------|---------|
-| API 调用层测试 | Tester agent | Step 4+5（模块实现前） | module-design 中"调用的后端接口" | 必须 |
-| 页面渲染测试 | Tester agent | Step 4+5（模块实现前） | module-design 中"页面与路由" | 必须 |
-| 页面集成测试 | Implementer agent | Step 4+5（实现中） | 页面 → hooks → API 层串联（mock 后端） | **必须** |
-| E2E 测试 | Tester agent | Step 6 | PRD 验收标准 | 核心路径必须 |
+| API 调用层测试 | Tester agent | Step 5+6（模块实现前） | module-design 中"调用的后端接口" | 必须 |
+| 页面渲染测试 | Tester agent | Step 5+6（模块实现前） | module-design 中"页面与路由" | 必须 |
+| 页面集成测试 | Implementer agent | Step 5+6（实现中） | 页面 → hooks → API 层串联（mock 后端） | **必须** |
+| E2E 测试 | Tester agent | Step 7 | PRD 验收标准 | 核心路径必须 |
 
 > **前端契约测试说明**：前端的"契约测试"等价物是 API 调用层测试 + 页面渲染测试。API 调用层测试验证请求参数和响应处理与 module-design 中后端接口定义一致；页面渲染测试验证页面组件能正确渲染 mock 数据并响应用户交互。
 
@@ -427,7 +427,7 @@ tests/
 
 ### 契约测试预期状态
 
-测试代码能编译/加载，但执行时全部失败（因为实现不存在）— 这是 TDD 的正常状态（先红后绿）。强类型语言通过 Step 3 的导出桩文件解决编译问题。
+测试代码能编译/加载，但执行时全部失败（因为实现不存在）— 这是 TDD 的正常状态（先红后绿）。强类型语言通过 Step 4 的导出桩文件解决编译问题。
 
 ## Review 机制
 
@@ -486,7 +486,7 @@ project/
 │   │   │   ├── service.ts
 │   │   │   ├── repository.ts
 │   │   │   ├── types.ts
-│   │   │   └── index.ts             # 导出桩（Step 3 创建）
+│   │   │   └── index.ts             # 导出桩（Step 4 创建）
 │   │   └── module-b/
 │   │       └── ...
 │   ├── infra/                       # 基础设施（数据库、配置、错误处理、响应格式）
@@ -513,14 +513,14 @@ project/
 
 - 使用 Prisma Migrate 管理数据库 schema 变更
 - 统一一个 `prisma/schema.prisma` 文件，所有模块的数据模型集中定义
-- Step 3 脚手架阶段：根据 module-design 中的数据模型创建初始 schema，运行 `npx prisma migrate dev --name init`
-- Step 4+5 实现阶段：模块实现中如需调整数据模型，先更新 module-design 文档，再更新 schema.prisma，最后运行 `npx prisma migrate dev --name <描述>`
+- Step 4 脚手架阶段：根据 module-design 中的数据模型创建初始 schema，运行 `npx prisma migrate dev --name init`
+- Step 5+6 实现阶段：模块实现中如需调整数据模型，先更新 module-design 文档，再更新 schema.prisma，最后运行 `npx prisma migrate dev --name <描述>`
 - 每次 migration 生成后立即 commit，commit message: `docs(infra): migration <描述> [#issue-number]`
 - 测试环境使用独立数据库，通过 `DATABASE_URL` 环境变量区分
 
 ## 开发环境配置
 
-Step 3 脚手架阶段需完成以下环境配置：
+Step 4 脚手架阶段需完成以下环境配置：
 
 - **环境变量**：创建 `.env.example` 文件，列出所有必需的环境变量（`DATABASE_URL`、`PORT` 等），`.env` 加入 `.gitignore`
 - **数据库**：本地 PostgreSQL 实例，在 README.md 或 `.env.example` 中说明连接方式
@@ -544,14 +544,14 @@ Step 3 脚手架阶段需完成以下环境配置：
 Milestone 1: 核心模块
   后端: infra + user + product
   前端: web-app（用户注册/登录 + 商品列表页面）
-  → Step 2a-7 完整走一遍
+  → Step 2-8 完整走一遍
   → 实现顺序: infra → user → product → web-app（相关页面）
   → 产品经理验收核心流程
 
 Milestone 2: 交易模块
   后端: order + payment + inventory
   前端: web-app（下单/支付页面）+ admin（订单管理页面）
-  → Step 2（增量：只设计新模块，review 对已有模块的影响）→ Step 3-7
+  → Step 2（增量：只设计新模块，review 对已有模块的影响）→ Step 4-8
   → 实现顺序: inventory → order → payment → web-app（新页面）→ admin
   → 产品经理验收交易流程
 
@@ -575,21 +575,21 @@ Milestone 3: 辅助模块
 | Step | 执行者 | 输入 | 产出 | 退出标准 |
 |------|--------|------|------|---------|
 | 1 | 人 + Architect | — | PRD, CLAUDE.md（基础）, GitHub Project | PRD 按模块组织含验收标准；CLAUDE.md 基础部分确认；Project 已创建 |
-| 2a | Architect | PRD, CLAUDE.md | architecture.md | 模块划分清晰；依赖单向无环；数据流完整 |
-| 2b | Architect | architecture.md, PRD | module-design/*.md | 每模块内部设计 + 接口契约完整；数据模型清晰 |
-| 3 | Architect | 架构 + 模块设计 | 脚手架, Issues | 脚手架能运行；Issues 含依赖关系 |
-| 4+5 | Tester + Impl + Reviewer | module-design + 测试 | 契约测试 + 业务代码 + L1/L2 集成测试 | 按模块串行：契约测试通过 → L1 通过 → 模块 Review 通过 → L2 通过 |
-| 6 | Tester + 技术负责人 | PRD 验收标准 | E2E 测试, README.md | 核心路径 E2E 通过；README.md 完成 |
-| 7 | 产品经理 | PRD | 验收确认 | 分批验收全部通过 |
+| 2 | Architect | PRD, CLAUDE.md | architecture.md | 模块划分清晰；依赖单向无环；数据流完整 |
+| 3 | Architect | architecture.md, PRD | module-design/*.md | 每模块内部设计 + 接口契约完整；数据模型清晰 |
+| 4 | Architect | 架构 + 模块设计 | 脚手架, Issues | 脚手架能运行；Issues 含依赖关系 |
+| 5+6 | Tester + Impl + Reviewer | module-design + 测试 | 契约测试 + 业务代码 + L1/L2 集成测试 | 按模块串行：契约测试通过 → L1 通过 → 模块 Review 通过 → L2 通过 |
+| 7 | Tester + 技术负责人 | PRD 验收标准 | E2E 测试, README.md | 核心路径 E2E 通过；README.md 完成 |
+| 8 | 产品经理 | PRD | 验收确认 | 分批验收全部通过 |
 
 ## 增量开发（已有项目加新功能）
 
 | 场景 | 起始步骤 | 说明 |
 |------|---------|------|
-| 新增业务模块 | Step 2a（评估对现有架构影响） | 更新 architecture.md 依赖图，然后 2b → 3 → ... |
-| 已有模块增加接口 | Step 2b（更新 module-design/{module}.md） | 同时更新 architecture.md 依赖矩阵 |
-| 跨多模块的新功能 | Step 2a（影响评估） | 查接口依赖矩阵确定影响范围 → 2b → 4 → 5 |
-| 模块内重构不改接口 | Step 4+5（实现阶段） | 契约测试不需要改（接口没变） |
+| 新增业务模块 | Step 2（评估对现有架构影响） | 更新 architecture.md 依赖图，然后 3 → 4 → ... |
+| 已有模块增加接口 | Step 3（更新 module-design/{module}.md） | 同时更新 architecture.md 依赖矩阵 |
+| 跨多模块的新功能 | Step 2（影响评估） | 查接口依赖矩阵确定影响范围 → 3 → 5+6 |
+| 模块内重构不改接口 | Step 5+6（实现阶段） | 契约测试不需要改（接口没变） |
 | 修 bug | 不走流程 | 直接改 + 补测试 + 提交 |
 
 关键原则：**变了什么文档，就从那个文档对应的步骤开始往后走。** 改了接口 → 从契约测试开始更新；只改实现 → 直接进入实现阶段。
@@ -607,7 +607,7 @@ Milestone 3: 辅助模块
 
 1. Agent 停止实现，在 Issue comment 中报告
 2. 技术负责人评估影响范围
-3. 回退到 Step 2a/2b：新会话修订架构文档
+3. 回退到 Step 2/3：新会话修订架构文档
 4. 按变更传播规则：文档 → 测试 → 实现
 
 ### infra 变更需求
