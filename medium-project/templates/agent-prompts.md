@@ -240,7 +240,7 @@
 
 ---
 
-## Step 5+6 — 按模块串行：契约测试 → 实现 → Review
+## Step 5 — 按模块串行：契约测试 → 实现 → Review
 
 执行顺序：infra（使用 5c prompt）→ 后端模块（使用 5a + 6a-6e）→ 前端模块（使用 5b + 6a-6e）。
 每个模块按以下顺序完成后，再推进下一个模块。
@@ -533,7 +533,7 @@ Review 反馈：
 
 ---
 
-## Step 7 — Tester Agent（E2E 测试）
+## Step 6 — Tester Agent（E2E 测试）
 
 在新会话中使用：
 
@@ -642,7 +642,7 @@ GitHub Issues：
 - [ ] 标签（type + module）正确
 ```
 
-### Step 5+6 测试 Review Checklist
+### Step 5 测试 Review Checklist
 
 ```
 - [ ] 每条业务规则有对应测试用例（对照 module-design 接口契约逐条检查）
@@ -653,7 +653,7 @@ GitHub Issues：
 - [ ] 测试能编译/加载（允许执行失败）
 ```
 
-### Step 5+6 Task 流转管理
+### Step 5 Task 流转管理
 
 ```
 每个 Task Review 通过后：
