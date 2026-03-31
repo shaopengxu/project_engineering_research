@@ -22,7 +22,79 @@
 
 ---
 
+## 文档管理
+
+### 文档清单
+
+| 文档 | 谁写 | 谁 Review | 是否必须 |
+|------|------|-----------|---------|
+| PRD (prd.md) | 产品经理 | 产品经理 | 必须 |
+| CLAUDE.md | 技术负责人 + Architect agent | 技术负责人 | 必须 |
+| README.md | 技术负责人 | 无需 review | 推荐 |
+| 系统架构 (architecture.md) | Architect agent | 技术负责人 | 必须 |
+| 模块设计 + 接口契约 (module-design/{module}.md) | Architect agent | 技术负责人 | 必须 |
+| GitHub Issues | Architect agent + 技术负责人 | 技术负责人 | 必须 |
+| 契约测试 + 集成测试 + E2E 测试 | Tester agent | 技术负责人 | 必须 |
+| 单元测试 | Implementer agent | Reviewer agent | 按需 |
+| 业务代码 | Implementer agent | Reviewer agent + 技术负责人（跨模块时） | 必须 |
+
+> **CLAUDE.md vs README.md**：CLAUDE.md 面向 AI Agent，包含约定和禁止事项；README.md 面向人类开发者，包含快速上手指南。两者定位不同，不可互相替代。
+
+### 文档分层策略
+
+**全局 CLAUDE.md（< 100 行）** — 所有 agent 自动加载，是 agent 获取项目上下文的主要入口。
+
+**architecture.md** — 系统级内容（模块划分、依赖关系图、部署架构、跨模块数据流、接口通用约定、接口依赖矩阵、需求追溯表）。
+
+**module-design/{module}.md** — 每个模块的内部设计（分层、数据模型）+ 该模块的完整接口契约（五要素）。
+
+**跨模块 agent 的信息边界**：
+
+Module-B 的 agent 关于 Module-A **需要知道的**：公开接口签名和返回类型、错误码定义、相关数据模型。**不需要知道的**：内部实现逻辑、目录结构、单元测试、技术债。这些信息通过 `module-design/{module-a}.md` 中的"接口契约"和"消费的外部接口"部分提供。
+
+### 文档变更传播规则
+
+核心原则：**先更新文档 → 再更新测试 → 最后更新实现。** 按模块依赖顺序处理，被依赖的模块优先。
+
+**接口契约变更**：
+
+1. 查看 architecture.md 的**接口依赖矩阵**，识别所有受影响的消费方模块
+2. 更新提供方的 module-design/{module}.md 中的接口定义
+3. 更新消费方的 module-design 中的"消费的外部接口"
+4. 同步更新 architecture.md 的接口依赖矩阵（如影响范围变化）
+5. 在受影响模块的 GitHub Issue 中 comment 变更通知
+6. Tester agent 新会话更新契约测试
+7. 已完成的实现如涉及变更接口，标记 Issue 为"需更新"
+
+**architecture.md 变更**：
+
+1. 评估是否影响模块划分和依赖关系
+2. 更新受影响的 module-design/{module}.md
+3. 更新 CLAUDE.md 中的项目结构（如有变化）
+
+**变更记录**：在相关 GitHub Issue 中 comment 变更原因和影响范围。commit message 标注：`docs(<module>): {变更内容}，影响范围: #{issue-list}`
+
+---
+
 ## Review 指南
+
+### 分层 Review
+
+| Review 类型 | 触发时机 | 执行者 | 关注点 |
+|------------|---------|--------|--------|
+| Task Review | 每个 Task 完成 | Reviewer Agent | 功能正确性、代码规范、测试覆盖 |
+| 模块 Review | 模块所有 Task 完成 | Reviewer Agent（模块级 prompt） | 模块内一致性、命名/风格统一、接口覆盖完整性 |
+| 跨模块 Review | 涉及跨模块变更时 | 技术负责人 | 接口一致性、依赖方向、infra 修改合理性 |
+| 架构 Review | 架构变更提议时 | 技术负责人 | 决策合理性、影响范围 |
+
+**分层原则**：技术负责人只做系统级和跨模块 review，模块内 review 委托 Reviewer Agent。
+
+### Review 输出标准
+
+- **LGTM** — 通过，无需修改
+- **MUST FIX** — 必须修复后重新 review
+- **SHOULD FIX** — 建议修改，修改后重新 review
+- **OPTIONAL** — 可选优化，不阻塞进度
 
 ### Review 深度分级
 
@@ -102,11 +174,16 @@ GitHub Issues：
 - [ ] 覆盖正常流程和异常流程（错误码全覆盖）
 - [ ] 测试独立（无共享状态、不依赖执行顺序）
 - [ ] 测试注释标注了业务规则来源
-- [ ] Mock/Stub 使用符合 workflow.md Mock 策略
 - [ ] 测试能编译/加载（允许执行失败）
 ```
 
-### Step 5 Task 流转管理
+---
+
+## 流转管理
+
+### Task 流转
+
+Reviewer 输出 LGTM 后，Task 即视为完成（代码已在 main 上）。
 
 ```
 每个 Task Review 通过后：
@@ -118,7 +195,7 @@ GitHub Issues：
 模块完成时：
 - [ ] 确认该模块所有 Task 已完成
 - [ ] 触发模块级 Review
-- [ ] 如有跨模块依赖且被依赖模块已完成，触发 L2 集成测试（独立会话）
+- [ ] 如有跨模块依赖且被依赖模块已完成，触发 L2 集成测试
 - [ ] 跑全量测试确认无回归
 ```
 
@@ -132,21 +209,120 @@ GitHub Issues：
    - [ ] 后续 Task 自动使用最新代码
 ```
 
-### 接口变更处理
+### 数据库迁移策略
+
+- 统一一个 `prisma/schema.prisma` 文件，所有模块的数据模型集中定义
+- Step 4 脚手架阶段：根据 module-design 中的数据模型创建初始 schema
+- Step 5 实现阶段：模块实现中如需调整数据模型，先更新 module-design 文档，再更新 schema.prisma
+- 每次 migration 生成后立即 commit
+- 测试环境使用独立数据库，通过 `DATABASE_URL` 环境变量区分
+
+---
+
+## 迭代管理
+
+### 何时需要多迭代
+
+- 4-5 个模块：通常 1 个迭代
+- 6-8 个模块：建议 2-3 个迭代
+- 判断标准：模块间有明确的优先级差异，或产品经理希望尽早验证核心流程
+
+### 迭代划分
+
+使用 **GitHub Milestones** 管理迭代：
 
 ```
-收到 Agent 的接口变更请求时：
-1. 查看 architecture.md 的接口依赖矩阵，确定消费方
-2. 评估变更影响：
-   - [ ] 变更是否向后兼容？
-   - [ ] 影响了哪些模块的契约测试？
-   - [ ] 影响了哪些模块的已完成实现？
-3. 更新文档：
-   - [ ] 更新提供方的 module-design/{module}.md 接口契约
-   - [ ] 更新消费方的 module-design 中的"消费的外部接口"
-   - [ ] 同步更新 architecture.md 的接口依赖矩阵（如影响范围变化）
-4. 通知受影响模块：
-   - [ ] 在受影响模块的 Issue 中 comment 变更通知
-   - [ ] 后续 Task 使用最新文档
-5. 按变更传播规则执行：文档 → 测试 → 实现
+Milestone 1: 核心模块
+  后端: infra + user + product
+  前端: web-app（auth feature + product feature）
+  → Step 2-7 完整走一遍
+  → 实现顺序: infra → user → product → web-app（相关页面）
+  → 产品经理验收核心流程
+
+Milestone 2: 交易模块
+  后端: order + payment + inventory
+  前端: web-app（order feature）+ admin（订单管理页面）
+  → Step 2（增量：只设计新模块，review 对已有模块的影响）→ Step 4-7
+  → 实现顺序: inventory → order → payment → web-app（新页面）→ admin
+  → 产品经理验收交易流程
+
+Milestone 3: 辅助模块
+  后端: notification + coupon + analytics
+  前端: admin（剩余管理页面）
+  → 同上（增量模式）
+  → 最终全量验收
+```
+
+> **前端模块时序**：每个迭代内，前端模块在其依赖的后端模块全部完成后再实现。前端按 feature 拆分设计文档和测试，每个迭代只设计和实现与本迭代后端模块对应的 feature，不必等所有后端模块完成。
+
+### 迭代间的关系
+
+- 后续迭代的 Step 2 只设计本迭代新增模块，但必须 review 对已有模块的影响
+- 已有模块的接口如需变更，按变更传播规则处理
+- 每个迭代结束时保持 main 可部署
+
+### 增量开发（已有项目加新功能）
+
+| 场景 | 起始步骤 | 说明 |
+|------|---------|------|
+| 新增业务模块 | Step 2（评估对现有架构影响） | 更新 architecture.md 依赖图，然后 3 → 4 → ... |
+| 已有模块增加接口 | Step 3（更新 module-design/{module}.md） | 同时更新 architecture.md 依赖矩阵 |
+| 跨多模块的新功能 | Step 2（影响评估） | 查接口依赖矩阵确定影响范围 → 3 → 5 |
+| 模块内重构不改接口 | Step 5（实现阶段） | 契约测试不需要改（接口没变） |
+| 修 bug | 不走流程 | 直接改 + 补测试 + 提交 |
+
+关键原则：**变了什么文档，就从那个文档对应的步骤开始往后走。**
+
+---
+
+## 速查与参考
+
+### 每步的输入、产出与退出标准
+
+| Step | 执行者 | 输入 | 产出 | 退出标准 |
+|------|--------|------|------|---------|
+| 1 | 人 + Architect | — | PRD, CLAUDE.md（基础）, GitHub Project | PRD 按模块组织含验收标准；CLAUDE.md 基础部分确认；Project 已创建 |
+| 2 | Architect | PRD, CLAUDE.md | architecture.md | 模块划分清晰；依赖单向无环；数据流完整 |
+| 3 | Architect | architecture.md, PRD | module-design/*.md | 每模块内部设计 + 接口契约完整；数据模型清晰 |
+| 4 | Architect | 架构 + 模块设计 | 脚手架, Issues | 脚手架能运行；Issues 含依赖关系 |
+| 5 | Tester + Impl + Reviewer | module-design + 测试 | 契约测试 + 业务代码 + L1/L2 集成测试 | 按模块串行：契约测试通过 → L1 通过 → 模块 Review 通过 → L2 通过 |
+| 6 | Tester + 技术负责人 | PRD 验收标准 | E2E 测试, README.md | 核心路径 E2E 通过；README.md 完成 |
+| 7 | 产品经理 | PRD | 验收确认 | 分批验收全部通过 |
+
+### 常见故障与恢复
+
+**Agent 会话崩溃**：检查 `git status` + `git log` → 有可接受的未提交改动则提交后新会话继续 → 质量不确定则 `git stash` 后重新开始 → 无未提交改动则直接重新开始。
+
+**实现过程中发现架构有问题**：Agent 停止并报告 → 技术负责人评估影响 → 回退到 Step 2/3 修订 → 按变更传播规则更新。
+
+**Agent 产出质量不达标**：给出具体修改要求 → 反复出现同类问题则在 CLAUDE.md 增加约束 → 仍不达标则拆更小的 Task 或手动完成。
+
+### CI 集成建议
+
+```
+每次 push 到 main:
+  lint + 全量契约测试 + 单元测试 + L1/L2 集成测试
+
+定期 / 手动触发:
+  全量测试 + E2E 测试
+```
+
+```yaml
+# .github/workflows/ci.yml
+name: CI
+on:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
 ```
