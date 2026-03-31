@@ -103,6 +103,5 @@ Step 7: 验收（分批）
 
 | 文档 | 内容 |
 |------|------|
-| [task-management.md](task-management.md) | GitHub Projects 配置、Issue 模板、依赖关系管理 |
-| [templates/tech-lead-guide.md](templates/tech-lead-guide.md) | 技术负责人操作指南（Skill 速查、文档管理、Review、流转、迭代、速查参考） |
-| [templates/](templates/) | 架构文档模板、模块设计模板、CLAUDE.md 模板 |
+| [tech-lead-guide.md](tech-lead-guide.md) | 技术负责人操作指南（Skill 速查、GitHub Project 初始化、文档管理、Review、流转、迭代、速查参考） |
+| [templates/](templates/) | CLAUDE.md 模板 |

@@ -13,17 +13,42 @@ description: "Medium-project Step 4b: 拆分任务并创建 GitHub Issues"
 
 请完成以下工作：
 
-1. **创建 GitHub Issues**：
-   - 契约测试任务：每个模块的接口契约对应契约测试 Issue
-   - 实现任务：按模块拆分，每个 Issue 标注依赖（Depends on #N）和需通过的测试
-   - 集成测试任务：为 architecture.md 中的每条关键路径创建 L2 集成测试 Issue
-   - 使用标签：type:contract-test / type:impl / type:integration-test / type:e2e / type:infra + module:{name}
-   - 使用 Milestone 标注迭代（如需多迭代）
-   - Issue body 格式参考 [task-management.md](../../../medium-project/task-management.md) 中的 Issue 模板
+1. **创建 GitHub Issues**（使用以下模板）：
+
+   **契约测试 Issue**：
+   ```bash
+   gh issue create \
+     --title "[{module}] 契约测试: {接口名称}" \
+     --label "type:contract-test,module:{module}" \
+     --milestone "{milestone}" \
+     --project "{project-name}" \
+     --body "## 任务描述\n为 {接口名称} 编写契约测试。\n\n## 所属模块\n{module}\n\n## 依赖\n无\n\n## 对应契约章节\nmodule-design/{module}.md 中的 \"{接口名称}\" 章节\n\n## 需通过测试\n- [ ] 正常流程测试\n- [ ] 异常流程测试（错误码覆盖）"
+   ```
+
+   **实现 Issue**：
+   ```bash
+   gh issue create \
+     --title "[{module}] 实现: {任务描述}" \
+     --label "type:impl,module:{module}" \
+     --milestone "{milestone}" \
+     --project "{project-name}" \
+     --body "## 任务描述\n{一句话描述}\n\n## 所属模块\n{module}\n\n## 依赖\n- Depends on #{issue-number}\n\n## 需通过测试\n- [ ] 契约测试: tests/contracts/{module}/{test-file}\n- [ ] L1 集成测试: tests/integration/{module}/{test-file}\n\n## 验收标准\n- [ ] {criterion 1}\n- [ ] {criterion 2}"
+   ```
+
+   **集成测试 Issue**：
+   ```bash
+   gh issue create \
+     --title "[integration] L2: {关键路径描述}" \
+     --label "type:integration-test" \
+     --milestone "{milestone}" \
+     --project "{project-name}" \
+     --body "## 任务描述\n验证 {module-a} → {module-b} 的关键路径集成。\n\n## 涉及模块\n{module-a}, {module-b}\n\n## 依赖\n- Depends on #{module-a-issue}\n- Depends on #{module-b-issue}\n\n## 测试路径\ntests/integration/paths/{path-name}.test.ts\n\n## 验收标准\n- [ ] 真实模块间调用（不 Mock）\n- [ ] 覆盖正常流程和关键异常流程"
+   ```
 
 2. **组织 Sub-issues 层级**：
    - 每个模块创建一个父 Issue（模块粒度）
    - Task 作为子 Issue 挂在父 Issue 下
+   - 依赖声明：Issue body 中用 `Depends on #N` 标注前置依赖
 
 任务拆分原则：
 - infra 独立为最高优先级 Task

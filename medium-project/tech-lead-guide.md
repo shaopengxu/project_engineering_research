@@ -179,7 +179,67 @@ GitHub Issues：
 
 ---
 
+## GitHub Project 初始化（Step 1）
+
+### 创建 Project
+
+```bash
+gh project create --title "{项目名称}" --owner "@me"
+gh project list --owner "@me"   # 记录 Project Number
+```
+
+### 配置自定义字段
+
+在 GitHub Web UI 中操作（Project → Settings → Custom fields）：
+
+| 字段 | 类型 | 选项 |
+|------|------|------|
+| Status | 单选 | Todo, In Progress, Review, Done, Blocked |
+| Module | 单选 | infra, {module-a}, {module-b}, web-app, admin, ... |
+| Priority | 单选 | P0, P1, P2 |
+
+### 创建标签
+
+```bash
+# 任务类型标签
+gh label create "type:contract-test" --color "1d76db" --description "契约测试任务"
+gh label create "type:impl" --color "0e8a16" --description "实现任务"
+gh label create "type:integration-test" --color "5319e7" --description "集成测试任务"
+gh label create "type:e2e" --color "d93f0b" --description "E2E 测试任务"
+gh label create "type:infra" --color "c5def5" --description "基础设施任务"
+
+# 模块标签（为每个模块创建）
+gh label create "module:{name}" --color "fbca04" --description "{name} 模块"
+```
+
+### 创建 Milestones
+
+```bash
+gh api repos/{owner}/{repo}/milestones -f title="Milestone 1: 核心模块" -f description="infra + {核心模块列表}"
+gh api repos/{owner}/{repo}/milestones -f title="Milestone 2: 业务模块" -f description="{业务模块列表}"
+```
+
+### 配置 Project 视图
+
+在 GitHub Web UI 中操作：
+- **Board 视图**（默认）：按 Status 分列，用于日常追踪
+- **Table 视图**：显示所有字段，按 Module 分组，用于全局概览
+- **Roadmap 视图**（可选）：按 Milestone 时间线，用于向产品经理展示
+
+---
+
 ## 流转管理
+
+### 技术负责人管理命令
+
+```bash
+gh issue list --state open --label "type:impl"              # 查看待处理
+gh issue list --state open --label "module:{module-name}"    # 按模块筛选
+gh issue list --state open --search "阻塞 in:comments"       # 查看阻塞
+gh issue close {NUMBER} --comment "Review 通过，Task 完成。"  # 关闭已完成
+```
+
+**状态管理原则**：Agent 通过 Issue comment 报告进展，**技术负责人负责更新 Project Board 状态**。
 
 ### Task 流转
 
