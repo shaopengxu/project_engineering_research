@@ -1,5 +1,4 @@
 ---
-context: fork
 name: mp-workflow
 description: "Medium-project 流程管控：查看当前阶段、指导下一步操作（只读）"
 ---
