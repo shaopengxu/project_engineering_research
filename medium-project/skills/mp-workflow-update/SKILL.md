@@ -16,6 +16,12 @@ argument-hint: "<状态变更描述> | init"
 
 如果参数是 `init`，根据本 skill 目录下的 [workflow-state-template.md](workflow-state-template.md) 创建 `docs/workflow-state.md`；根据本 skill 目录下的 [CLAUDE-template.md](CLAUDE-template.md) 创建 `CLAUDE.md`，commit 后告知用户从 Step 1 开始。
 
+## 状态更新职责边界
+
+执行类 skill（mp-impl、mp-test-contract 等）在完成后会自动将 workflow-state 推进到"等待 review"状态。Review 类 skill（mp-review-task、mp-review-module）只输出结论，不修改状态。
+
+**本 skill（mp-workflow-update）负责所有人工闸门的状态转换**：技术负责人 review 通过/不通过后，调用本 skill 推进或回退状态。
+
 ## 状态更新
 
 参数：$ARGUMENTS

@@ -57,4 +57,6 @@ description: "Medium-project Step 2: 根据 PRD 设计系统级架构，产出 a
 - 不要过度设计
 - 产出文件路径：`docs/architecture.md`
 
-完成后更新 `docs/workflow-state.md`：设置 `step: 2`，`substep: review`（等待技术负责人 review）。
+完成后更新 `docs/workflow-state.md`：设置 `step: 2`，`substep: review`。
+
+> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。

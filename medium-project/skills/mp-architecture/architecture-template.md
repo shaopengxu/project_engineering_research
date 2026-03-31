@@ -178,8 +178,11 @@ tests/
 ├── contracts/                 # 契约测试（按模块组织，前端按 feature 子目录）
 ├── unit/                      # 单元测试（按模块组织）
 ├── integration/               # 集成测试
-│   ├── {module-a}/            # L1: 模块内集成
+│   ├── {module-a}/            # L1: 后端模块内集成
 │   ├── {module-b}/
+│   ├── {frontend-module}/     # L1: 前端按 feature 子目录
+│   │   ├── {feature-a}/
+│   │   └── {feature-b}/
 │   └── paths/                 # L2: 关键路径集成
 ├── e2e/                       # E2E 测试（按用户流程）
 └── fixtures/                  # 共享测试数据（工厂函数，非硬编码）

@@ -288,7 +288,7 @@ LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 ### Agent 故障
 
 **会话崩溃**：`git status` + `git log` → 有可接受改动则提交 → 质量不确定则 `git stash` → 新会话重新开始。
-**架构问题**：Agent 停止并报告 → 评估影响 → 回退 Step 2/3 修订。
+**架构问题**：Agent 停止并报告 → 评估影响 → 按 `tech-lead-guide.md` 的「设计回退操作清单」处理级联影响（Issues 清理、测试更新、代码处理、workflow-state 重置）。
 **质量不达标**：给具体修改要求 → CLAUDE.md 增加约束 → 拆更小 Task 或手动完成。
 
 ### 迭代管理

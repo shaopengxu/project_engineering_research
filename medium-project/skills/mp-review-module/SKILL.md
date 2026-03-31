@@ -40,4 +40,6 @@ argument-hint: "<module-name>"
 输出格式（同 Task Review）：
 - MUST FIX / SHOULD FIX / OPTIONAL / LGTM
 
-完成后更新 `docs/workflow-state.md`：如果 LGTM，模块进度表中对应模块的"模块 Review"列设为 `done`，"实现"列设为 `done`。
+完成后：将 Review 结果（LGTM / MUST FIX / SHOULD FIX 清单）输出给技术负责人，**不自动更新 `docs/workflow-state.md`**。
+
+> **状态更新边界**：Review 类 skill 只输出结论，不修改 workflow-state。状态转换由技术负责人根据 Review 结论调用 `/mp-workflow-update` 触发（如 `/mp-workflow-update user 模块 Review LGTM`）。

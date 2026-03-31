@@ -157,3 +157,5 @@ argument-hint: "<module-name> [feature-name] | --summary"
 - 如果发现 PRD 中的功能点/业务规则在已有接口中未覆盖，停下来指出遗漏
 
 完成后更新 `docs/workflow-state.md`：更新模块进度表中对应模块的"设计"列为 `review`；如果是 `--summary` 则设置 `step: 3`，`substep: review`。
+
+> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。

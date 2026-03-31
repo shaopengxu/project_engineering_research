@@ -67,8 +67,10 @@ description: "Medium-project Step 4b: 拆分任务并创建 GitHub Issues"
 - 不要写业务代码和测试代码
 - Issues 创建完成后在 commit message 中记录
 
-完成后更新 `docs/workflow-state.md`：设置 `step: 4`，`substep: 4b-review`；根据创建的 Issues 填充模块进度表：
+完成后更新 `docs/workflow-state.md`：设置 `step: 4`，`substep: 4b-review`。根据创建的 Issues 填充模块进度表：
 - infra 一行（类型"基础设施"，设计/契约测试/Task Review/模块 Review/L2 集成测试 标 `N/A`）
 - 每个后端模块一行（类型"后端"）
 - 前端模块按 feature 拆行（如 `web-app/auth`、`web-app/product`，类型"前端"），feature 列表从 architecture.md 的 Feature 划分获取
 - 所有可填列初始为空
+
+> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。

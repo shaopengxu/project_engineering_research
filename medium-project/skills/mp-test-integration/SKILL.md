@@ -28,4 +28,6 @@ argument-hint: "<issue-number>"
 - 每个有意义的改动 commit 一次，commit message 格式：`test(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "L2 集成测试完成"` 报告
 
-完成后更新 `docs/workflow-state.md`：模块进度表中对应模块的"L2 集成测试"列设为 `done`。
+完成后更新 `docs/workflow-state.md`：模块进度表中对应模块的"L2 集成测试"列设为 `review`。
+
+> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。

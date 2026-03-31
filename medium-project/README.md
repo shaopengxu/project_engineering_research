@@ -12,8 +12,9 @@
 
 - **文档驱动**：architecture.md → module-design → 契约测试 → 实现，先设计后编码
 - **TDD**：契约测试在实现之前编写，先红后绿
-- **短上下文**：主会话进行项目流程跟踪，真正做事在子会话（每个 skill 以 `context: fork` 在隔离子 agent 中运行）
+- **短上下文**：主会话进行项目流程跟踪，真正做事在子会话（执行类 skill 以 `context: fork` 在隔离子 agent 中运行；流程管控 skill `mp-workflow` / `mp-workflow-update` 在主会话运行）
 - **状态可追踪**：`docs/workflow-state.md` 记录当前阶段和模块进度
+- **状态更新职责分离**：执行类 skill 只将状态推进到"等待 review"；review 通过/不通过的状态闸门一律由技术负责人通过 `/mp-workflow-update` 触发
 
 ## 角色分工
 
@@ -157,9 +158,9 @@ git init && gh repo create {项目名} --private
 /mp-test-contract user 5              # 写契约测试
 /mp-workflow-update user 契约测试 review 通过
 
-/mp-impl user 6                       # 实现 Task
-/mp-review-task user 6                # Review
-/mp-workflow-update Issue #6 review LGTM
+/mp-impl user 6                       # 实现 Task（skill 自动设状态为"等待 review"）
+/mp-review-task user 6                # Review（skill 只输出结论，不改状态）
+/mp-workflow-update Issue #6 review LGTM  # 技术负责人确认后推进状态
 
 # ... 更多 Task ...
 
@@ -184,6 +185,8 @@ git init && gh repo create {项目名} --private
 - **契约测试（Specification Test）**：基于 module-design/{module}.md 中的接口契约验证接口输入输出的规格测试，即"接口文档说什么，测试就验什么"。这**不是** Pact 风格的消费者驱动契约测试（CDCT）。
 - **L1 集成测试（模块内）**：验证模块内部各层（如 controller → service → repository）的真实串联，使用真实依赖（如内存数据库），不 Mock 模块内部组件。
 - **L2 集成测试（跨模块 / 关键路径）**：验证关键业务路径上多个模块的真实协作（如 下单 → 扣库存 → 创建支付单），不 Mock 其他模块。
+- **前端契约测试（API 层 + 页面渲染）**：由 `/mp-test-frontend` 编写，验证 API 请求/响应规格和页面渲染正确性，mock 粒度较粗（mock hooks 或 MSW）。
+- **前端 L1 集成测试（端内串联）**：由 `/mp-impl` 在实现时编写，验证页面 → hooks → API 层的真实数据流转，仅在网络层使用 MSW mock。两者测试目标不同，不应重复。
 - **consumers 字段**：接口契约中每个接口标注的消费方列表，用于变更影响评估。
 
 ## 随时查看进度
@@ -238,9 +241,12 @@ project/
 │   └── shared/                         # 共享层
 ├── admin/                              # 管理后台
 └── tests/
-    ├── contracts/                      # 契约测试
+    ├── contracts/                      # 契约测试（按模块组织，前端按 feature 子目录）
     ├── unit/                           # 单元测试（按需）
     ├── integration/                    # L1 + L2 集成测试
+    │   ├── {module}/                   # L1: 后端模块内集成
+    │   ├── {module}/{feature}/         # L1: 前端按 feature 子目录
+    │   └── paths/                      # L2: 关键路径集成
     ├── e2e/                            # E2E 测试
     └── fixtures/                       # 共享测试数据
 ```

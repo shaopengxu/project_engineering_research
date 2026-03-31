@@ -25,4 +25,6 @@ argument-hint: "<module-name> <issue-number>"
 - 每个有意义的改动 commit 一次，commit message 格式：`fix(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "Review 问题已修复"` 报告
 
-完成后更新 `docs/workflow-state.md`：设置 `substep: 5d`（等待重新 Review）。
+完成后更新 `docs/workflow-state.md`：设置 `substep: 5d-review`（等待重新 Review）。
+
+> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。

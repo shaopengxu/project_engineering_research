@@ -50,3 +50,5 @@ description: "Medium-project Step 4a: 根据架构文档初始化项目脚手架
 - 每个有意义的改动 commit 一次
 
 完成后更新 `docs/workflow-state.md`：设置 `step: 4`，`substep: 4a-review`。
+
+> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。

@@ -11,9 +11,13 @@ argument-hint: "<module-name> <feature-name> <issue-number>"
 
 前端测试包含两部分：
 1. **API 调用层测试**：验证 api/ 层的请求参数和响应处理与后端接口定义一致
-2. **页面渲染测试**：验证页面组件能正确渲染 mock 数据并响应用户交互
+2. **页面渲染测试**：验证页面组件在给定 mock 数据下能正确渲染关键元素并响应用户交互（shallow 级别：直接 mock hooks 返回值，不关心数据获取链路）
 
 这些测试将在实现之前编写，作为 TDD 的驱动力。
+
+> **与 L1 集成测试的区别**：本 skill 编写的测试属于"契约级"，聚焦于 API 层请求/响应规格和页面渲染正确性，mock 粒度较粗（mock hooks 或 MSW）。后续 `/mp-impl` 中编写的前端 L1 集成测试属于"集成级"，聚焦于页面 → hooks → API 层的真实数据流转串联，仅在网络层使用 MSW mock，不 mock hooks。两者测试目标不同，不应重复：
+> - **本 skill（契约级）**：API 函数的请求格式对不对？页面拿到数据能不能正确渲染？→ 验证"接口契约"
+> - **mp-impl（集成级）**：页面触发操作后，hook 是否正确调用 API 函数、状态是否正确更新、页面是否正确响应？→ 验证"端内串联"
 
 请先阅读以下文件：
 - CLAUDE.md
@@ -45,4 +49,6 @@ API 调用层测试：
 
 注意：你只需要阅读本 feature 的设计文档和整体设计文档，不需要阅读其他 feature 的文档。
 
-完成后更新 `docs/workflow-state.md`：模块进度表中对应模块的"契约测试"列设为 `review`。
+完成后更新 `docs/workflow-state.md`：模块进度表中对应模块/feature 的"契约测试"列设为 `review`。
+
+> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。

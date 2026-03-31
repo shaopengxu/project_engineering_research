@@ -36,4 +36,6 @@ argument-hint: "<module-name> <issue-number>"
 
 输出结尾建议：在 Issue #{issue-number} 中 comment Review 结果。
 
-完成后更新 `docs/workflow-state.md`：如果 LGTM，设置 `substep: 5c`（下一个 Task），并将模块进度表中对应模块的"Task Review"列设为 `in_progress`；如果有 MUST FIX / SHOULD FIX，设置 `substep: 5e`（等待修复）。当该模块所有 Task 均 Review 通过后，将"Task Review"列设为 `done`。
+完成后：将 Review 结果（LGTM / MUST FIX / SHOULD FIX 清单）输出给技术负责人，**不自动更新 `docs/workflow-state.md`**。
+
+> **状态更新边界**：Review 类 skill 只输出结论，不修改 workflow-state。状态转换由技术负责人根据 Review 结论调用 `/mp-workflow-update` 触发（如 `/mp-workflow-update Issue #6 review LGTM` 或 `/mp-workflow-update Issue #6 review 有 MUST FIX`）。
