@@ -242,6 +242,19 @@ LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 技术负责人确认 E2E 通过，编写 README.md（推荐）
 完成 → `/mp-workflow-update E2E 测试通过`
 
+**E2E 测试失败处理**：
+
+技术负责人根据失败原因选择对应修复路径：
+
+| 失败原因 | 修复方式 |
+|---------|---------|
+| E2E 测试代码本身有问题（选择器、时序、断言） | 直接修改 tests/e2e/ 下的测试代码并重跑 |
+| 种子数据不足或不正确 | 补充 tests/fixtures/ 和 prisma/seed.ts，重跑 |
+| 某模块存在 bug | `/mp-impl {module} {issue-number}` 修复 → `/mp-review-task {module} {issue-number}` review |
+| 跨模块集成问题 | `/mp-test-integration {issue-number}` 补充覆盖以定位问题，再修复对应模块 |
+
+修复完成后重新运行 `/mp-test-e2e`（或直接重跑已有 E2E 测试），全部通过后再进入 Step 7。
+
 ---
 
 ### Step 7: 验收
