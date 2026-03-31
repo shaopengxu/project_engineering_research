@@ -55,39 +55,29 @@ Step 4: 环境初始化 + 任务拆分
     └── 不通过 → 新会话修订
 
 Step 5: 契约测试 + 实现 + Review（按模块串行推进）
-├── 5a. infra 模块（一次性）：
-│   ├── 新会话 [Implementer agent]: 实现 infra（数据库连接、配置、错误处理、响应格式）
-│   ├── 验收标准：依赖安装成功、lint 通过、数据库连接成功、错误处理中间件可用
-│   └── 技术负责人: review 后继续
+├── 5a. /mp-impl-infra → infra 实现（一次性），技术负责人 review 后继续
 │
 └── 循环 [按依赖顺序逐模块执行]：被依赖的后端模块 → 依赖方后端模块 → 前端模块
     │
     ├── 5b. 测试先行（按模块类型二选一）：
-    │   ├── 后端模块 → 新会话 [Tester agent]: 基于接口契约写规格测试
-    │   └── 前端模块 → 按 feature 逐个新会话 [Tester agent]: API 调用层测试 + 页面渲染测试
+    │   ├── 后端模块 → /mp-test-contract
+    │   └── 前端模块 → 按 feature 逐个 /mp-test-frontend
     │   技术负责人: review 测试代码
-    │       ├── 通过 → 继续实现
-    │       └── 不通过 → Tester agent 新会话修改
     │
     ├── 循环 [按 Task 依赖顺序逐 Task 执行]:
-    │   ├── 5c. 新会话 [Implementer agent]: 实现当前 Task
-    │   │   ├── 契约测试通过
-    │   │   ├── L1 集成测试通过（后端：controller→service→repository；前端：页面→hooks→API）
-    │   │   ├── commit message 包含 Task 标识：`[#issue-number]`
-    │   │   └── 完成后 gh issue comment 报告
-    │   ├── 5d. 新会话 [Reviewer agent]: 根据 commit message 中的 `[#issue-number]` 定位相关提交，对照文档 + 测试 review
+    │   ├── 5c. /mp-impl → 实现当前 Task
+    │   ├── 5d. /mp-review-task → Task Review
     │   │   ├── LGTM → 进入下一个 Task
-    │   │   ├── MUST FIX / SHOULD FIX → 5e. Implementer 新会话修复 → 重新 Review
+    │   │   ├── MUST FIX / SHOULD FIX → 5e. /mp-review-fix → 修复后重新 Review
     │   │   └── 涉及接口变更 → 停止，按变更传播规则处理
     │   └── 技术负责人: 更新 Issue 状态
     │
-    ├── 5f. 当前模块所有 Task 完成 → 模块级 Review
-    ├── 5g. L2 关键路径集成测试（当被依赖模块已实现完成时）
-    │   └── 新会话 [Implementer agent]: 编写跨模块集成测试（真实调用，不 Mock 其他模块）
+    ├── 5f. /mp-review-module → 模块级 Review
+    ├── 5g. /mp-test-integration → L2 关键路径集成测试（当被依赖模块已完成时）
     └── 技术负责人: 确认当前模块完成，推进下一个模块
 
 Step 6: E2E 测试
-├── 会话 [Tester agent]: 根据 PRD 验收标准编写 E2E 测试，覆盖核心用户流程
+├── /mp-test-e2e → 根据 PRD 验收标准编写 E2E 测试
 ├── 技术负责人: 确认 E2E 测试通过
 ├── 技术负责人: 编写 README.md（推荐，基于 CLAUDE.md 和 architecture.md 整理）
 └── 如不需要自动化 E2E → 跳过，由 Step 7 产品经理手动验收覆盖
