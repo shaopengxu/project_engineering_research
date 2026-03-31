@@ -25,7 +25,8 @@ description: "Medium-project Step 4a: 根据架构文档初始化项目脚手架
    - 配置 TypeScript（根目录 tsconfig.json + 各端独立 tsconfig）
 
 3. **环境配置**：
-   - 创建 `.env.example`（DATABASE_URL、PORT 等必需环境变量）
+   - 创建 `docker-compose.yml`（至少包含 PostgreSQL 服务，配置开发和测试两个数据库）
+   - 创建 `.env.example`（DATABASE_URL、PORT、LOG_LEVEL 等必需环境变量）
    - `.env` 加入 `.gitignore`
 
 4. **导出桩文件**：
@@ -34,6 +35,7 @@ description: "Medium-project Step 4a: 根据架构文档初始化项目脚手架
    - 函数体 `throw new Error('Not implemented')`
 
 5. **启动验证**：
+   - 确保 `docker compose up -d` 能启动本地依赖
    - 确保 `npm install` 成功
    - 确保 `npm run lint` 通过
    - 确保测试框架能启动

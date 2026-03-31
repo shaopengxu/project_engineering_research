@@ -18,6 +18,8 @@
 - 任务管理 — GitHub Projects（`gh issue list` 查看）
 
 ## 常用命令
+- `docker compose up -d` — 启动本地依赖（PostgreSQL 等）
+- `docker compose down` — 停止本地依赖
 - `npm run dev:server` — 启动后端开发服务器
 - `npm run dev:web` — 启动前端 SPA
 - `npm run dev:admin` — 启动管理后台
@@ -44,6 +46,7 @@ server/                        # 后端
 ├── infra/
 │   ├── database.ts
 │   ├── config.ts
+│   ├── logger.ts
 │   ├── error-handler.ts
 │   └── response.ts
 └── app.ts
@@ -89,8 +92,12 @@ tests/
 - 前端状态：页面内用 useState，跨页面用 Zustand，服务端数据用 TanStack Query
 - {项目特有约定}
 
+## 日志约定
+- 使用 infra/logger.ts 提供的 logger，禁止直接 console.log
+- 日志级别通过环境变量 `LOG_LEVEL` 控制（默认 info，测试时可设为 warn 减少噪音）
+
 ## 测试环境
-- 测试数据库: PostgreSQL 测试库（通过 DATABASE_URL 环境变量区分）
+- 测试数据库: PostgreSQL 测试库（通过 DATABASE_URL 环境变量区分，由 docker-compose 提供）
 - 测试数据隔离: 每个测试文件使用事务回滚
 - 前端测试: Vitest + React Testing Library + jsdom
 
