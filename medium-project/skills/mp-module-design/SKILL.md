@@ -27,7 +27,7 @@ argument-hint: "<module-name> [feature-name] | --summary"
 - docs/prd.md（重点关注：与该模块对应的业务需求部分）
 - docs/module-design/（如已有其他模块的设计文件，阅读以了解已定义的接口）
 
-请按照本 skill 目录下的 [module-design-template.md](module-design-template.md) 的后端模块部分，产出 `docs/module-design/{module-name}.md`，包含：
+请按照本 skill 目录下的 [backend-module-template.md](backend-module-template.md)，产出 `docs/module-design/{module-name}.md`，包含：
 
 1. 模块概述（职责、PRD 映射）
 2. 内部架构（分层结构、控制流）
@@ -73,7 +73,7 @@ argument-hint: "<module-name> [feature-name] | --summary"
 - docs/prd.md（重点关注：页面功能、用户交互流程）
 - docs/module-design/（所有后端模块的设计文件，了解可调用的后端接口）
 
-请按照本 skill 目录下的 [module-design-template.md](module-design-template.md) 的前端模块部分，产出 `docs/module-design/{module-name}.md`（整体设计文档），包含：
+请按照本 skill 目录下的 [frontend-overall-template.md](frontend-overall-template.md)，产出 `docs/module-design/{module-name}.md`（整体设计文档），包含：
 
 1. 模块概述（职责、PRD 映射、类型标注为"前端模块"）
 2. Feature 划分（列出所有 feature 及其包含的页面，说明划分依据）
@@ -108,7 +108,7 @@ argument-hint: "<module-name> [feature-name] | --summary"
 - docs/module-design/（该 feature 对应的后端模块设计文件，了解可调用的后端接口）
 - docs/prd.md（重点关注：与该 feature 相关的页面功能和验收标准）
 
-请产出 `docs/module-design/{module-name}-{feature}.md`，包含：
+请按照本 skill 目录下的 [frontend-feature-template.md](frontend-feature-template.md)，产出 `docs/module-design/{module-name}-{feature}.md`，包含：
 
 1. Feature 概述（职责、包含的页面、对应的后端模块）
 2. **页面与路由** — 每个页面包含：
