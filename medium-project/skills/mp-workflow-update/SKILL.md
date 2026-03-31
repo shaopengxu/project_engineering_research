@@ -14,7 +14,7 @@ argument-hint: "<状态变更描述> | init"
 
 ## 初始化
 
-如果参数是 `init`，根据本 skill 目录下的 [workflow-state-template.md](../mp-workflow/workflow-state-template.md) 创建 `docs/workflow-state.md`，commit 后告知用户从 Step 1 开始。
+如果参数是 `init`，根据本 skill 目录下的 [workflow-state-template.md](workflow-state-template.md) 创建 `docs/workflow-state.md`；根据本 skill 目录下的 [CLAUDE-template.md](CLAUDE-template.md) 创建 `CLAUDE.md`，commit 后告知用户从 Step 1 开始。
 
 ## 状态更新
 
