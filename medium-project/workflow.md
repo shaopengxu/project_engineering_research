@@ -15,22 +15,6 @@
 | Implementer agent | 按模块实现功能，通过 Issue comment 沟通 |
 | Reviewer agent | 逐 Task review + 模块完成后模块级 review |
 
-## 文档清单
-
-| 文档 | 谁写 | 谁 Review | 是否必须 |
-|------|------|-----------|---------|
-| PRD (prd.md) | 产品经理 | 产品经理 | 必须 |
-| CLAUDE.md | 技术负责人 + Architect agent | 技术负责人 | 必须 |
-| README.md | 技术负责人 | 无需 review | 推荐 |
-| 系统架构 (architecture.md) | Architect agent | 技术负责人 | 必须 |
-| 模块设计 + 接口契约 (module-design/{module}.md) | Architect agent | 技术负责人 | 必须 |
-| GitHub Issues | Architect agent + 技术负责人 | 技术负责人 | 必须 |
-| 契约测试 + 集成测试 + E2E 测试 | Tester agent | 技术负责人 | 必须 |
-| 单元测试 | Implementer agent | Reviewer agent | 按需 |
-| 业务代码 | Implementer agent | Reviewer agent + 技术负责人（跨模块时） | 必须 |
-
-> **CLAUDE.md vs README.md**：CLAUDE.md 面向 AI Agent，包含约定和禁止事项；README.md 面向人类开发者，包含快速上手指南。两者定位不同，不可互相替代。
-
 ## 开发流程
 
 ```
