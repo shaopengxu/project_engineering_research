@@ -70,7 +70,7 @@ argument-hint: "<module-name> [feature-name] | --summary"
 请先阅读以下文件：
 - CLAUDE.md
 - docs/architecture.md（重点关注：前端模块职责、调用的后端模块、Feature 划分）
-- docs/prd.md（重点关注：页面功能、用户交互流程）
+- docs/prd.md（重点关注：页面功能、用户交互流程、UI 原型图或原型链接）
 - docs/module-design/（所有后端模块的设计文件，了解可调用的后端接口）
 
 请按照本 skill 目录下的 [frontend-overall-template.md](frontend-overall-template.md)，产出 `docs/module-design/{module-name}.md`（整体设计文档），包含：
@@ -79,7 +79,7 @@ argument-hint: "<module-name> [feature-name] | --summary"
 2. Feature 划分（列出所有 feature 及其包含的页面，说明划分依据）
 3. 内部架构（目录结构：features/ + shared/ + stores/ + routes.ts）
 4. 路由结构（所有页面的路由表，标注所属 feature）
-5. 布局设计（全局布局、导航结构）
+5. 布局设计（全局布局、导航结构；如 PRD 中有整体布局的 UI 原型，引用原型图路径或链接）
 6. 共享层设计：
    - 共享组件（全局复用的 UI 组件）
    - 共享 hooks（认证状态、通用数据获取等）
@@ -106,12 +106,13 @@ argument-hint: "<module-name> [feature-name] | --summary"
 - CLAUDE.md
 - docs/module-design/{module-name}.md（整体设计：路由结构、共享层、类型定义）
 - docs/module-design/（该 feature 对应的后端模块设计文件，了解可调用的后端接口）
-- docs/prd.md（重点关注：与该 feature 相关的页面功能和验收标准）
+- docs/prd.md（重点关注：与该 feature 相关的页面功能、验收标准、UI 原型图或原型链接）
 
 请按照本 skill 目录下的 [frontend-feature-template.md](frontend-feature-template.md)，产出 `docs/module-design/{module-name}-{feature}.md`，包含：
 
 1. Feature 概述（职责、包含的页面、对应的后端模块）
 2. **页面与路由** — 每个页面包含：
+   - UI 原型（如 PRD 中有该页面的原型图或原型链接，引用到此处，供实现时参考）
    - 路由路径（与整体设计的路由表一致）
    - 功能描述
    - 页面状态
@@ -126,6 +127,7 @@ argument-hint: "<module-name> [feature-name] | --summary"
 要求：
 - 每个页面调用的后端接口必须在对应后端模块的 module-design 中有定义
 - 如果发现需要的后端接口不存在，停下来指出缺失
+- 如果 PRD 中有该页面的 UI 原型图（图片路径）或原型链接（如 Figma URL），必须在对应页面的「UI 原型」字段中引用，供 Implementer agent 实现时参考
 - 页面组件结构树不需要细到每个 HTML 元素，描述到业务组件粒度即可
 - 不要设计其他 feature 的内容
 - 使用整体设计中定义的共享组件和全局状态，不要重复定义
