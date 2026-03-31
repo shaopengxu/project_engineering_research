@@ -103,7 +103,7 @@ tests/
 
 ## Git 规则
 - 每次完成一个有意义的改动后，主动 commit
-- commit message 格式：`<type>(<module>): <描述为什么改>`
+- commit message 格式：`<type>(<module>): <描述为什么改> [#issue-number]`
 - type: feat / fix / docs / refactor / test
 - 不要把无关改动放在同一个 commit
 

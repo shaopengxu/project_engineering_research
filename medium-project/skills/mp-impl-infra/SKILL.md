@@ -22,8 +22,7 @@ argument-hint: "<issue-number>"
 
 2. 配置管理：
    - 环境变量加载（dotenv）
-   - 创建 .env.example（DATABASE_URL、PORT 等）
-   - .env 加入 .gitignore
+   - 补充 .env.example（在脚手架已创建的基础上，确保包含 DATABASE_URL、PORT、LOG_LEVEL 等必需变量）
 
 3. 全局错误处理中间件：
    - 统一错误捕获和格式化

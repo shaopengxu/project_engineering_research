@@ -17,7 +17,7 @@ argument-hint: "<module-name>"
 
 然后阅读该模块的全部源代码：server/modules/{module}/（后端模块）或 {web|admin}/（前端模块）
 
-检查清单：
+检查清单（后端模块）：
 1. 模块内命名风格是否一致（变量、函数、文件命名）
 2. 错误处理方式是否统一（错误码格式、异常抛出方式）
 3. module-design/{module}.md 中的所有接口是否都已实现
@@ -25,6 +25,17 @@ argument-hint: "<module-name>"
 5. 是否有跨层泄漏（如 controller 直接调用 repository）
 6. 是否有不必要的代码重复
 7. CLAUDE.md 中的约定是否都被遵守
+
+检查清单（前端模块）：
+1. 模块内命名风格是否一致（变量、函数、文件命名）
+2. 错误处理方式是否统一（API 错误处理、用户提示方式）
+3. 页面组件是否只通过 hooks/API 层获取数据（不直接发起请求）
+4. 路由结构是否与 module-design 中的路由表一致
+5. 共享组件与 feature 私有组件的边界是否清晰（共享层无 feature 专属逻辑，feature 内无重复的共享组件）
+6. 状态管理策略是否符合约定（页面内 useState、跨页面 Zustand、服务端数据 TanStack Query）
+7. feature 间是否存在隐式依赖（直接 import 其他 feature 内部文件）
+8. 是否有不必要的代码重复
+9. CLAUDE.md 中的约定是否都被遵守
 
 输出格式（同 Task Review）：
 - MUST FIX / SHOULD FIX / OPTIONAL / LGTM
