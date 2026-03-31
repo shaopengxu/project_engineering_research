@@ -29,26 +29,49 @@
 
 ## 项目结构
 ```
-server/                # 后端 (Express + Prisma)
+server/                        # 后端
 ├── modules/
-│   ├── {module-a}/    # {一句话职责}
-│   └── {module-b}/    # {一句话职责}
-├── infra/             # 数据库、配置、错误处理、响应格式
+│   ├── {module-a}/
+│   │   ├── controller.ts
+│   │   ├── service.ts
+│   │   ├── repository.ts
+│   │   ├── types.ts
+│   │   └── index.ts
+│   └── {module-b}/
+│       └── ...
+├── infra/
+│   ├── database.ts
+│   ├── config.ts
+│   ├── error-handler.ts
+│   └── response.ts
 └── app.ts
-web/                   # 前端 SPA (React + Vite)
-├── features/          # 按业务域组织（{feature-a}/, {feature-b}/, ...）
-├── shared/            # 共享组件、hooks、工具函数
-├── stores/            # 全局状态管理
-├── routes.ts
+
+web/                           # 前端 SPA
+├── features/                  # 按业务域组织
+│   ├── {feature-a}/
+│   │   ├── pages/             # 页面组件
+│   │   ├── components/        # feature 私有组件
+│   │   ├── hooks/             # feature 私有 hooks
+│   │   └── api/               # feature 私有 API 调用
+│   └── {feature-b}/
+│       └── ...
+├── shared/                    # 共享组件、hooks、工具函数、类型
+├── stores/                    # 全局状态管理
+├── routes.ts                  # 统一路由
 └── main.tsx
-admin/                 # 管理后台 (React + Vite + Ant Design)
-└── ...                # 结构同 web/
+
+admin/                         # 管理后台（结构同 web/）
+└── ...
+
 tests/
-├── contracts/         # 契约测试
-├── unit/              # 单元测试
-├── integration/       # 集成测试（含 paths/ 关键路径）
-├── e2e/               # E2E 测试
-└── fixtures/          # 共享测试数据
+├── contracts/                 # 契约测试（按模块组织，前端按 feature 子目录）
+├── unit/                      # 单元测试（按模块组织）
+├── integration/               # 集成测试
+│   ├── {module-a}/            # L1: 模块内集成
+│   ├── {module-b}/
+│   └── paths/                 # L2: 关键路径集成
+├── e2e/                       # E2E 测试（按用户流程）
+└── fixtures/                  # 共享测试数据（工厂函数，非硬编码）
 ```
 
 ## 代码规范
@@ -92,4 +115,3 @@ tests/
 - **发现接口需要变更** — 描述变更内容和原因，等技术负责人评估影响范围
 - **同一问题修改超过 2 次未解决** — 停止，分析根本原因，给出不同方案
 - **超出当前 Task 范围** — 说明哪些工作超出范围，等待确认
-
