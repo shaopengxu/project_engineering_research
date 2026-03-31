@@ -47,26 +47,10 @@ Step 3: 模块详细设计 + 接口契约（每个模块一个新会话，使用
     └── 不通过 → 对应模块新会话修订
 
 Step 4: 环境初始化 + 任务拆分
-├── 新会话 [Architect agent]: 读架构 + 模块设计文档
-│   ├── 初始化脚手架（含模块目录结构、导出桩文件）
-│   ├── 创建 GitHub Issues（含依赖关系）
-│   ├── 规划集成测试用例（识别 L2 关键路径）
-│   └── 回填 CLAUDE.md: 常用命令、测试环境
-│
-│   任务拆分原则：
-│   ├── infra 独立为最高优先级 Task
-│   ├── 每个业务模块可拆为 2-6 个 Task（按层或按功能拆分）
-│   ├── 单个 Task: < 15 个文件、< 500 行改动、一句话可描述、单会话可完成
-│   ├── Task 间依赖关系标注为 DAG（在 Issue body 中声明 Depends on）
-│   ├── 每个 Task 标注需通过的测试
-│   └── 强类型语言：为每个模块创建导出桩文件（只声明签名，函数体抛 Not implemented）
-│
-│   模块内 Task 拆分策略：
-│   ├── 按层拆分（CRUD 密集型）: repository → service → controller
-│   ├── 按功能拆分（功能丰富型）: 注册登录 → 个人资料 → 权限管理
-│   └── 拆不到粒度 → 说明模块划分需要回退到 Step 2 调整
-│
-└── 技术负责人: review 脚手架、Issues
+├── 新会话 [Architect agent]: /mp-scaffold → 初始化脚手架 + 回填 CLAUDE.md
+├── 技术负责人: review 脚手架
+├── 新会话 [Architect agent]: /mp-task-split → 拆分任务 + 创建 GitHub Issues
+└── 技术负责人: review Issues
     ├── 通过 → 进入 Step 5
     └── 不通过 → 新会话修订
 

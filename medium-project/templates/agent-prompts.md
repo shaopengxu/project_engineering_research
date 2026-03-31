@@ -22,50 +22,12 @@
 
 ---
 
-## Step 4 — Architect Agent（脚手架 + 任务拆分 + GitHub Issues）
+## Step 4 — Architect Agent（脚手架 + 任务拆分）
 
-在新会话中使用：
+分两个会话执行：
 
-```
-你是一个软件架构师。请根据架构文档初始化项目脚手架、拆分任务、创建 GitHub Issues。
-
-请先阅读以下文件：
-- CLAUDE.md
-- docs/architecture.md
-- docs/module-design/（所有模块设计文件）
-
-请完成以下工作：
-
-1. 项目脚手架初始化：
-   - 根据 architecture.md 的目录结构创建项目框架
-   - 安装依赖、配置构建工具、测试框架、lint
-   - 配置 TypeScript（根目录 tsconfig.json + 各端独立 tsconfig）
-   - 创建 `.env.example`（DATABASE_URL、PORT 等必需环境变量），`.env` 加入 `.gitignore`
-   - 为每个后端模块创建**导出桩文件**（只声明函数签名，函数体 `throw new Error('Not implemented')`）
-   - 确保安装、lint、测试框架启动命令都能成功
-
-2. 创建 GitHub Issues：
-   - 契约测试任务：每个模块的接口契约对应契约测试 Issue
-   - 实现任务：按模块拆分，每个 Issue 标注依赖（Depends on #N）和需通过的测试
-   - 集成测试任务：为 architecture.md 中的每条关键路径创建 L2 集成测试 Issue
-   - 使用标签：type:contract-test / type:impl / type:integration-test / type:e2e / type:infra + module:{name}
-   - 使用 Milestone 标注迭代（如需多迭代）
-
-3. 回填 CLAUDE.md：
-   - 常用命令（与实际脚手架配置一致）
-   - 测试环境（隔离方式、环境变量）
-
-任务拆分原则：
-- infra 独立为最高优先级 Task
-- 每个业务模块可拆为 2-6 个 Task（按层或按功能拆分）
-- 单个 Task: < 15 个文件、< 500 行改动、一句话可描述、单会话可完成
-- Task 间依赖标注为 DAG（在 Issue body 中声明 Depends on）
-- 如果拆不到粒度，停下来说明问题
-
-要求：
-- 不要写业务代码和测试代码
-- 脚手架完成后 commit，GitHub Issues 创建后在 commit message 中记录
-```
+1. 新会话：`/mp-scaffold` → 初始化项目脚手架 + 回填 CLAUDE.md
+2. 新会话：`/mp-task-split` → 拆分任务 + 创建 GitHub Issues
 
 ---
 
