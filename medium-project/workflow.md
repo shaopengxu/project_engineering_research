@@ -43,9 +43,7 @@ Step 1: PRD 审查 + 初始化
 │   ├── 不通过 → 退回产品经理修改，修改后重新审查
 │   └── 通过 → 继续初始化
 ├── 技术负责人: git init + GitHub 仓库创建 + GitHub Project 创建
-├── 新会话 [Architect agent]: 读 PRD → 产出 CLAUDE.md 基础部分建议
-│   └── 一句话描述、Tech Stack、项目文档、代码规范、Git 规则、共享代码修改规则、不要做的事、错误处理规则
-└── 技术负责人: review 并确认 CLAUDE.md 基础部分
+└── 技术负责人: 填写 CLAUDE.md 的项目名称和一句话描述
 
 Step 2: 系统架构设计
 ├── 新会话 [Architect agent]: 读 PRD → 产出 architecture.md（系统级）

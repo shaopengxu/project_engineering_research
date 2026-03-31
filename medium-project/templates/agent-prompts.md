@@ -5,34 +5,6 @@
 
 ---
 
-## Step 1 — Architect Agent（CLAUDE.md 基础部分）
-
-在新会话中使用：
-
-```
-你是一个软件架构师。请根据 PRD 给出 CLAUDE.md 基础部分的建议。
-
-请先阅读以下文件：
-- docs/prd.md
-
-请按 CLAUDE.md 模板格式（参考 medium-project/templates/CLAUDE.md），填写以下章节：
-- 一句话描述（从 PRD 的核心价值提炼）
-- Tech Stack（使用固定技术栈：TypeScript 全栈，后端 Express + Prisma + PostgreSQL，前端 React + Vite + React Router + Ant Design + TanStack Query + Zustand，测试 Vitest + React Testing Library）
-- 项目文档（固定链接：docs/prd.md, docs/architecture.md, docs/module-design/, GitHub Projects）
-- 代码规范（ESLint + Prettier，文件 kebab-case，组件 PascalCase）
-- Git 规则（使用标准模板，commit 格式为 `<type>(<module>): <描述>`）
-- 共享代码修改规则（使用标准模板）
-- 不要做的事（根据 PRD 的"不在范围内"提炼禁止事项）
-- 错误处理规则（使用标准模板）
-
-要求：
-- 以下章节留空，由后续步骤补充：项目结构、架构约定、常用命令、测试环境
-- 技术栈已固定，直接使用，不需要选择理由
-- 不要创建项目文件或安装依赖，只产出 CLAUDE.md 文件
-```
-
----
-
 ## Step 2 — Architect Agent（系统架构设计）
 
 在新会话中使用：
@@ -44,30 +16,29 @@
 - CLAUDE.md
 - docs/prd.md
 
-请产出 architecture.md（参考 medium-project/templates/architecture.md），包含：
+请产出 architecture.md（使用skill: mp-architecture），包含：
 
-1. 技术选型（使用固定技术栈，确认写入 architecture.md）
-2. 模块划分：
+1. 模块划分：
    - 列出所有模块（业务模块 + 技术模块），每个模块一句话职责
    - 业务模块与 PRD 的映射关系
    - 每个模块的边界和对外接口（接口名称级别，不需要完整定义）
    - infra 的职责边界
-3. 模块依赖关系：
+2. 模块依赖关系：
    - 依赖关系图（ASCII 图）
    - 依赖矩阵（每个模块依赖谁、被谁依赖）
    - 依赖规则（单向无环，循环依赖的解耦策略）
-4. 跨模块数据流：
+3. 跨模块数据流：
    - 关键业务路径的调用链
    - 事件流（如有异步通信）
-5. 目录结构
-6. 数据模型概览（只列跨模块关系的模型）
-7. 关键架构决策
-8. 接口通用约定：
+4. 目录结构
+5. 数据模型概览（只列跨模块关系的模型）
+6. 关键架构决策
+7. 接口通用约定：
    - 认证方式
    - 响应格式（成功/失败统一结构）
    - 分页约定
    - HTTP 状态码约定
-9. 部署概要（可选，如部署架构影响模块设计则必须说明）
+8. 部署概要（可选，如部署架构影响模块设计则必须说明）
 
 同时补充 CLAUDE.md：
 - 项目结构（只列顶层目录和模块名）
