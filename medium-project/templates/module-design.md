@@ -1,6 +1,12 @@
 # 模块详细设计: {模块名称}
 
 > 本文档描述 {模块名称} 模块的内部设计和接口契约。系统级架构见 architecture.md。
+>
+> **前端模块文档拆分**：前端模块（如 web-app）拆为整体文档 + feature 级文档：
+> - `web-app.md`（整体）：路由结构、布局、共享状态、共享组件、通用约定
+> - `web-app-{feature}.md`（逐 feature）：该 feature 的页面、交互流程、调用的后端接口
+>
+> 后端模块每个模块一个文件，不拆分。
 
 ## 1. 模块概述
 
@@ -45,17 +51,18 @@
 
 ```
 {module}/
-├── pages/             # 页面组件（与路由一一对应）
-│   ├── {PageA}/
-│   │   ├── index.tsx          # 页面入口
-│   │   └── components/        # 页面私有组件
-│   └── {PageB}/
-├── components/        # 模块内共享组件
-├── hooks/             # 自定义 hooks（数据获取、状态逻辑）
-├── api/               # API 调用层（封装后端接口调用）
-├── stores/            # 状态管理（如有跨页面共享状态）
-├── types.ts           # 模块内类型定义
-└── routes.ts          # 模块路由定义
+├── features/          # 按业务域组织
+│   ├── {feature-a}/
+│   │   ├── pages/             # 页面组件
+│   │   ├── components/        # feature 私有组件
+│   │   ├── hooks/             # feature 私有 hooks
+│   │   └── api/               # feature 私有 API 调用
+│   └── {feature-b}/
+│       └── ...
+├── shared/            # 共享组件、hooks、工具函数、类型
+├── stores/            # 全局状态管理（跨 feature 共享）
+├── routes.ts          # 统一路由
+└── main.tsx
 ```
 
 | 层 | 职责 | 依赖 |

@@ -62,8 +62,9 @@
 - **职责**: {一句话描述，如：用户端 SPA，提供 XXX 功能}
 - **边界**: {什么页面属于这个模块}
 - **页面数**: {N} 个页面
+- **Feature 划分**: {feature-a}（{页面列表}）、{feature-b}（{页面列表}）、...
 - **调用的后端模块**: {module-a}, {module-b}
-- **详细设计**: module-design/web-app.md
+- **详细设计**: module-design/web-app.md（整体）+ module-design/web-app-{feature}.md（逐 feature）
 
 #### admin（前端）
 - **职责**: {一句话描述，如：管理后台，提供 XXX 管理功能}
@@ -154,19 +155,17 @@ server/                        # 后端
 └── app.ts
 
 web/                           # 前端 SPA
-├── pages/
-│   ├── {page-a}/
-│   │   ├── index.tsx
-│   │   └── components/
-│   ├── {page-b}/
-│   │   └── ...
-│   └── layout.tsx
-├── components/                # 全局共享组件
-├── hooks/                     # 全局共享 hooks
-├── api/                       # API 调用层
+├── features/                  # 按业务域组织
+│   ├── {feature-a}/
+│   │   ├── pages/             # 页面组件
+│   │   ├── components/        # feature 私有组件
+│   │   ├── hooks/             # feature 私有 hooks
+│   │   └── api/               # feature 私有 API 调用
+│   └── {feature-b}/
+│       └── ...
+├── shared/                    # 共享组件、hooks、工具函数、类型
 ├── stores/                    # 全局状态管理
-├── types/                     # 共享类型定义
-├── routes.ts
+├── routes.ts                  # 统一路由
 └── main.tsx
 
 admin/                         # 管理后台（结构同 web/）

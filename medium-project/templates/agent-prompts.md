@@ -102,40 +102,76 @@
   - 不要修改已有模块的设计文件。如发现不一致，停下来指出问题
 ```
 
-### 前端模块会话
+### 前端模块会话（整体设计）
 
 > 前端模块（web-app、admin）应在所有后端模块设计完成后再设计，因为前端依赖后端接口。
+> 前端模块拆为整体文档 + feature 级文档。本会话产出整体文档。
 
 ```
-你是一个软件架构师。请为前端模块 {模块名} 设计内部架构。
+你是一个软件架构师。请为前端模块 {模块名} 设计整体架构。
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/architecture.md（重点关注：前端模块职责、调用的后端模块）
-- docs/prd.md（重点关注：页面功能、用户交互流程、UI 相关的验收标准）
+- docs/architecture.md（重点关注：前端模块职责、调用的后端模块、Feature 划分）
+- docs/prd.md（重点关注：页面功能、用户交互流程）
 - docs/module-design/（所有后端模块的设计文件，了解可调用的后端接口）
 
-请产出 module-design/{module-name}.md（参考 medium-project/templates/module-design.md 的前端模块部分），包含：
+请产出 module-design/{module-name}.md（整体设计文档），包含：
 
 1. 模块概述（职责、PRD 映射、类型标注为"前端模块"）
-2. 内部架构（目录结构：pages / components / hooks / api / stores / routes）
-3. 核心类型定义和状态管理（页面状态、全局状态、持久化状态）
-4. **页面与路由** — 每个页面包含：
-   - 路由路径
+2. Feature 划分（列出所有 feature 及其包含的页面，说明划分依据）
+3. 内部架构（目录结构：features/ + shared/ + stores/ + routes.ts）
+4. 路由结构（所有页面的路由表，标注所属 feature）
+5. 布局设计（全局布局、导航结构）
+6. 共享层设计：
+   - 共享组件（全局复用的 UI 组件）
+   - 共享 hooks（认证状态、通用数据获取等）
+   - 全局状态管理（Zustand store 设计）
+   - API client 配置（基础 URL、拦截器、错误处理）
+7. 核心类型定义（跨 feature 共享的类型）
+8. 模块特有约定（响应式要求、浏览器兼容、性能约束等）
+
+要求：
+- 本文档只设计整体结构和共享层，不设计各 feature 的页面细节
+- 各 feature 的详细设计将在独立会话中产出 module-design/{module-name}-{feature}.md
+- Feature 划分应与后端模块对应（如 auth feature 对应 user 后端模块）
+- 如果 admin 页面较少（< 5 个），可以不拆 feature，一个文件写完整体 + 页面细节
+```
+
+### 前端模块会话（feature 级设计）
+
+> 每个 feature 一个独立会话，按迭代需要逐个推进。
+
+```
+你是一个软件架构师。请为前端模块 {模块名} 的 {feature} 设计页面细节。
+
+请先阅读以下文件：
+- CLAUDE.md
+- docs/module-design/{module-name}.md（整体设计：路由结构、共享层、类型定义）
+- docs/module-design/（{feature} 对应的后端模块设计文件，了解可调用的后端接口）
+- docs/prd.md（重点关注：与 {feature} 相关的页面功能和验收标准）
+
+请产出 module-design/{module-name}-{feature}.md，包含：
+
+1. Feature 概述（职责、包含的页面、对应的后端模块）
+2. **页面与路由** — 每个页面包含：
+   - 路由路径（与整体设计的路由表一致）
    - 功能描述
    - 页面状态
    - 调用的后端接口（接口名、触发时机、成功/错误处理）
    - 交互流程
    - 组件结构树
+3. Feature 私有组件（不在 shared/ 中的组件）
+4. Feature 私有 hooks（数据获取、业务逻辑封装）
 5. 消费的后端接口汇总（哪些后端接口、什么页面调用）
 6. 关键业务逻辑（前端校验规则、权限控制、复杂交互逻辑）
-7. 模块特有约定（响应式要求、浏览器兼容、性能约束等）
 
 要求：
 - 每个页面调用的后端接口必须在对应后端模块的 module-design 中有定义
 - 如果发现需要的后端接口不存在，停下来指出缺失
 - 页面组件结构树不需要细到每个 HTML 元素，描述到业务组件粒度即可
-- 不要设计其他模块的内容
+- 不要设计其他 feature 的内容
+- 使用整体设计中定义的共享组件和全局状态，不要重复定义
 ```
 
 ### 最后一个模块完成后（同一会话或新会话）
@@ -266,9 +302,11 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 5b. Tester Agent（后端模块契约测试）
+### 5b. Tester Agent（测试先行，按模块类型二选一）
 
-**每个模块一个独立会话**，按依赖顺序串行推进。在新会话中使用：
+按依赖顺序串行推进。后端模块每个模块一个会话；前端模块每个 feature 一个会话。
+
+#### 后端模块 — 契约测试
 
 ```
 你是一个测试工程师。请为后端模块 {模块名} 编写契约测试。
@@ -294,23 +332,22 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 注意：你只需要阅读本模块的设计文档（module-design/{module}.md），不需要阅读其他模块的文档。
 ```
 
-### 5c. Tester Agent（前端模块测试）
-
-**每个前端模块一个独立会话**，在所有依赖的后端模块完成后执行。在新会话中使用：
+#### 前端模块 — API 调用层测试 + 页面渲染测试（按 feature 逐个会话）
 
 ```
-你是一个测试工程师。请为前端模块 {模块名} 编写测试。
+你是一个测试工程师。请为前端模块 {模块名} 的 {feature} 编写测试。
 
 前端测试包含两部分：
-1. **API 调用层测试**：验证 api/ 层的请求参数和响应处理与 module-design 中后端接口定义一致
+1. **API 调用层测试**：验证 api/ 层的请求参数和响应处理与后端接口定义一致
 2. **页面渲染测试**：验证页面组件能正确渲染 mock 数据并响应用户交互
 
 这些测试将在实现之前编写，作为 TDD 的驱动力。
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/module-design/{module}.md（重点关注：页面与路由、调用的后端接口、交互流程）
-- docs/module-design/（已完成的后端模块设计文件，了解后端接口定义）
+- docs/module-design/{module}.md（整体设计：共享层、路由结构）
+- docs/module-design/{module}-{feature}.md（本 feature 的页面、交互、调用的后端接口）
+- docs/module-design/（{feature} 对应的后端模块设计文件，了解后端接口定义）
 
 要求：
 
@@ -319,25 +356,27 @@ API 调用层测试：
 - 验证响应数据的解析和转换逻辑
 - 验证错误响应的处理（对照后端接口的错误码）
 - 使用 MSW（Mock Service Worker）或手动 mock 拦截 HTTP 请求
-- 测试代码放在 tests/contracts/{module}/ 目录下
+- 测试代码放在 tests/contracts/{module}/{feature}/ 目录下
 
 页面渲染测试：
 - 每个页面至少一个渲染测试（使用 React Testing Library）
 - 验证关键用户交互（按钮点击、表单提交、列表渲染）
 - Mock 所有 API 调用（通过 mock hooks 或 MSW）
-- 测试代码放在 tests/contracts/{module}/ 目录下
+- 测试代码放在 tests/contracts/{module}/{feature}/ 目录下
 
 通用要求：
 - 测试之间互相独立，不依赖执行顺序
 - 每个测试用例用注释标注对应的 module-design 来源
 - 此阶段只写测试，不写业务代码
 - 如果 module-design 有模糊或矛盾之处，停下来指出问题
-- 完成后用 `gh issue comment {ISSUE_NUMBER} --body "前端测试编写完成"` 报告
+- 完成后用 `gh issue comment {ISSUE_NUMBER} --body "{feature} 前端测试编写完成"` 报告
+
+注意：你只需要阅读本 feature 的设计文档和整体设计文档，不需要阅读其他 feature 的文档。
 ```
 
 ---
 
-### 5d. Implementer Agent（实现）
+### 5c. Implementer Agent（实现）
 
 在新会话中使用：
 
@@ -347,6 +386,7 @@ API 调用层测试：
 请先阅读以下文件：
 - CLAUDE.md
 - docs/module-design/{module}.md（本模块的设计 + 接口契约）
+- 前端 Task 还需读：docs/module-design/{module}-{feature}.md（本 feature 的页面细节）
 
 当前 Task：
 - Issue: #{issue-number}
@@ -371,7 +411,7 @@ API 调用层测试：
 
 ---
 
-### 5e. Reviewer Agent（Task Review）
+### 5d. Reviewer Agent（Task Review）
 
 每个 Task 完成后触发。在新会话中使用：
 
@@ -413,7 +453,7 @@ API 调用层测试：
 
 ---
 
-### 5f. Implementer Agent（Review 修复）
+### 5e. Implementer Agent（Review 修复）
 
 当 Reviewer 输出 MUST FIX 或 SHOULD FIX 后。在新会话中使用：
 
@@ -444,7 +484,7 @@ Review 反馈：
 
 ---
 
-### 5g. Reviewer Agent（模块 Review）
+### 5f. Reviewer Agent（模块 Review）
 
 模块所有 Task 完成后触发。在新会话中使用：
 
@@ -474,7 +514,7 @@ Review 反馈：
 
 ---
 
-### 5h. Implementer Agent（L2 关键路径集成测试）
+### 5g. Implementer Agent（L2 关键路径集成测试）
 
 当前模块完成模块级 Review 且被依赖模块已实现完成后，开独立会话。在新会话中使用：
 

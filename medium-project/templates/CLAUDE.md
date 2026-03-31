@@ -36,11 +36,11 @@ server/                # 后端 (Express + Prisma)
 ├── infra/             # 数据库、配置、错误处理、响应格式
 └── app.ts
 web/                   # 前端 SPA (React + Vite)
-├── pages/
-├── components/
-├── hooks/
-├── api/
-└── stores/
+├── features/          # 按业务域组织（{feature-a}/, {feature-b}/, ...）
+├── shared/            # 共享组件、hooks、工具函数
+├── stores/            # 全局状态管理
+├── routes.ts
+└── main.tsx
 admin/                 # 管理后台 (React + Vite + Ant Design)
 └── ...                # 结构同 web/
 tests/
@@ -60,7 +60,7 @@ tests/
 ## 架构约定
 - 后端模块间依赖单向，禁止循环
 - 后端分层：controller → service → repository，不跳层
-- 前端通过 api/ 层调用后端，组件不直接发请求
+- 前端按 feature 组织代码，通过 api/ 层调用后端，组件不直接发请求
 - 前端状态：页面内用 useState，跨页面用 Zustand，服务端数据用 TanStack Query
 - {项目特有约定}
 
