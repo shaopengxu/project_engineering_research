@@ -99,32 +99,32 @@ Step 4: 环境初始化 + 任务拆分
 Step 5: 契约测试 + 实现 + Review（按模块串行推进）
 └── 循环 [按依赖顺序逐模块执行]：infra → 被依赖的后端模块 → 依赖方后端模块 → 前端模块
     │
-    ├── infra 模块特殊处理：
+    ├── 5a. infra 模块特殊处理：
     │   ├── 新会话 [Implementer agent]: 实现 infra（数据库连接、配置、错误处理、响应格式）
     │   ├── 验收标准：依赖安装成功、lint 通过、数据库连接成功、错误处理中间件可用
     │   └── 技术负责人: review 后继续
     │
-    ├── 5a. 新会话 [Tester agent]: 写当前模块的契约测试
-    │   ├── 后端模块：基于接口契约的规格测试
-    │   └── 前端模块：API 调用层测试 + 页面渲染测试
-    ├── 技术负责人: review 测试代码
-    │   ├── 通过 → 继续实现
-    │   └── 不通过 → Tester agent 新会话修改
+    ├── 5b/5c. 新会话 [Tester agent]: 写当前模块的契约测试
+    │   ├── 5b 后端模块：基于接口契约的规格测试
+    │   ├── 5c 前端模块：API 调用层测试 + 页面渲染测试
+    │   └── 技术负责人: review 测试代码
+    │       ├── 通过 → 继续实现
+    │       └── 不通过 → Tester agent 新会话修改
     │
-    ├── 5d. 循环 [按 Task 依赖顺序逐 Task 执行]:
-    │   ├── 新会话 [Implementer agent]: 实现当前 Task
+    ├── 循环 [按 Task 依赖顺序逐 Task 执行]:
+    │   ├── 5d. 新会话 [Implementer agent]: 实现当前 Task
     │   │   ├── 契约测试通过
     │   │   ├── L1 集成测试通过（后端：controller→service→repository；前端：页面→hooks→API）
     │   │   ├── commit message 包含 Task 标识：`[#issue-number]`
     │   │   └── 完成后 gh issue comment 报告
-    │   ├── 新会话 [Reviewer agent]: 根据 commit message 中的 `[#issue-number]` 定位相关提交，对照文档 + 测试 review
+    │   ├── 5e. 新会话 [Reviewer agent]: 根据 commit message 中的 `[#issue-number]` 定位相关提交，对照文档 + 测试 review
     │   │   ├── LGTM → 进入下一个 Task
-    │   │   ├── MUST FIX / SHOULD FIX → Implementer 新会话修复 → 重新 Review
+    │   │   ├── MUST FIX / SHOULD FIX → 5f. Implementer 新会话修复 → 重新 Review
     │   │   └── 涉及接口变更 → 停止，按变更传播规则处理
     │   └── 技术负责人: 更新 Issue 状态
     │
-    ├── 5e. 当前模块所有 Task 完成 → 模块级 Review
-    ├── 5f. L2 关键路径集成测试（当被依赖模块已实现完成时）
+    ├── 5g. 当前模块所有 Task 完成 → 模块级 Review
+    ├── 5h. L2 关键路径集成测试（当被依赖模块已实现完成时）
     │   └── 新会话 [Implementer agent]: 编写跨模块集成测试（真实调用，不 Mock 其他模块）
     └── 技术负责人: 确认当前模块完成，推进下一个模块
 

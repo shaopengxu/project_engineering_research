@@ -242,81 +242,10 @@
 
 ## Step 5 — 按模块串行：契约测试 → 实现 → Review
 
-执行顺序：infra（使用 5c prompt）→ 后端模块（使用 5a + 5d-5h）→ 前端模块（使用 5b + 5d-5h）。
+执行顺序：infra（使用 5a prompt）→ 后端模块（使用 5b + 5d-5h）→ 前端模块（使用 5c + 5d-5h）。
 每个模块按以下顺序完成后，再推进下一个模块。
 
-### 5a. Tester Agent（后端模块契约测试）
-
-**每个模块一个独立会话**，按依赖顺序串行推进。在新会话中使用：
-
-```
-你是一个测试工程师。请为后端模块 {模块名} 编写契约测试。
-
-契约测试的目的是：验证接口的输入输出是否符合接口契约的定义。
-这些测试将在实现之前编写，作为 TDD 的驱动力。
-
-请先阅读以下文件：
-- CLAUDE.md
-- docs/module-design/{module}.md（重点关注：接口契约部分 + 数据模型）
-- server/modules/{module}/index.ts（导出桩文件，确认可用的函数签名）
-
-要求：
-- 每个接口的每条业务规则至少一个测试用例
-- 包含正常流程和异常流程（错误码全覆盖）
-- 测试之间互相独立，不依赖执行顺序
-- 每个测试用例用注释标注对应的业务规则来源
-- 测试代码放在 tests/contracts/{module}/ 目录下
-- 此阶段只写契约测试，不写业务代码
-- 如果接口契约有模糊或矛盾之处，停下来指出问题，不要自行假设
-- 完成后用 `gh issue comment {ISSUE_NUMBER} --body "契约测试编写完成"` 报告
-
-注意：你只需要阅读本模块的设计文档（module-design/{module}.md），不需要阅读其他模块的文档。
-```
-
-### 5b. Tester Agent（前端模块测试）
-
-**每个前端模块一个独立会话**，在所有依赖的后端模块完成后执行。在新会话中使用：
-
-```
-你是一个测试工程师。请为前端模块 {模块名} 编写测试。
-
-前端测试包含两部分：
-1. **API 调用层测试**：验证 api/ 层的请求参数和响应处理与 module-design 中后端接口定义一致
-2. **页面渲染测试**：验证页面组件能正确渲染 mock 数据并响应用户交互
-
-这些测试将在实现之前编写，作为 TDD 的驱动力。
-
-请先阅读以下文件：
-- CLAUDE.md
-- docs/module-design/{module}.md（重点关注：页面与路由、调用的后端接口、交互流程）
-- docs/module-design/（已完成的后端模块设计文件，了解后端接口定义）
-
-要求：
-
-API 调用层测试：
-- 每个后端接口调用验证请求 URL、HTTP 方法、请求参数格式
-- 验证响应数据的解析和转换逻辑
-- 验证错误响应的处理（对照后端接口的错误码）
-- 使用 MSW（Mock Service Worker）或手动 mock 拦截 HTTP 请求
-- 测试代码放在 tests/contracts/{module}/ 目录下
-
-页面渲染测试：
-- 每个页面至少一个渲染测试（使用 React Testing Library）
-- 验证关键用户交互（按钮点击、表单提交、列表渲染）
-- Mock 所有 API 调用（通过 mock hooks 或 MSW）
-- 测试代码放在 tests/contracts/{module}/ 目录下
-
-通用要求：
-- 测试之间互相独立，不依赖执行顺序
-- 每个测试用例用注释标注对应的 module-design 来源
-- 此阶段只写测试，不写业务代码
-- 如果 module-design 有模糊或矛盾之处，停下来指出问题
-- 完成后用 `gh issue comment {ISSUE_NUMBER} --body "前端测试编写完成"` 报告
-```
-
----
-
-### 5c. Implementer Agent（infra 实现）
+### 5a. Implementer Agent（infra 实现）
 
 infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
@@ -363,6 +292,77 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 要求：
 - 每个有意义的改动 commit 一次，commit message 包含 `[#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "infra 实现完成"` 报告
+```
+
+---
+
+### 5b. Tester Agent（后端模块契约测试）
+
+**每个模块一个独立会话**，按依赖顺序串行推进。在新会话中使用：
+
+```
+你是一个测试工程师。请为后端模块 {模块名} 编写契约测试。
+
+契约测试的目的是：验证接口的输入输出是否符合接口契约的定义。
+这些测试将在实现之前编写，作为 TDD 的驱动力。
+
+请先阅读以下文件：
+- CLAUDE.md
+- docs/module-design/{module}.md（重点关注：接口契约部分 + 数据模型）
+- server/modules/{module}/index.ts（导出桩文件，确认可用的函数签名）
+
+要求：
+- 每个接口的每条业务规则至少一个测试用例
+- 包含正常流程和异常流程（错误码全覆盖）
+- 测试之间互相独立，不依赖执行顺序
+- 每个测试用例用注释标注对应的业务规则来源
+- 测试代码放在 tests/contracts/{module}/ 目录下
+- 此阶段只写契约测试，不写业务代码
+- 如果接口契约有模糊或矛盾之处，停下来指出问题，不要自行假设
+- 完成后用 `gh issue comment {ISSUE_NUMBER} --body "契约测试编写完成"` 报告
+
+注意：你只需要阅读本模块的设计文档（module-design/{module}.md），不需要阅读其他模块的文档。
+```
+
+### 5c. Tester Agent（前端模块测试）
+
+**每个前端模块一个独立会话**，在所有依赖的后端模块完成后执行。在新会话中使用：
+
+```
+你是一个测试工程师。请为前端模块 {模块名} 编写测试。
+
+前端测试包含两部分：
+1. **API 调用层测试**：验证 api/ 层的请求参数和响应处理与 module-design 中后端接口定义一致
+2. **页面渲染测试**：验证页面组件能正确渲染 mock 数据并响应用户交互
+
+这些测试将在实现之前编写，作为 TDD 的驱动力。
+
+请先阅读以下文件：
+- CLAUDE.md
+- docs/module-design/{module}.md（重点关注：页面与路由、调用的后端接口、交互流程）
+- docs/module-design/（已完成的后端模块设计文件，了解后端接口定义）
+
+要求：
+
+API 调用层测试：
+- 每个后端接口调用验证请求 URL、HTTP 方法、请求参数格式
+- 验证响应数据的解析和转换逻辑
+- 验证错误响应的处理（对照后端接口的错误码）
+- 使用 MSW（Mock Service Worker）或手动 mock 拦截 HTTP 请求
+- 测试代码放在 tests/contracts/{module}/ 目录下
+
+页面渲染测试：
+- 每个页面至少一个渲染测试（使用 React Testing Library）
+- 验证关键用户交互（按钮点击、表单提交、列表渲染）
+- Mock 所有 API 调用（通过 mock hooks 或 MSW）
+- 测试代码放在 tests/contracts/{module}/ 目录下
+
+通用要求：
+- 测试之间互相独立，不依赖执行顺序
+- 每个测试用例用注释标注对应的 module-design 来源
+- 此阶段只写测试，不写业务代码
+- 如果 module-design 有模糊或矛盾之处，停下来指出问题
+- 完成后用 `gh issue comment {ISSUE_NUMBER} --body "前端测试编写完成"` 报告
 ```
 
 ---
@@ -443,37 +443,7 @@ infra 模块不走契约测试流程，直接实现。在新会话中使用：
 
 ---
 
-### 5f. Reviewer Agent（模块 Review）
-
-模块所有 Task 完成后触发。在新会话中使用：
-
-```
-你是一个代码审查工程师。请对 {模块名} 模块进行整体 Review。
-
-该模块的所有 Task 已逐个 Review 通过。本次 Review 关注模块级的一致性和完整性。
-
-请先阅读以下文件：
-- CLAUDE.md
-- docs/module-design/{module}.md
-
-然后阅读该模块的全部源代码：server/modules/{module}/（后端模块）或 {web|admin}/（前端模块）
-
-检查清单：
-1. 模块内命名风格是否一致（变量、函数、文件命名）
-2. 错误处理方式是否统一（错误码格式、异常抛出方式）
-3. module-design/{module}.md 中的所有接口是否都已实现
-4. 模块内各层职责是否清晰（controller 不含业务逻辑、repository 不含校验逻辑等）
-5. 是否有跨层泄漏（如 controller 直接调用 repository）
-6. 是否有不必要的代码重复
-7. CLAUDE.md 中的约定是否都被遵守
-
-输出格式（同 Task Review）：
-- MUST FIX / SHOULD FIX / OPTIONAL / LGTM
-```
-
----
-
-### 5g. Implementer Agent（Review 修复）
+### 5f. Implementer Agent（Review 修复）
 
 当 Reviewer 输出 MUST FIX 或 SHOULD FIX 后。在新会话中使用：
 
@@ -500,6 +470,36 @@ Review 反馈：
 - 不要趁修复之机重构 Review 未提及的代码
 - 每个有意义的改动 commit 一次，commit message 格式：`fix(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "Review 问题已修复"` 报告
+```
+
+---
+
+### 5g. Reviewer Agent（模块 Review）
+
+模块所有 Task 完成后触发。在新会话中使用：
+
+```
+你是一个代码审查工程师。请对 {模块名} 模块进行整体 Review。
+
+该模块的所有 Task 已逐个 Review 通过。本次 Review 关注模块级的一致性和完整性。
+
+请先阅读以下文件：
+- CLAUDE.md
+- docs/module-design/{module}.md
+
+然后阅读该模块的全部源代码：server/modules/{module}/（后端模块）或 {web|admin}/（前端模块）
+
+检查清单：
+1. 模块内命名风格是否一致（变量、函数、文件命名）
+2. 错误处理方式是否统一（错误码格式、异常抛出方式）
+3. module-design/{module}.md 中的所有接口是否都已实现
+4. 模块内各层职责是否清晰（controller 不含业务逻辑、repository 不含校验逻辑等）
+5. 是否有跨层泄漏（如 controller 直接调用 repository）
+6. 是否有不必要的代码重复
+7. CLAUDE.md 中的约定是否都被遵守
+
+输出格式（同 Task Review）：
+- MUST FIX / SHOULD FIX / OPTIONAL / LGTM
 ```
 
 ---
