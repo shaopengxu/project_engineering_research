@@ -109,4 +109,4 @@ Step 7: 验收（分批）
 | [project-setup.md](project-setup.md) | 目录结构、数据库迁移、开发环境配置 |
 | [iteration.md](iteration.md) | 迭代管理、增量开发 |
 | [reference.md](reference.md) | 速查表、常见故障与恢复、CI 集成建议 |
-| [templates/](templates/) | Agent prompt 模板、架构文档模板、模块设计模板、CLAUDE.md 模板 |
+| [templates/](templates/) | 技术负责人操作指南、架构文档模板、模块设计模板、CLAUDE.md 模板 |

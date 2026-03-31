@@ -1,42 +1,13 @@
-# Agent Prompt 模板（中型项目）
+# 技术负责人操作指南（中型项目）
 
-以下是各角色 agent 在每个阶段的提示词模板。
-架构设计分为两步（Step 2 系统架构 + Step 3 模块设计），模块级上下文加载、GitHub Issues 交互。串行推进，无需 Worktree 或分支管理。
+## Skill 速查
 
----
-
-## Step 2 — Architect Agent（系统架构设计）
-
-在新会话中使用 `/mp-architecture` skill。
-
----
-
-## Step 3 — Architect Agent（模块详细设计 + 接口契约）
-
-**每个模块一个独立会话**，按依赖顺序串行推进。使用 `/mp-module-design` skill：
-
-- 后端模块：`/mp-module-design {module-name}`
-- 前端整体：`/mp-module-design {module-name}`（自动识别前端模块）
-- 前端 feature：`/mp-module-design {module-name} {feature-name}`
-- 所有模块完成后汇总：`/mp-module-design --summary`
-
----
-
-## Step 4 — Architect Agent（脚手架 + 任务拆分）
-
-分两个会话执行：
-
-1. 新会话：`/mp-scaffold` → 初始化项目脚手架 + 回填 CLAUDE.md
-2. 新会话：`/mp-task-split` → 拆分任务 + 创建 GitHub Issues
-
----
-
-## Step 5 — 按模块串行：契约测试 → 实现 → Review
-
-每个模块按以下顺序完成后，再推进下一个模块。使用对应 skill：
-
-| 步骤 | Skill | 参数 |
+| Step | Skill | 参数 |
 |------|-------|------|
+| 2. 系统架构 | `/mp-architecture` | — |
+| 3. 模块设计 | `/mp-module-design` | `<module> [feature]` / `--summary` |
+| 4a. 脚手架 | `/mp-scaffold` | — |
+| 4b. 任务拆分 | `/mp-task-split` | — |
 | 5a. infra 实现 | `/mp-impl-infra` | `<issue-number>` |
 | 5b. 后端契约测试 | `/mp-test-contract` | `<module> <issue-number>` |
 | 5b. 前端测试 | `/mp-test-frontend` | `<module> <feature> <issue-number>` |
@@ -45,14 +16,13 @@
 | 5e. Review 修复 | `/mp-review-fix` | `<module> <issue-number>` |
 | 5f. 模块 Review | `/mp-review-module` | `<module>` |
 | 5g. L2 集成测试 | `/mp-test-integration` | `<issue-number>` |
+| 6. E2E 测试 | `/mp-test-e2e` | — |
 
-## Step 6 — E2E 测试
-
-在新会话中使用 `/mp-test-e2e`。
+所有 skill 均以 `context: fork` 运行，无需手动开新会话。
 
 ---
 
-## 技术负责人操作指南
+## Review 指南
 
 ### Review 深度分级
 
