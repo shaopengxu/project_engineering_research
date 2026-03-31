@@ -30,12 +30,7 @@ Step 1: PRD 审查 + 初始化
 └── 技术负责人: 填写 CLAUDE.md 的项目名称和一句话描述
 
 Step 2: 系统架构设计
-├── 新会话 [Architect agent]: 读 PRD → 产出 architecture.md（系统级）
-│   ├── 模块划分与职责定义
-│   ├── 模块依赖关系图（有向无环）
-│   ├── 跨模块数据流
-│   ├── 部署架构概要
-│   └── 补充 CLAUDE.md: 项目结构概览、架构约定、不要做的事（架构相关）
+├── 新会话 [Architect agent]: /mp-architecture → 产出 architecture.md + 补充 CLAUDE.md
 └── 技术负责人: review
     ├── 通过 → 进入 Step 3
     └── 不通过 → 新会话修订
