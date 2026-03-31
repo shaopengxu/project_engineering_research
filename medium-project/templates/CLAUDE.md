@@ -45,6 +45,7 @@ admin/                 # 管理后台 (React + Vite + Ant Design)
 └── ...                # 结构同 web/
 tests/
 ├── contracts/         # 契约测试
+├── unit/              # 单元测试
 ├── integration/       # 集成测试（含 paths/ 关键路径）
 ├── e2e/               # E2E 测试
 └── fixtures/          # 共享测试数据
@@ -74,8 +75,8 @@ tests/
 - type: feat / fix / docs / refactor / test
 - 不要把无关改动放在同一个 commit
 
-## infra 修改规则
-- 修改 infra/ 前，先在 Issue comment 中说明需求，获得技术负责人确认
+## 共享代码修改规则
+- 修改 infra/、共享类型、共享工具前，先在 Issue comment 中说明需求，获得技术负责人确认
 
 ## 不要做的事
 > 注意：CLAUDE.md 会被所有 Agent 加载。如果某条规则只针对特定角色，请标注适用角色。
@@ -84,7 +85,7 @@ tests/
 - {禁止事项2}
 - 不要修改契约测试代码（仅限 Implementer agent）
 - 不要修改其他模块目录下的文件（仅限 Implementer agent）
-- 修改 infra/ 前需确认（仅限 Implementer agent）
+- 修改共享代码（infra/、共享类型、共享工具）前需确认（仅限 Implementer agent）
 
 ## 错误处理规则
 - 修改一个问题超过 2 次仍未解决时，停止修改，分析根本原因

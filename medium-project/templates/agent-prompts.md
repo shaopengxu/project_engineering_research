@@ -62,6 +62,12 @@
 5. 目录结构
 6. 数据模型概览（只列跨模块关系的模型）
 7. 关键架构决策
+8. 接口通用约定：
+   - 认证方式
+   - 响应格式（成功/失败统一结构）
+   - 分页约定
+   - HTTP 状态码约定
+9. 部署概要（可选，如部署架构影响模块设计则必须说明）
 
 同时补充 CLAUDE.md：
 - 项目结构（只列顶层目录和模块名）
@@ -103,7 +109,7 @@
    - 业务规则
    - 错误码
    - **Consumers 字段**（从 architecture.md 的依赖关系中确定消费方）
-   - 内部接口（非 HTTP 暴露，用于 Service 层跨模块调用的方法）
+   另外，如有非 HTTP 暴露的内部接口（用于 Service 层跨模块调用），同样按五要素定义
 5. 消费的外部接口（调用哪些其他模块的接口、什么场景下调用）
 6. 关键业务逻辑（状态机、计算规则、复杂分支等）
 7. 模块特有约定（安全要求、性能约束等）
@@ -186,12 +192,15 @@
 - docs/module-design/（所有模块设计文件）
 - docs/prd.md
 
-请在 architecture.md 中补充：
+请在 architecture.md 中补充/完善：
 
-1. **接口依赖矩阵**（接口 × 提供方 × 消费方 × 变更影响级别）— 汇总所有模块的 consumers 字段
-2. **需求追溯表**（PRD 每条业务规则/验收标准 → 对应 module-design 中的接口定义）— 确保 PRD 全覆盖
+1. **接口通用约定**（如 Step 2a 中未完整定义）— 确认认证方式、响应格式、分页约定、HTTP 状态码
+2. **接口依赖矩阵**（接口 × 提供方 × 消费方 × 变更影响级别）— 汇总所有模块的 consumers 字段
+3. **需求追溯表**（PRD 每条业务规则/验收标准 → 对应 module-design 中的接口定义）— 确保 PRD 全覆盖
+4. **部署概要**（如部署架构影响模块设计）
 
 要求：
+- 接口通用约定必须与各模块接口契约的响应格式一致
 - 接口依赖矩阵必须完整，覆盖所有跨模块调用
 - 需求追溯表中不允许出现"未覆盖"的条目
 - 如果发现 PRD 中的功能点/业务规则在已有接口中未覆盖，停下来指出遗漏
@@ -216,7 +225,9 @@
 1. 项目脚手架初始化：
    - 根据 architecture.md 的目录结构创建项目框架
    - 安装依赖、配置构建工具、测试框架、lint
-   - 为每个模块创建**导出桩文件**（只声明函数签名，函数体 `throw new Error('Not implemented')`）
+   - 配置 TypeScript（根目录 tsconfig.json + 各端独立 tsconfig）
+   - 创建 `.env.example`（DATABASE_URL、PORT 等必需环境变量），`.env` 加入 `.gitignore`
+   - 为每个后端模块创建**导出桩文件**（只声明函数签名，函数体 `throw new Error('Not implemented')`）
    - 确保安装、lint、测试框架启动命令都能成功
 
 2. 创建 GitHub Issues：
@@ -246,14 +257,15 @@
 
 ## Step 4+5 — 按模块串行：契约测试 → 实现 → Review
 
+执行顺序：infra（使用 4c prompt）→ 后端模块（使用 4a + 5a-5e）→ 前端模块（使用 4b + 5a-5e）。
 每个模块按以下顺序完成后，再推进下一个模块。
 
-### 4a. Tester Agent（契约测试）
+### 4a. Tester Agent（后端模块契约测试）
 
 **每个模块一个独立会话**，按依赖顺序串行推进。在新会话中使用：
 
 ```
-你是一个测试工程师。请为 {模块名} 编写契约测试。
+你是一个测试工程师。请为后端模块 {模块名} 编写契约测试。
 
 契约测试的目的是：验证接口的输入输出是否符合接口契约的定义。
 这些测试将在实现之前编写，作为 TDD 的驱动力。
@@ -261,7 +273,7 @@
 请先阅读以下文件：
 - CLAUDE.md
 - docs/module-design/{module}.md（重点关注：接口契约部分 + 数据模型）
-- src/modules/{module}/index.ts（导出桩文件，确认可用的函数签名）
+- server/modules/{module}/index.ts（导出桩文件，确认可用的函数签名）
 
 要求：
 - 每个接口的每条业务规则至少一个测试用例
@@ -274,6 +286,98 @@
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "契约测试编写完成"` 报告
 
 注意：你只需要阅读本模块的设计文档（module-design/{module}.md），不需要阅读其他模块的文档。
+```
+
+### 4b. Tester Agent（前端模块测试）
+
+**每个前端模块一个独立会话**，在所有依赖的后端模块完成后执行。在新会话中使用：
+
+```
+你是一个测试工程师。请为前端模块 {模块名} 编写测试。
+
+前端测试包含两部分：
+1. **API 调用层测试**：验证 api/ 层的请求参数和响应处理与 module-design 中后端接口定义一致
+2. **页面渲染测试**：验证页面组件能正确渲染 mock 数据并响应用户交互
+
+这些测试将在实现之前编写，作为 TDD 的驱动力。
+
+请先阅读以下文件：
+- CLAUDE.md
+- docs/module-design/{module}.md（重点关注：页面与路由、调用的后端接口、交互流程）
+- docs/module-design/（已完成的后端模块设计文件，了解后端接口定义）
+
+要求：
+
+API 调用层测试：
+- 每个后端接口调用验证请求 URL、HTTP 方法、请求参数格式
+- 验证响应数据的解析和转换逻辑
+- 验证错误响应的处理（对照后端接口的错误码）
+- 使用 MSW（Mock Service Worker）或手动 mock 拦截 HTTP 请求
+- 测试代码放在 tests/contracts/{module}/ 目录下
+
+页面渲染测试：
+- 每个页面至少一个渲染测试（使用 React Testing Library）
+- 验证关键用户交互（按钮点击、表单提交、列表渲染）
+- Mock 所有 API 调用（通过 mock hooks 或 MSW）
+- 测试代码放在 tests/contracts/{module}/ 目录下
+
+通用要求：
+- 测试之间互相独立，不依赖执行顺序
+- 每个测试用例用注释标注对应的 module-design 来源
+- 此阶段只写测试，不写业务代码
+- 如果 module-design 有模糊或矛盾之处，停下来指出问题
+- 完成后用 `gh issue comment {ISSUE_NUMBER} --body "前端测试编写完成"` 报告
+```
+
+---
+
+### 4c. Implementer Agent（infra 实现）
+
+infra 模块不走契约测试流程，直接实现。在新会话中使用：
+
+```
+你是一个开发工程师。请实现 infra 基础设施模块。
+
+请先阅读以下文件：
+- CLAUDE.md
+- docs/architecture.md（重点关注：技术选型、目录结构、接口通用约定）
+
+请完成以下基础设施：
+
+1. 数据库连接：
+   - Prisma Client 初始化和导出
+   - 根据 module-design 中的数据模型创建 prisma/schema.prisma
+   - 运行 `npx prisma migrate dev --name init` 创建初始 migration
+
+2. 配置管理：
+   - 环境变量加载（dotenv）
+   - 创建 .env.example（DATABASE_URL、PORT 等）
+   - .env 加入 .gitignore
+
+3. 全局错误处理中间件：
+   - 统一错误捕获和格式化
+   - 错误响应遵循 architecture.md 的响应格式约定
+
+4. 标准响应格式工具函数：
+   - 成功响应和错误响应的格式化函数
+   - 遵循 architecture.md 的响应格式约定
+
+5. 通用中间件：
+   - 认证中间件（如 architecture.md 中有定义）
+   - 请求日志中间件
+
+6. Express 应用初始化（server/app.ts）
+
+验收标准：
+- `npm install` 成功
+- `npm run lint` 通过
+- `npm run dev:server` 能启动（即使没有业务路由）
+- 数据库连接成功
+- 错误处理中间件可用
+
+要求：
+- 每个有意义的改动 commit 一次，commit message 包含 `[#issue-number]`
+- 完成后用 `gh issue comment {ISSUE_NUMBER} --body "infra 实现完成"` 报告
 ```
 
 ---
@@ -297,14 +401,16 @@
 
 要求：
 - 让相关契约测试全部通过
-- 编写 L1 模块内集成测试（controller → service → repository 真实串联），放在 tests/integration/{module}/ 下
+- 编写 L1 集成测试，放在 tests/integration/{module}/ 下：
+  - 后端模块：controller → service → repository 真实串联
+  - 前端模块：页面 → hooks → API 层串联（mock 后端 API）
 - 遵守 CLAUDE.md 中的规范
 - 不要修改契约测试代码。如果发现不一致，在 Issue comment 中指出具体矛盾，等待确认
 - 不要实现当前 Task 以外的功能
 - 不要修改其他模块目录下的文件
-- 修改 infra/ 前，先在 Issue comment 中说明需求，获得技术负责人确认后再修改
+- 修改共享代码（infra/、共享类型、共享工具）前，先在 Issue comment 中说明需求，获得技术负责人确认后再修改
 - 对复杂内部逻辑补充单元测试
-- 每个有意义的改动 commit 一次
+- 每个有意义的改动 commit 一次，commit message 格式：`<type>(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "实现完成，契约测试和 L1 集成测试全部通过"` 报告
 ```
 
@@ -326,16 +432,19 @@
 - CLAUDE.md
 - docs/module-design/{module}.md（本模块设计 + 接口契约）
 
-然后查看当前 Task 的代码改动：`git diff HEAD~N..HEAD`（N = 当前 Task 的 commit 数量）。
+然后定位当前 Task 的代码改动：
+1. 运行 `git log --oneline --all` 查看提交历史
+2. 找到 commit message 中包含 `[#{issue-number}]` 的所有提交
+3. 对这些提交运行 `git diff <first-commit>^..<last-commit>` 查看完整改动
 只 review 当前 Task 涉及的改动，不要评审其他 Task 的代码。
 
 检查清单：
 1. 功能是否符合 module-design/{module}.md 中当前 Task 对应接口的定义
-2. L1 集成测试是否覆盖了 controller → service → repository 的真实串联
+2. L1 集成测试是否覆盖了真实串联（后端：controller→service→repository；前端：页面→hooks→API）
 3. 是否遵守 CLAUDE.md 的规范
 4. 模块间依赖方向是否正确（不反向依赖）
 5. 是否有安全问题（SQL 注入、XSS、敏感信息泄露等）
-6. 是否违反了 infra 修改规则（修改 infra/ 前是否获得确认、不应修改其他模块文件）
+6. 是否违反了共享代码修改规则（修改 infra/ 等共享代码前是否获得确认、不应修改其他模块文件）
 7. 实现质量 — 明显的性能问题、未处理的边界条件、过度设计
 
 输出格式：
@@ -362,7 +471,7 @@
 - CLAUDE.md
 - docs/module-design/{module}.md
 
-然后阅读该模块的全部源代码：src/modules/{module}/
+然后阅读该模块的全部源代码：server/modules/{module}/（后端模块）或 {web|admin}/（前端模块）
 
 检查清单：
 1. 模块内命名风格是否一致（变量、函数、文件命名）
@@ -404,7 +513,7 @@ Review 反馈：
 - 不要修改契约测试代码。如果认为 Review 反馈与契约矛盾，在 Issue comment 中指出
 - 不要修复 OPTIONAL 条目，除非修复成本极低
 - 不要趁修复之机重构 Review 未提及的代码
-- 每个有意义的改动 commit 一次
+- 每个有意义的改动 commit 一次，commit message 格式：`fix(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "Review 问题已修复"` 报告
 ```
 
@@ -412,7 +521,7 @@ Review 反馈：
 
 ### 5e. Implementer Agent（L2 关键路径集成测试）
 
-当被依赖模块已实现完成后。在新会话中使用：
+当前模块完成模块级 Review 且被依赖模块已实现完成后，开独立会话。在新会话中使用：
 
 ```
 你是一个开发工程师。请编写跨模块集成测试。
@@ -433,6 +542,7 @@ Review 反馈：
 - 外部依赖（数据库等）使用测试环境（内存数据库或测试容器）
 - 覆盖关键路径的正常流程和关键异常流程
 - 每个测试用例标注对应的业务路径
+- 每个有意义的改动 commit 一次，commit message 格式：`test(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "L2 集成测试完成"` 报告
 ```
 
@@ -498,6 +608,8 @@ Review 反馈：
 - [ ] infra 职责边界明确
 - [ ] 跨模块数据关系清晰（关联管理方、外键策略）
 - [ ] 架构决策有理由说明
+- [ ] 接口通用约定已定义（认证、响应格式、分页、状态码）
+- [ ] 部署概要已说明（如影响模块设计）
 ```
 
 ### Step 2b 模块设计 + 接口契约 Review Checklist
@@ -531,7 +643,9 @@ Review 反馈：
 - [ ] 依赖安装成功
 - [ ] lint 命令能跑通
 - [ ] 测试框架能启动
-- [ ] 导出桩文件存在且函数签名与 module-design 中的接口契约一致
+- [ ] 后端模块导出桩文件存在且函数签名与 module-design 中的接口契约一致
+- [ ] .env.example 已创建，.env 已加入 .gitignore
+- [ ] TypeScript 配置正确（根目录 + 各端独立 tsconfig）
 
 GitHub Issues：
 - [ ] 每个接口都有对应的契约测试 Issue
@@ -566,6 +680,7 @@ GitHub Issues：
 模块完成时：
 - [ ] 确认该模块所有 Task 已完成
 - [ ] 触发模块级 Review
+- [ ] 如有跨模块依赖且被依赖模块已完成，触发 L2 集成测试（独立会话）
 - [ ] 跑全量测试确认无回归
 ```
 
