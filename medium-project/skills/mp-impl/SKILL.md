@@ -27,6 +27,7 @@ argument-hint: "<module-name> <issue-number> [feature-name]"
 - 不要实现当前 Task 以外的功能
 - 不要修改其他模块目录下的文件
 - 修改共享代码（infra/、共享类型、共享工具）前，先在 Issue comment 中说明需求，获得技术负责人确认后再修改
+- 后端模块实现涉及数据模型时，在 `tests/fixtures/{module}.ts` 中创建或补充工厂函数（用于生成该模块的测试数据），供 L1 集成测试和后续 E2E 种子数据使用
 - 对复杂内部逻辑补充单元测试
 - 如需调整数据模型：先更新 module-design 文档，再更新 schema.prisma，最后运行 `npx prisma migrate dev --name <描述>`，migration 生成后立即 commit
 - 每个有意义的改动 commit 一次，commit message 格式：`<type>(<module>): <描述> [#issue-number]`
