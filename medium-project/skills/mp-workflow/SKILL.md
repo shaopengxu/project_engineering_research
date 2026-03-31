@@ -20,16 +20,22 @@ description: "Medium-project 流程管控：查看当前阶段、指导下一步
 
 1. 读取 `docs/workflow-state.md`
 2. 根据 `step` 和 `substep` 确定当前位置
-3. 查看模块进度表确定哪些模块已完成、当前在处理哪个
+3. 查看模块进度表确定哪些模块/feature 已完成、当前在处理哪个
 4. 输出当前阶段、下一步操作
 5. **如果下一步是技术负责人操作，输出下方对应的操作指引和 checklist**
+
+## 进度表读取规则
+
+- **infra 行**：只关注"实现"列，其余列为 `N/A`
+- **后端模块行**：按模块粒度，所有列均适用
+- **前端 feature 行**（如 `web-app/auth`）：每个 feature 独立跟踪设计、契约测试、实现、Task Review；"模块 Review"和"L2 集成测试"只在该前端模块的最后一个 feature 行标记
 
 ## 输出格式
 
 ```
 当前阶段: Step {N} - {阶段名称}
 子步骤: {substep 描述}
-当前模块: {module} ({进度})
+当前模块: {module} [feature: {feature}]（{进度}）
 
 下一步:
 {具体操作描述或 skill 调用命令}

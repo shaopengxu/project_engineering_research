@@ -25,18 +25,23 @@ argument-hint: "<状态变更描述> | init"
 - "Step 2 review 通过了"
 - "user 模块设计 review 通过"
 - "web-app 整体设计完成"
+- "web-app auth feature 设计 review 通过"
 - "脚手架 review 通过"
 - "Issues review 通过"
 - "infra 实现 review 通过"
 - "user 模块契约测试 review 通过"
+- "web-app auth 契约测试 review 通过"
 - "Issue #12 实现完成"
 - "Issue #12 review LGTM"
 - "Issue #12 review 有 MUST FIX"
 - "Issue #12 修复完成"
 - "user 模块所有 Task 完成"
+- "web-app auth 所有 Task 完成"
 - "user 模块 Review LGTM"
+- "web-app 模块 Review LGTM"
 - "user 模块 L2 集成测试完成"
 - "开始处理 order 模块"
+- "开始处理 web-app auth feature"
 - "E2E 测试通过"
 - "验收通过"
 
@@ -48,21 +53,27 @@ argument-hint: "<状态变更描述> | init"
 | 用户描述 | 更新字段 |
 |---------|---------|
 | Step N 完成/通过 | step → N+1, substep → 清空 |
-| 模块设计 review 通过 | 模块进度表 > 设计 → done |
+| 模块设计 review 通过 | 模块进度表 > 设计 → done（前端模块：更新该 feature 行） |
 | 脚手架 review 通过 | step → 4, substep → 4b |
 | Issues review 通过 | step → 5, substep → 5a |
 | infra review 通过 | 模块进度表 > infra 实现 → done, substep → 5b |
-| 模块契约测试 review 通过 | 模块进度表 > 契约测试 → done, substep → 5c |
+| 模块契约测试 review 通过 | 模块进度表 > 契约测试 → done（前端模块：更新对应 feature 行）, substep → 5c |
 | Issue 实现完成 | substep → 5d |
 | Issue review LGTM | substep → 5c（下一个 Task）|
 | Issue review 有问题 | substep → 5e |
 | 修复完成 | substep → 5d |
-| 模块所有 Task 完成 | substep → 5f |
-| 模块 Review LGTM | 模块进度表 > 模块 Review → done, substep → 5g |
-| L2 集成测试完成 | 模块进度表 > L2 集成测试 → done, module → 下一个模块 |
+| 模块所有 Task 完成 | substep → 5f（前端模块：指当前 feature 所有 Task 完成） |
+| 模块 Review LGTM | 模块进度表 > 模块 Review → done, substep → 5g（前端模块：在最后一个 feature 行标记） |
+| L2 集成测试完成 | 模块进度表 > L2 集成测试 → done, module → 下一个模块（前端模块：在最后一个 feature 行标记） |
 | 开始处理某模块 | module → 该模块, substep → 5b |
+| 开始处理某 feature | module → 该模块, feature → 该 feature, substep → 5b |
 | E2E 测试通过 | step → 7 |
 | 验收通过 | step → done |
+
+> **进度表行定位规则**：
+> - infra：定位到 infra 行，只更新"实现"列
+> - 后端模块：按模块名定位
+> - 前端模块：按 `{module}/{feature}` 定位到 feature 行（如 `web-app/auth`）
 
 3. 更新 `docs/workflow-state.md`
 4. commit 状态文件，commit message：`docs: 更新 workflow 状态 - {简要描述}`
