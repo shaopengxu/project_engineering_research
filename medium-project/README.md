@@ -12,8 +12,7 @@
 
 - **文档驱动**：architecture.md → module-design → 契约测试 → 实现，先设计后编码
 - **TDD**：契约测试在实现之前编写，先红后绿
-- **角色隔离**：每个 skill 以 `context: fork` 在隔离子 agent 中运行，互不干扰
-- **串行推进**：按模块依赖顺序逐个完成，确保被依赖模块先就绪
+- **短上下文**：主会话进行项目流程跟踪，真正做事在子会话（每个 skill 以 `context: fork` 在隔离子 agent 中运行）
 - **状态可追踪**：`docs/workflow-state.md` 记录当前阶段和模块进度
 
 ## 角色分工
