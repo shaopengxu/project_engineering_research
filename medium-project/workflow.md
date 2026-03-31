@@ -30,12 +30,12 @@ Step 1: PRD 审查 + 初始化
 └── 技术负责人: 填写 CLAUDE.md 的项目名称和一句话描述
 
 Step 2: 系统架构设计
-├── 新会话 [Architect agent]: /mp-architecture → 产出 architecture.md + 补充 CLAUDE.md
+├── [Architect agent]: /mp-architecture → 产出 architecture.md + 补充 CLAUDE.md
 └── 技术负责人: review
     ├── 通过 → 进入 Step 3
-    └── 不通过 → 新会话修订
+    └── 不通过 → 修订
 
-Step 3: 模块详细设计 + 接口契约（每个模块一个新会话，使用 /mp-module-design）
+Step 3: 模块详细设计 + 接口契约（每个模块使用 /mp-module-design）
 ├── 后端模块（按依赖顺序串行）：逐模块 /mp-module-design {module}
 ├── 前端模块（后端模块全部完成后）：
 │   ├── /mp-module-design web-app → 整体设计
@@ -44,15 +44,15 @@ Step 3: 模块详细设计 + 接口契约（每个模块一个新会话，使用
 ├── 所有模块完成后：/mp-module-design --summary → 补充 architecture.md 汇总部分
 └── 技术负责人: review 所有模块设计
     ├── 通过 → 进入 Step 4
-    └── 不通过 → 对应模块新会话修订
+    └── 不通过 → 对应模块修订
 
 Step 4: 环境初始化 + 任务拆分
-├── 新会话 [Architect agent]: /mp-scaffold → 初始化脚手架 + 回填 CLAUDE.md
+├── [Architect agent]: /mp-scaffold → 初始化脚手架 + 回填 CLAUDE.md
 ├── 技术负责人: review 脚手架
-├── 新会话 [Architect agent]: /mp-task-split → 拆分任务 + 创建 GitHub Issues
+├── [Architect agent]: /mp-task-split → 拆分任务 + 创建 GitHub Issues
 └── 技术负责人: review Issues
     ├── 通过 → 进入 Step 5
-    └── 不通过 → 新会话修订
+    └── 不通过 → 修订
 
 Step 5: 契约测试 + 实现 + Review（按模块串行推进）
 ├── 5a. /mp-impl-infra → infra 实现（一次性），技术负责人 review 后继续
