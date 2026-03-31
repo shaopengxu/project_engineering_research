@@ -35,19 +35,15 @@ Step 2: 系统架构设计
     ├── 通过 → 进入 Step 3
     └── 不通过 → 新会话修订
 
-Step 3: 模块详细设计 + 接口契约
-├── 后端模块（按依赖顺序串行）：
-│   ├── 新会话 [Architect agent]: → module-design/module-a.md（含接口契约五要素）
-│   ├── 新会话 [Architect agent]: → module-design/module-b.md
-│   └── ...
-├── 前端模块（后端模块全部完成后，按 feature 拆分设计文档）：
-│   ├── 新会话 [Architect agent]: → module-design/web-app.md（整体：路由结构、布局、共享状态、共享组件）
-│   ├── 逐 feature 新会话 [Architect agent]: → module-design/web-app-{feature}.md（页面、交互、调用的后端接口）
-│   ├── admin 同上（页面少时可不拆 feature，一个文件写完）
-│   └── ...
-├── 最后一个模块完成后：补充 architecture.md 的接口依赖矩阵 + 需求追溯表 + 接口通用约定 + 部署概要
+Step 3: 模块详细设计 + 接口契约（每个模块一个新会话，使用 /mp-module-design）
+├── 后端模块（按依赖顺序串行）：逐模块 /mp-module-design {module}
+├── 前端模块（后端模块全部完成后）：
+│   ├── /mp-module-design web-app → 整体设计
+│   ├── 逐 feature /mp-module-design web-app {feature} → feature 级设计
+│   └── admin 同上（页面少时可不拆 feature）
+├── 所有模块完成后：/mp-module-design --summary → 补充 architecture.md 汇总部分
 └── 技术负责人: review 所有模块设计
-    ├── 通过 → 进入 Step 3
+    ├── 通过 → 进入 Step 4
     └── 不通过 → 对应模块新会话修订
 
 Step 4: 环境初始化 + 任务拆分
