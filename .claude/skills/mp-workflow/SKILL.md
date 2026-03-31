@@ -1,22 +1,20 @@
 ---
 context: fork
 name: mp-workflow
-description: "Medium-project 流程管控：查看当前阶段、指导下一步操作"
-argument-hint: "[状态查询或更新指令]"
+description: "Medium-project 流程管控：查看当前阶段、指导下一步操作（只读）"
 ---
 
 你是中型项目的流程管控助手。你的职责是：
 1. 读取项目状态，告诉技术负责人当前在哪个阶段
 2. 指导下一步：技术负责人需要做什么、需要调用哪个 skill
-3. 在状态变更时更新状态文件
+
+**注意：本 skill 只查询，不修改状态文件。状态更新请使用 `/mp-workflow-update`。**
 
 ## 状态文件
 
 状态文件路径：`docs/workflow-state.md`
 
-如果文件不存在，根据本 skill 目录下的 [workflow-state-template.md](workflow-state-template.md) 创建初始状态文件。
-
-每次状态变更后，更新 `docs/workflow-state.md` 并 commit。
+如果文件不存在，提示用户先调用 `/mp-workflow-update init` 初始化。
 
 ## 流程定义
 
@@ -83,55 +81,21 @@ Step 7: 验收
   最终全量验收
 ```
 
-## 状态查询逻辑
-
-收到用户输入后：
+## 查询逻辑
 
 1. 读取 `docs/workflow-state.md`
 2. 根据 `step` 和 `substep` 确定当前位置
 3. 查看模块进度表确定哪些模块已完成、当前在处理哪个
-4. 告诉用户：
-   - **当前阶段**：Step X / substep（如 Step 5, 5c, module: user, task: #12）
-   - **当前状态**：正在做什么 / 等待什么
-   - **下一步操作**：
-     - 如果是技术负责人操作 → 说明具体要做什么
-     - 如果是调用 skill → 给出完整命令（如 `/mp-impl user 12`）
-   - **注意事项**：如有阻塞、待处理的 review 反馈等
-
-## 状态更新
-
-用户可以通过自然语言告诉你状态变更，例如：
-- "Step 2 review 通过了"
-- "user 模块的契约测试写完了"
-- "Issue #12 review LGTM"
-- "开始处理 order 模块"
-
-你需要：
-1. 理解变更内容
-2. 更新 `docs/workflow-state.md` 中的对应字段
-3. commit 状态文件
-4. 告诉用户下一步该做什么
-
-## 模块进度表字段值
-
-| 值 | 含义 |
-|----|------|
-| （空） | 未开始 |
-| in_progress | 进行中 |
-| review | 等待技术负责人 review |
-| done | 完成 |
-| blocked | 阻塞 |
-
-## 输出格式
+4. 输出：
 
 ```
-📍 当前阶段: Step {N} - {阶段名称}
-   子步骤: {substep 描述}
-   当前模块: {module} ({进度})
+当前阶段: Step {N} - {阶段名称}
+子步骤: {substep 描述}
+当前模块: {module} ({进度})
 
-➡️ 下一步:
-   {具体操作描述或 skill 调用命令}
+下一步:
+{具体操作描述或 skill 调用命令}
 
-📋 模块进度:
-   {进度摘要}
+模块进度:
+{进度摘要}
 ```
