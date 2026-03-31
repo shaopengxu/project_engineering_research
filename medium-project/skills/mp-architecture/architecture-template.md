@@ -17,7 +17,9 @@
 | UI 组件库 | Ant Design |
 | 数据请求 | TanStack Query |
 | 状态管理 | Zustand |
-| 测试 | Vitest + React Testing Library |
+| 单元/集成测试 | Vitest + React Testing Library |
+| 前端 Mock | MSW (Mock Service Worker) |
+| E2E 测试 | Playwright |
 | 代码规范 | ESLint + Prettier |
 
 ## 2. 模块划分

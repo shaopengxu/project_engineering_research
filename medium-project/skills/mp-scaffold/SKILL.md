@@ -19,8 +19,9 @@ description: "Medium-project Step 4a: 根据架构文档初始化项目脚手架
    - 创建测试目录结构（按 architecture.md 的目录结构）
 
 2. **依赖安装与构建配置**：
-   - 安装依赖（根据 architecture.md 技术选型）
+   - 安装依赖（根据 architecture.md 技术选型，包括测试工具链：Vitest、React Testing Library、MSW、Playwright 等）
    - 配置构建工具、测试框架、lint
+   - 初始化 Playwright（`npx playwright install --with-deps`）
    - 配置 TypeScript（根目录 tsconfig.json + 各端独立 tsconfig）
 
 3. **环境配置**：

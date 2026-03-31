@@ -27,7 +27,7 @@ API 调用层测试：
 - 每个后端接口调用验证请求 URL、HTTP 方法、请求参数格式
 - 验证响应数据的解析和转换逻辑
 - 验证错误响应的处理（对照后端接口的错误码）
-- 使用 MSW（Mock Service Worker）或手动 mock 拦截 HTTP 请求
+- 使用 MSW（Mock Service Worker）拦截 HTTP 请求（已在项目依赖中安装）
 - 测试代码放在 tests/contracts/{module}/{feature}/ 目录下
 
 页面渲染测试：

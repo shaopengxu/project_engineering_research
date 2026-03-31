@@ -8,7 +8,8 @@
 - Runtime: Node.js
 - Backend: Express + Prisma + PostgreSQL
 - Frontend: React + Vite + React Router + Ant Design + TanStack Query + Zustand
-- Test: Vitest + React Testing Library
+- Test: Vitest + React Testing Library + MSW (Mock Service Worker)
+- E2E: Playwright
 
 ## 项目文档
 - docs/prd.md — 产品需求
