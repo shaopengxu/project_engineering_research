@@ -25,7 +25,7 @@
 | Architect agent | AI | 架构设计、模块设计、脚手架、任务拆分 |
 | Tester agent | AI | 契约测试、前端测试、E2E 测试 |
 | Implementer agent | AI | 实现业务代码、集成测试 |
-| Reviewer agent | AI | Task Review、模块 Review |
+| Reviewer agent | AI | 全阶段 Review（PRD / 架构 / 设计 / 脚手架 / Issues / infra / 契约测试 / Task / 模块 / L2 / E2E / 验收预检） |
 
 技术负责人是唯一的操作者，通过调用不同的 `/mp-*` skill 驱动 AI agent 完成各阶段工作。
 
@@ -50,6 +50,21 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-workflow` | 查看当前阶段和下一步操作（只读） |
 | `/mp-workflow-update` | 更新流程状态（如 "Step 2 review 通过了"） |
 
+### Review（全阶段 Agent 辅助 Review）
+
+| Skill | 用途 | 参数 |
+|-------|------|------|
+| `/mp-review-prd` | PRD Review | — |
+| `/mp-review-architecture` | 架构 Review | — |
+| `/mp-review-module-design` | 模块设计 + 接口契约 Review | `<module>` / `--summary` |
+| `/mp-review-scaffold` | 脚手架 Review | — |
+| `/mp-review-issues` | Issues Review | — |
+| `/mp-review-infra` | infra 实现 Review | `<issue-number>` |
+| `/mp-review-contract` | 契约测试 Review | `<module> <issue-number>` |
+| `/mp-review-integration` | L2 集成测试 Review | `<issue-number>` |
+| `/mp-review-e2e` | E2E 测试 Review | — |
+| `/mp-review-acceptance` | 验收预检 | — |
+
 ### 设计阶段（Step 2-3）
 
 | Skill | 用途 | 参数 |
@@ -72,7 +87,7 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-test-contract` | 后端模块契约测试 | `<module> <issue-number>` |
 | `/mp-test-frontend` | 前端 feature 测试 | `<module> <feature> <issue-number>` |
 | `/mp-impl` | 实现业务 Task | `<module> <issue-number> [feature]` |
-| `/mp-review-task` | Task Review | `<module> <issue-number>` |
+| `/mp-review-task` | Task 代码 Review | `<module> <issue-number>` |
 | `/mp-review-fix` | Review 问题修复 | `<module> <issue-number>` |
 | `/mp-review-module` | 模块级整体 Review | `<module>` |
 | `/mp-test-integration` | L2 跨模块集成测试 | `<issue-number>` |
@@ -101,8 +116,9 @@ git init && gh repo create {项目名} --private
 
 技术负责人审查 PRD，创建 GitHub Project（配置见 `tech-lead-guide.md`），填写 CLAUDE.md 基础信息。
 
-完成后更新状态：
 ```
+/mp-review-prd                         # Agent 先 review PRD
+# 技术负责人参考 Agent 结论，确认后：
 /mp-workflow-update Step 1 完成
 ```
 
@@ -110,10 +126,8 @@ git init && gh repo create {项目名} --private
 
 ```
 /mp-architecture
-```
-
-技术负责人 review `docs/architecture.md`，通过后：
-```
+/mp-review-architecture                # Agent review 架构
+# 技术负责人参考 Agent 结论，确认后：
 /mp-workflow-update Step 2 review 通过
 ```
 
@@ -122,9 +136,11 @@ git init && gh repo create {项目名} --private
 ```
 # 后端模块（按依赖顺序）
 /mp-module-design user
+/mp-review-module-design user          # Agent review 模块设计
 /mp-workflow-update user 模块设计 review 通过
 
 /mp-module-design order
+/mp-review-module-design order
 /mp-workflow-update order 模块设计 review 通过
 
 # 前端模块
@@ -134,6 +150,7 @@ git init && gh repo create {项目名} --private
 
 # 汇总
 /mp-module-design --summary
+/mp-review-module-design --summary     # Agent 汇总检查
 /mp-workflow-update Step 3 review 通过
 ```
 
@@ -141,9 +158,11 @@ git init && gh repo create {项目名} --private
 
 ```
 /mp-scaffold
+/mp-review-scaffold                    # Agent review 脚手架
 /mp-workflow-update 脚手架 review 通过
 
 /mp-task-split
+/mp-review-issues                      # Agent review Issues
 /mp-workflow-update Issues review 通过
 ```
 
@@ -152,22 +171,25 @@ git init && gh repo create {项目名} --private
 ```
 # infra
 /mp-impl-infra 1
+/mp-review-infra 1                     # Agent review infra
 /mp-workflow-update infra review 通过
 
 # 每个模块重复以下循环：
 /mp-test-contract user 5              # 写契约测试
+/mp-review-contract user 5            # Agent review 契约测试
 /mp-workflow-update user 契约测试 review 通过
 
 /mp-impl user 6                       # 实现 Task（skill 自动设状态为"等待 review"）
-/mp-review-task user 6                # Review（skill 只输出结论，不改状态）
+/mp-review-task user 6                # Agent review Task（skill 只输出结论，不改状态）
 /mp-workflow-update Issue #6 review LGTM  # 技术负责人确认后推进状态
 
 # ... 更多 Task ...
 
-/mp-review-module user                # 模块 Review
+/mp-review-module user                # Agent 模块 Review
 /mp-workflow-update user 模块 Review LGTM
 
 /mp-test-integration 10               # L2 集成测试
+/mp-review-integration 10             # Agent review L2 集成测试
 /mp-workflow-update user L2 集成测试完成
 ```
 
@@ -175,10 +197,13 @@ git init && gh repo create {项目名} --private
 
 ```
 /mp-test-e2e
+/mp-review-e2e                         # Agent review E2E 测试
 /mp-workflow-update E2E 测试通过
-```
 
-产品经理分批验收。
+/mp-review-acceptance                  # Agent 验收预检
+# 产品经理分批验收
+/mp-workflow-update 验收通过
+```
 
 ## 术语说明
 
@@ -203,22 +228,32 @@ git init && gh repo create {项目名} --private
 medium-project/                         # 工作流定义
 ├── README.md                           # 本文件
 ├── tech-lead-guide.md                  # 技术负责人操作指南
-└── skills/                             # Skill 定义（15 个）
+└── skills/                             # Skill 定义（25 个）
     ├── mp-workflow/                     # 流程查询
     ├── mp-workflow-update/              # 状态更新
+    ├── mp-review-prd/                  # Step 1: PRD Review
     ├── mp-architecture/                # Step 2: 架构设计
+    ├── mp-review-architecture/         # Step 2: 架构 Review
     ├── mp-module-design/               # Step 3: 模块设计
+    ├── mp-review-module-design/        # Step 3: 模块设计 Review
     ├── mp-scaffold/                    # Step 4a: 脚手架
+    ├── mp-review-scaffold/             # Step 4a: 脚手架 Review
     ├── mp-task-split/                  # Step 4b: 任务拆分
+    ├── mp-review-issues/               # Step 4b: Issues Review
     ├── mp-impl-infra/                  # Step 5a: infra 实现
+    ├── mp-review-infra/                # Step 5a: infra Review
     ├── mp-test-contract/               # Step 5b: 后端契约测试
     ├── mp-test-frontend/               # Step 5b: 前端测试
+    ├── mp-review-contract/             # Step 5b: 契约测试 Review
     ├── mp-impl/                        # Step 5c: 业务实现
     ├── mp-review-task/                 # Step 5d: Task Review
     ├── mp-review-fix/                  # Step 5e: Review 修复
     ├── mp-review-module/               # Step 5f: 模块 Review
     ├── mp-test-integration/            # Step 5g: L2 集成测试
-    └── mp-test-e2e/                    # Step 6: E2E 测试
+    ├── mp-review-integration/          # Step 5g: L2 集成测试 Review
+    ├── mp-test-e2e/                    # Step 6: E2E 测试
+    ├── mp-review-e2e/                  # Step 6: E2E Review
+    └── mp-review-acceptance/           # Step 7: 验收预检
 ```
 
 ## 目标项目结构
