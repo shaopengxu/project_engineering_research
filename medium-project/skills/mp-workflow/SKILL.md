@@ -54,19 +54,20 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 
 调用 skill：无（技术负责人手动操作）
 
-**技术负责人操作**：
+**操作流程**：
 
-1. 审查 PRD（验收标准明确可测试、功能点按模块组织且无遗漏、非功能需求已说明）
-2. git init + GitHub 仓库创建
-3. GitHub Project 初始化：
+1. Agent review PRD：`/mp-review-prd`
+2. 技术负责人参考 Agent 结论，审查 PRD（验收标准明确可测试、功能点按模块组织且无遗漏、非功能需求已说明）
+3. git init + GitHub 仓库创建
+4. GitHub Project 初始化：
    ```bash
    gh project create --title "{项目名称}" --owner "@me"
    ```
-4. 配置自定义字段（GitHub Web UI → Project → Settings → Custom fields）：
+5. 配置自定义字段（GitHub Web UI → Project → Settings → Custom fields）：
    - Status: Todo, In Progress, Review, Done, Blocked
    - Module: infra, {module-a}, {module-b}, web-app, admin, ...
    - Priority: P0, P1, P2
-5. 创建标签：
+6. 创建标签：
    ```bash
    gh label create "type:contract-test" --color "1d76db" --description "契约测试任务"
    gh label create "type:impl" --color "0e8a16" --description "实现任务"
@@ -75,8 +76,8 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
    gh label create "type:infra" --color "c5def5" --description "基础设施任务"
    gh label create "module:{name}" --color "fbca04" --description "{name} 模块"
    ```
-6. 配置 Project 视图（Board / Table / Roadmap）
-7. 填写 CLAUDE.md 项目名称和一句话描述
+7. 配置 Project 视图（Board / Table / Roadmap）
+8. 填写 CLAUDE.md 项目名称和一句话描述
 
 退出条件：PRD 通过审查，CLAUDE.md 基础部分确认，Project 已创建
 完成后：`/mp-workflow-update Step 1 完成`
@@ -87,7 +88,9 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 
 调用 skill：`/mp-architecture`
 
-**技术负责人 review** — 架构 Review Checklist：
+**Review 流程**：
+1. Agent review：`/mp-review-architecture`
+2. 技术负责人参考 Agent 结论，review `docs/architecture.md` — 架构 Review Checklist：
 ```
 - [ ] 模块划分符合单一职责，每个模块职责一句话说清
 - [ ] 模块间依赖方向单向，无循环依赖
@@ -112,7 +115,10 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 - 前端 feature：`/mp-module-design web-app {feature}`
 - 汇总：`/mp-module-design --summary`
 
-**技术负责人 review** — 模块设计 Review Checklist：
+**Review 流程**：
+1. 每个模块设计完成后，Agent review：`/mp-review-module-design {module}`
+2. 所有模块完成后，Agent 汇总检查：`/mp-review-module-design --summary`
+3. 技术负责人参考 Agent 结论，review — 模块设计 Review Checklist：
 ```
 模块设计：
 - [ ] 内部分层符合 architecture.md 约定
@@ -143,7 +149,9 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 
 调用 skill：`/mp-scaffold`
 
-**技术负责人 review** — 脚手架 Review Checklist：
+**Review 流程**：
+1. Agent review：`/mp-review-scaffold`
+2. 技术负责人参考 Agent 结论，review — 脚手架 Review Checklist：
 ```
 - [ ] 依赖安装成功
 - [ ] lint 命令能跑通
@@ -160,7 +168,9 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 
 调用 skill：`/mp-task-split`
 
-**技术负责人 review** — Issues Review Checklist：
+**Review 流程**：
+1. Agent review：`/mp-review-issues`
+2. 技术负责人参考 Agent 结论，review — Issues Review Checklist：
 ```
 - [ ] 每个接口都有对应的契约测试 Issue
 - [ ] 每个实现 Issue 标注了依赖（Depends on #N）
@@ -179,7 +189,8 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 #### 5a. infra 实现
 
 调用 skill：`/mp-impl-infra {issue-number}`
-技术负责人 review infra 代码（快速扫描：配置正确、依赖合理、能跑通）
+Agent review：`/mp-review-infra {issue-number}`
+技术负责人参考 Agent 结论，review infra 代码（快速扫描：配置正确、依赖合理、能跑通）
 通过 → `/mp-workflow-update infra review 通过`
 
 #### 5b. 测试先行
@@ -187,7 +198,9 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 - 后端模块：`/mp-test-contract {module} {issue-number}`
 - 前端模块：`/mp-test-frontend {module} {feature} {issue-number}`
 
-**技术负责人 review** — 测试 Review Checklist：
+**Review 流程**：
+1. Agent review：`/mp-review-contract {module} {issue-number}`
+2. 技术负责人参考 Agent 结论，review — 测试 Review Checklist：
 ```
 - [ ] 每条业务规则有对应测试用例（对照 module-design 接口契约逐条检查）
 - [ ] 覆盖正常流程和异常流程（错误码全覆盖）
@@ -232,6 +245,8 @@ LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 #### 5g. L2 集成测试
 
 调用 skill：`/mp-test-integration {issue-number}`
+Agent review：`/mp-review-integration {issue-number}`
+技术负责人参考 Agent 结论确认
 完成 → `/mp-workflow-update {module} L2 集成测试完成`
 
 ---
@@ -239,7 +254,8 @@ LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 ### Step 6: E2E 测试
 
 调用 skill：`/mp-test-e2e`
-技术负责人确认 E2E 通过，编写 README.md（推荐）
+Agent review：`/mp-review-e2e`
+技术负责人参考 Agent 结论确认 E2E 通过，编写 README.md（推荐）
 完成 → `/mp-workflow-update E2E 测试通过`
 
 **E2E 测试失败处理**：
@@ -259,7 +275,8 @@ LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 
 ### Step 7: 验收
 
-技术负责人协调产品经理按模块组分批验收，核心模块优先。
+Agent 验收预检：`/mp-review-acceptance`
+技术负责人参考预检结果，协调产品经理按模块组分批验收，核心模块优先。
 完成 → `/mp-workflow-update 验收通过`
 
 ---
