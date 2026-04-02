@@ -35,6 +35,26 @@ description: "拆分任务并创建 GitHub Issues"
      --body "## 任务描述\n{一句话描述}\n\n## 所属模块\n{module}\n\n## 依赖\n- Depends on #{issue-number}\n\n## 需通过测试\n- [ ] 契约测试: tests/contracts/{module}/{test-file}\n- [ ] L1 集成测试: tests/integration/{module}/{test-file}\n\n## 验收标准\n- [ ] {criterion 1}\n- [ ] {criterion 2}"
    ```
 
+   **infra Issue**：
+   ```bash
+   gh issue create \
+     --title "[infra] {任务描述}" \
+     --label "type:infra" \
+     --milestone "{milestone}" \
+     --project "{project-name}" \
+     --body "## 任务描述\n{一句话描述}\n\n## 所属模块\ninfra\n\n## 依赖\n无\n\n## 验收标准\n- [ ] 数据库连接成功\n- [ ] 错误处理中间件可用\n- [ ] npm run dev:server 能启动"
+   ```
+
+   **前端测试 Issue**：
+   ```bash
+   gh issue create \
+     --title "[{module}/{feature}] 前端测试: {feature描述}" \
+     --label "type:contract-test,module:{module}" \
+     --milestone "{milestone}" \
+     --project "{project-name}" \
+     --body "## 任务描述\n为 {module}/{feature} 编写前端 API 层测试和页面渲染测试。\n\n## 所属模块\n{module}/{feature}\n\n## 依赖\n无\n\n## 对应设计文档\nmodule-design/{module}-{feature}.md\n\n## 需通过测试\n- [ ] API 层请求/响应规格测试\n- [ ] 页面渲染测试\n- [ ] 用户交互测试"
+   ```
+
    **集成测试 Issue**：
    ```bash
    gh issue create \
@@ -44,6 +64,8 @@ description: "拆分任务并创建 GitHub Issues"
      --project "{project-name}" \
      --body "## 任务描述\n验证 {module-a} → {module-b} 的关键路径集成。\n\n## 涉及模块\n{module-a}, {module-b}\n\n## 依赖\n- Depends on #{module-a-issue}\n- Depends on #{module-b-issue}\n\n## 测试路径\ntests/integration/paths/{path-name}.test.ts\n\n## 验收标准\n- [ ] 真实模块间调用（不 Mock）\n- [ ] 覆盖正常流程和关键异常流程"
    ```
+
+   > **前端实现 Issue**：使用上方"实现 Issue"模板，但测试路径使用 feature 子目录：`tests/contracts/{module}/{feature}/{test-file}` 和 `tests/integration/{module}/{feature}/{test-file}`。
 
 2. **组织 Sub-issues 层级**：
    - 每个模块创建一个父 Issue（模块粒度）

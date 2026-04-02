@@ -14,6 +14,8 @@ argument-hint: "<module-name> <issue-number> [feature]"
 请先阅读以下文件：
 - CLAUDE.md
 - docs/module-design/{module}.md（接口契约，用于逐条比对）
+- 前端模块还需读：docs/module-design/{module}-{feature}.md（本 feature 的页面、交互、调用的后端接口）
+- 前端模块还需读：该 feature 对应的后端模块设计文件（验证后端接口定义）
 
 然后定位契约测试代码：
 1. 运行 `git log --oneline --all` 查看提交历史

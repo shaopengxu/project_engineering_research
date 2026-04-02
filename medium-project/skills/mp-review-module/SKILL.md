@@ -15,7 +15,11 @@ argument-hint: "<module-name>"
 - CLAUDE.md
 - docs/module-design/{module}.md
 
-然后阅读该模块的全部源代码：server/modules/{module}/（后端模块）或 {web|admin}/（前端模块）
+然后阅读该模块的全部源代码：
+- 后端模块：server/modules/{module}/
+- 前端模块：{web|admin}/features/ 下各 feature 目录 + {web|admin}/shared/（共享层）
+
+> **前端模块 Review 策略**：先按 feature 分段 review（逐个 `{web|admin}/features/{feature}/`），再做跨 feature 一致性检查（feature 间无隐式依赖、共享层无 feature 专属逻辑）。前端模块 Review 在该前端模块的最后一个 feature 所有 Task 完成后触发，一次性覆盖所有 feature。
 
 检查清单（后端模块）：
 1. 模块内命名风格是否一致（变量、函数、文件命名）
