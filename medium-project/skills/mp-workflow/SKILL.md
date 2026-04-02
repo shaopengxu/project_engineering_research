@@ -288,7 +288,7 @@ Agent review：`/mp-review-e2e`
 | 某模块存在 bug | `/mp-impl {module} {issue-number}` 修复 → `/mp-review-task {module} {issue-number}` review |
 | 跨模块集成问题 | `/mp-test-integration {issue-number}` 补充覆盖以定位问题，再修复对应模块 |
 
-修复完成后重新运行 `/mp-test-e2e`（或直接重跑已有 E2E 测试），全部通过后再进入 Step 7。
+修复完成后重新走 Step 6 正常流程：`/mp-test-e2e`（或直接重跑已有 E2E 测试）→ `/mp-review-e2e` → 技术负责人确认全部通过后再进入 Step 7。
 
 ---
 
