@@ -61,6 +61,9 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-review-issues` | Issues Review | — |
 | `/mp-review-infra` | infra 实现 Review | `<issue-number>` |
 | `/mp-review-contract` | 契约测试 Review | `<module> <issue-number>` |
+| `/mp-review-task` | Task 代码 Review | `<module> <issue-number>` |
+| `/mp-review-fix` | Review 问题修复 | `<module> <issue-number>` |
+| `/mp-review-module` | 模块级整体 Review | `<module>` |
 | `/mp-review-integration` | L2 集成测试 Review | `<issue-number>` |
 | `/mp-review-e2e` | E2E 测试 Review | — |
 | `/mp-review-acceptance` | 验收预检 | — |
@@ -87,9 +90,6 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-test-contract` | 后端模块契约测试 | `<module> <issue-number>` |
 | `/mp-test-frontend` | 前端 feature 测试 | `<module> <feature> <issue-number>` |
 | `/mp-impl` | 实现业务 Task | `<module> <issue-number> [feature]` |
-| `/mp-review-task` | Task 代码 Review | `<module> <issue-number>` |
-| `/mp-review-fix` | Review 问题修复 | `<module> <issue-number>` |
-| `/mp-review-module` | 模块级整体 Review | `<module>` |
 | `/mp-test-integration` | L2 跨模块集成测试 | `<issue-number>` |
 
 ### 测试阶段（Step 6）
