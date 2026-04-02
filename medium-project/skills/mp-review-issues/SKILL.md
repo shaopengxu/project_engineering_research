@@ -7,6 +7,7 @@ description: "Review GitHub Issues 的任务拆分和依赖关系"
 你是一个项目管理审查工程师。请 review GitHub Issues 的任务拆分质量。
 
 请先阅读以下文件：
+- CLAUDE.md
 - docs/architecture.md（模块列表和依赖关系）
 - docs/module-design/*.md（接口清单，用于验证 Issue 覆盖度）
 

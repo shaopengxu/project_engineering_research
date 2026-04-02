@@ -25,6 +25,7 @@ argument-hint: "<module-name> <issue-number>"
 - 测试代码放在 tests/contracts/{module}/ 目录下
 - 此阶段只写契约测试，不写业务代码
 - 如果接口契约有模糊或矛盾之处，停下来指出问题，不要自行假设
+- 每个有意义的改动 commit 一次，commit message 格式：`test(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "契约测试编写完成"` 报告
 
 Mock 策略：

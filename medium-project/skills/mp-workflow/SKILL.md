@@ -189,9 +189,11 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 - [ ] 测试框架能启动
 - [ ] docker-compose.yml 已创建，docker compose up -d 能成功启动
 - [ ] 后端模块导出桩文件存在且函数签名与 module-design 中的接口契约一致
+- [ ] 前端 feature 桩文件存在（api/ 层桩文件 + 页面组件桩文件）
 - [ ] .env.example 已创建，.env 已加入 .gitignore
 - [ ] TypeScript 配置正确（根目录 + 各端独立 tsconfig）
 - [ ] CLAUDE.md 已回填常用命令和测试环境配置（与实际脚手架配置一致）
+- [ ] 前端 dev server 能启动（`npm run dev:web`；如有管理后台 `npm run dev:admin`）
 ```
 通过 → `/mp-workflow-update 脚手架 review 通过`
 

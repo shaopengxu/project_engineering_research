@@ -45,7 +45,10 @@ API 调用层测试：
 - 每个测试用例用注释标注对应的 module-design 来源
 - 此阶段只写测试，不写业务代码
 - 如果 module-design 有模糊或矛盾之处，停下来指出问题
+- 每个有意义的改动 commit 一次，commit message 格式：`test(<module>/<feature>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "{feature} 前端测试编写完成"` 报告
+
+预期状态：测试代码能编译/加载，但执行时全部失败（因为实现不存在）— 这是 TDD 的正常状态（先红后绿）。脚手架阶段创建的 api/ 层桩文件和页面组件桩文件解决编译问题。
 
 注意：你只需要阅读本 feature 的设计文档和整体设计文档，不需要阅读其他 feature 的文档。
 

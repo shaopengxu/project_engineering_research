@@ -12,6 +12,7 @@ argument-hint: "<issue-number>"
 请先阅读以下文件：
 - CLAUDE.md
 - docs/architecture.md（重点关注：技术选型、目录结构、接口通用约定）
+- docs/module-design/*.md（重点关注：每个模块的数据模型部分，用于创建 Prisma schema）
 
 请完成以下基础设施：
 

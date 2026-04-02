@@ -2,16 +2,17 @@
 context: fork
 name: mp-review-fix
 description: "根据 Review 反馈修复问题"
-argument-hint: "<module-name> <issue-number>"
+argument-hint: "<module-name> <issue-number> [feature]"
 ---
 
 你是一个开发工程师。请根据 Review 反馈修复问题。
 
-参数：$ARGUMENTS（格式：模块名 Issue编号）
+参数：$ARGUMENTS（格式：模块名 Issue编号 [前端feature名]）
 
 请先阅读以下文件：
 - CLAUDE.md
 - docs/module-design/{module}.md
+- 前端 Task 还需读：docs/module-design/{module}-{feature}.md
 
 然后查看 Issue 中的 Review 反馈：
 - 运行 `gh issue view {issue-number} --comments` 查看 Review 结果
@@ -25,6 +26,8 @@ argument-hint: "<module-name> <issue-number>"
 - 每个有意义的改动 commit 一次，commit message 格式：`fix(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "Review 问题已修复"` 报告
 
-完成后更新 `docs/workflow-state.md`：设置 `substep: 5d-review`（等待重新 Review）。
+完成后更新 `docs/workflow-state.md`：设置 `substep: 5e-review`（等待重新 Review）。
+
+> **重新 Review**：修复完成后，技术负责人应再次调用 `/mp-review-task {module} {issue-number} [feature]` 进行重新 Review。
 
 > **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。

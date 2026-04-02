@@ -19,16 +19,18 @@ description: "Review 项目脚手架"
 3. 测试框架能启动（运行 `npm test -- --passWithNoTests` 或类似命令验证）
 4. docker-compose.yml 已创建，`docker compose up -d` 能成功启动（运行验证）
 5. 后端模块导出桩文件存在且函数签名与 module-design 中的接口契约一致（逐个检查 server/modules/{module}/）
-6. .env.example 已创建，.env 已加入 .gitignore
-7. TypeScript 配置正确（根目录 + 各端独立 tsconfig）
-8. CLAUDE.md 已回填常用命令和测试环境配置（对比脚手架实际配置，确认一致）
+6. 前端 feature 桩文件存在：api/ 层桩文件和页面组件桩文件（逐个检查 {web|admin}/features/{feature}/）
+7. .env.example 已创建，.env 已加入 .gitignore
+8. TypeScript 配置正确（根目录 + 各端独立 tsconfig）
+9. CLAUDE.md 已回填常用命令和测试环境配置（对比脚手架实际配置，确认一致）
+10. 前端 dev server 能启动（运行 `npm run dev:web` 验证；如有管理后台，运行 `npm run dev:admin` 验证）
 
-对于检查项 1-4，请实际运行命令并报告结果。
-对于检查项 5-8，请阅读文件内容进行验证。
+对于检查项 1-4 和 10，请实际运行命令并报告结果。
+对于检查项 5-9，请阅读文件内容进行验证。
 
 输出格式：
-- MUST FIX: 依赖安装失败、lint 不通过、测试框架无法启动、docker-compose 无法启动、桩文件签名与契约不一致
-- SHOULD FIX: .env.example 缺失、TypeScript 配置问题、CLAUDE.md 未回填或与实际配置不一致
+- MUST FIX: 依赖安装失败、lint 不通过、测试框架无法启动、docker-compose 无法启动、桩文件签名与契约不一致、前端 dev server 无法启动
+- SHOULD FIX: .env.example 缺失、TypeScript 配置问题、CLAUDE.md 未回填或与实际配置不一致、前端桩文件缺失
 - OPTIONAL: 建议优化
 - 如果没有 MUST FIX 和 SHOULD FIX，输出 "LGTM"
 

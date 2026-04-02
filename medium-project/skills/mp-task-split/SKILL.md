@@ -11,6 +11,11 @@ description: "拆分任务并创建 GitHub Issues"
 - docs/architecture.md（重点关注：模块划分、依赖关系、关键业务路径）
 - docs/module-design/（所有模块设计文件，了解接口数量和复杂度）
 
+然后获取项目信息：
+- 运行 `gh project list --owner "@me"` 获取 project-name
+- 运行 `gh api repos/{owner}/{repo}/milestones --jq '.[].title'` 获取可用 milestone（{owner}/{repo} 从 `gh repo view --json owner,name` 获取）
+- 如果没有 milestone，根据 architecture.md 的模块划分创建默认 milestone（`gh api repos/{owner}/{repo}/milestones -f title="Milestone 1: 核心模块" -f description="..."`）
+
 请完成以下工作：
 
 1. **创建 GitHub Issues**（使用以下模板）：

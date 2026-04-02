@@ -25,8 +25,10 @@ argument-hint: "<issue-number>"
 - 外部依赖（数据库等）使用测试环境（内存数据库或测试容器）
 - 覆盖关键路径的正常流程和关键异常流程
 - 每个测试用例标注对应的业务路径
-- 每个有意义的改动 commit 一次，commit message 格式：`test(<module>): <描述> [#issue-number]`
+- 每个有意义的改动 commit 一次，commit message 格式：`test(integration): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "L2 集成测试完成"` 报告
+
+> **前端模块的 L2 集成测试**：前端模块的 L2 测试验证前端页面触发的关键业务路径在后端的跨模块协作正确性。如果该路径已被后端模块的 L2 测试覆盖，可在进度表中直接标记 done（无需重复测试），并在 Issue 中 comment 说明原因。
 
 完成后更新 `docs/workflow-state.md`：模块进度表中对应模块的"L2 集成测试"列设为 `review`。
 

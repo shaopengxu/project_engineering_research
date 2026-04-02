@@ -34,7 +34,7 @@ argument-hint: "<module-name> <issue-number> [feature-name]"
 - 每个有意义的改动 commit 一次，commit message 格式：`<type>(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "实现完成，契约测试和 L1 集成测试全部通过"` 报告
 
-完成后更新 `docs/workflow-state.md`：设置 `substep: 5d-review`。
+完成后更新 `docs/workflow-state.md`：设置 `substep: 5c-review`。
 
 > **注意**：不要更新模块进度表的"实现"列。该列由 `/mp-workflow-update` 在模块粒度统一管理（契约测试 review 通过时设为 `in_progress`，模块所有 Task 完成时设为 `done`）。
 

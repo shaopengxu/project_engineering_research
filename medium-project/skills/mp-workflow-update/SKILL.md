@@ -65,11 +65,11 @@ argument-hint: "<状态变更描述> | init"
 | Issues review 通过 | step → 5, substep → 5a |
 | infra review 通过 | 模块进度表 > infra 实现 → done, substep → 5b |
 | 模块契约测试 review 通过 | 模块进度表 > 契约测试 → done, 实现 → in_progress（前端模块：更新对应 feature 行）, substep → 5c |
-| Issue 实现完成 | substep → 5d |
+| Issue 实现完成 | substep → 5c-review |
 | Issue review LGTM | substep → 5c（下一个 Task）, 模块进度表 > Task Review → in_progress |
 | Issue review 有问题 | substep → 5e |
-| 修复完成 | substep → 5d |
-| 模块所有 Task 完成 | substep → 5f（前端模块：指当前 feature 所有 Task 完成）, 模块进度表 > 实现 → done, Task Review → done |
+| 修复完成 | substep → 5e-review |
+| 模块所有 Task 完成 | substep → 5f, 模块进度表 > 实现 → done, Task Review → done（前端模块：仅当所有 feature 的 Task 均已完成时才进入 5f；否则切换到下一个未完成 feature，substep → 5b） |
 | 模块 Review LGTM | 模块进度表 > 模块 Review → done, substep → 5g（前端模块：在最后一个 feature 行标记） |
 | L2 集成测试完成 | 模块进度表 > L2 集成测试 → done, module → 下一个模块（前端模块：在最后一个 feature 行标记） |
 | 开始处理某模块 | module → 该模块, substep → 5b |
