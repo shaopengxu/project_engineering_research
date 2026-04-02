@@ -30,7 +30,7 @@ argument-hint: "<状态变更描述> | init"
 - "Step 1 完成，PRD 和 CLAUDE.md 已就绪"
 - "Step 2 review 通过了"
 - "user 模块设计 review 通过"
-- "web-app 整体设计完成"
+- "web-app 整体设计完成"（前端整体设计不更新进度表，仅记录备注）
 - "web-app auth feature 设计 review 通过"
 - "脚手架 review 通过"
 - "Issues review 通过"
@@ -59,7 +59,8 @@ argument-hint: "<状态变更描述> | init"
 | 用户描述 | 更新字段 |
 |---------|---------|
 | Step N 完成/通过 | step → N+1, substep → 清空 |
-| 模块设计 review 通过 | 模块进度表 > 设计 → done（前端模块：更新该 feature 行） |
+| 模块设计 review 通过 | 模块进度表 > 设计 → done（后端：按模块名定位；前端：按 `{module}/{feature}` 定位到 feature 行） |
+| 前端整体设计完成 | 不更新进度表，在备注中记录（如"web-app 整体设计完成"）；前端整体设计无独立行，状态跟踪在 feature 级 |
 | 脚手架 review 通过 | step → 4, substep → 4b |
 | Issues review 通过 | step → 5, substep → 5a |
 | infra review 通过 | 模块进度表 > infra 实现 → done, substep → 5b |
