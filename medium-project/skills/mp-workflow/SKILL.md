@@ -209,14 +209,23 @@ Agent review：`/mp-review-infra {issue-number}`
 - 前端模块：`/mp-test-frontend {module} {feature} {issue-number}`
 
 **Review 流程**：
-1. Agent review：`/mp-review-contract {module} {issue-number}`
+1. Agent review：
+   - 后端模块：`/mp-review-contract {module} {issue-number}`
+   - 前端模块：`/mp-review-contract {module} {issue-number} {feature}`
 2. 技术负责人参考 Agent 结论，review — 测试 Review Checklist：
 ```
+后端契约测试：
 - [ ] 每条业务规则有对应测试用例（对照 module-design 接口契约逐条检查）
 - [ ] 覆盖正常流程和异常流程（错误码全覆盖）
 - [ ] 测试独立（无共享状态、不依赖执行顺序）
 - [ ] 测试注释标注了业务规则来源
 - [ ] 测试能编译/加载（允许执行失败）
+
+前端契约测试（如涉及）：
+- [ ] API 层测试验证请求格式和响应处理
+- [ ] 页面渲染测试验证 mock 数据下的正确渲染
+- [ ] 用户交互处理已验证
+- [ ] 测试独立且注释标注来源
 ```
 通过 → `/mp-workflow-update {module} 契约测试 review 通过`
 

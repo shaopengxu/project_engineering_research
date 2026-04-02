@@ -17,7 +17,7 @@
 | 5a. infra Review | `/mp-review-infra` | `<issue-number>` |
 | 5b. 后端契约测试 | `/mp-test-contract` | `<module> <issue-number>` |
 | 5b. 前端测试 | `/mp-test-frontend` | `<module> <feature> <issue-number>` |
-| 5b. 契约测试 Review | `/mp-review-contract` | `<module> <issue-number>` |
+| 5b. 契约测试 Review | `/mp-review-contract` | `<module> <issue-number> [feature]` |
 | 5c. 实现 Task | `/mp-impl` | `<module> <issue-number> [feature]` |
 | 5d. Task Review | `/mp-review-task` | `<module> <issue-number>` |
 | 5e. Review 修复 | `/mp-review-fix` | `<module> <issue-number>` |
@@ -203,11 +203,18 @@ GitHub Issues：
 ### Step 5 测试 Review Checklist
 
 ```
+后端契约测试：
 - [ ] 每条业务规则有对应测试用例（对照 module-design 接口契约逐条检查）
 - [ ] 覆盖正常流程和异常流程（错误码全覆盖）
 - [ ] 测试独立（无共享状态、不依赖执行顺序）
 - [ ] 测试注释标注了业务规则来源
 - [ ] 测试能编译/加载（允许执行失败）
+
+前端契约测试（如涉及）：
+- [ ] API 层测试验证请求格式和响应处理
+- [ ] 页面渲染测试验证 mock 数据下的正确渲染
+- [ ] 用户交互处理已验证
+- [ ] 测试独立且注释标注来源
 ```
 
 ---

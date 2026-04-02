@@ -2,12 +2,14 @@
 context: fork
 name: mp-review-contract
 description: "Review 契约测试（后端 + 前端）"
-argument-hint: "<module-name> <issue-number>"
+argument-hint: "<module-name> <issue-number> [feature]"
 ---
 
 你是一个测试审查工程师。请 review 指定模块的契约测试。
 
-参数：$ARGUMENTS（格式：模块名 Issue编号）
+参数：$ARGUMENTS（格式：模块名 Issue编号 [feature名]）
+- 后端模块：`模块名 Issue编号`
+- 前端模块：`模块名 Issue编号 feature名`
 
 请先阅读以下文件：
 - CLAUDE.md
@@ -17,7 +19,8 @@ argument-hint: "<module-name> <issue-number>"
 1. 运行 `git log --oneline --all` 查看提交历史
 2. 找到 commit message 中包含 `[#{issue-number}]` 的所有提交
 3. 对这些提交运行 `git diff <first-commit>^..<last-commit>` 查看完整改动
-4. 阅读 tests/contracts/{module}/ 目录下的测试代码
+4. 后端模块：阅读 tests/contracts/{module}/ 目录下的测试代码
+5. 前端模块：阅读 tests/contracts/{module}/{feature}/ 目录下的测试代码
 
 检查清单（后端契约测试）：
 1. 每条业务规则有对应测试用例（对照 module-design 接口契约逐条检查）

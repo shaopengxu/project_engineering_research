@@ -60,7 +60,7 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-review-scaffold` | 脚手架 Review | — |
 | `/mp-review-issues` | Issues Review | — |
 | `/mp-review-infra` | infra 实现 Review | `<issue-number>` |
-| `/mp-review-contract` | 契约测试 Review | `<module> <issue-number>` |
+| `/mp-review-contract` | 契约测试 Review | `<module> <issue-number> [feature]` |
 | `/mp-review-task` | Task 代码 Review | `<module> <issue-number>` |
 | `/mp-review-fix` | Review 问题修复 | `<module> <issue-number>` |
 | `/mp-review-module` | 模块级整体 Review | `<module>` |
