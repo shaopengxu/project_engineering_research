@@ -284,6 +284,11 @@ gh api repos/{owner}/{repo}/milestones -f title="Milestone 1: 核心模块" -f d
 gh api repos/{owner}/{repo}/milestones -f title="Milestone 2: 业务模块" -f description="{业务模块列表}"
 ```
 
+### 配置 Project 自动化
+
+在 GitHub Web UI 中操作（Project → Settings → Workflows）：
+- 启用 **"Item closed"** → 设置 Status 为 **Done**（`/mp-workflow-update` 关闭 Issue 后自动同步 Board 状态）
+
 ### 配置 Project 视图
 
 在 GitHub Web UI 中操作：
@@ -304,7 +309,7 @@ gh issue list --state open --search "阻塞 in:comments"       # 查看阻塞
 gh issue close {NUMBER} --comment "Review 通过，Task 完成。"  # 关闭已完成
 ```
 
-**状态管理原则**：Agent 通过 Issue comment 报告进展，**技术负责人负责更新 Project Board 状态**。
+**状态管理原则**：Agent 通过 Issue comment 报告进展，`/mp-workflow-update` 在状态推进时自动关闭已完成的 Issue（配合 GitHub Project 自动化规则 "Item closed → Status = Done" 同步 Board 状态）。
 
 ### Task 流转
 
@@ -312,7 +317,6 @@ Reviewer 输出 LGTM 后，Task 即视为完成（代码已在 main 上）。
 
 ```
 每个 Task Review 通过后：
-- [ ] 更新 GitHub Issue 状态（关闭 Issue 或移动到 Done）
 - [ ] 检查是否解锁了下游依赖任务
 - [ ] 如果涉及文档变更，按变更传播规则处理
 - [ ] 如果模块所有 Task 完成，触发模块级 Review

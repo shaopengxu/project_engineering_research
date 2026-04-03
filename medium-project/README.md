@@ -172,16 +172,16 @@ git init && gh repo create {项目名} --private
 # infra
 /mp-impl-infra 1
 /mp-review-infra 1                     # Agent review infra
-/mp-workflow-update infra review 通过
+/mp-workflow-update infra #1 review 通过
 
 # 每个模块重复以下循环：
 /mp-test-contract user 5              # 写契约测试
 /mp-review-contract user 5            # Agent review 契约测试
-/mp-workflow-update user 契约测试 review 通过
+/mp-workflow-update user 契约测试 #5 review 通过
 
 /mp-impl user 6                       # 实现 Task（skill 自动设状态为"等待 review"）
 /mp-review-task user 6                # Agent review Task（skill 只输出结论，不改状态）
-/mp-workflow-update Issue #6 review LGTM  # 技术负责人确认后推进状态
+/mp-workflow-update Issue #6 review LGTM  # 技术负责人确认后推进状态（自动关闭 Issue）
 
 # ... 更多 Task ...
 
@@ -190,7 +190,7 @@ git init && gh repo create {项目名} --private
 
 /mp-test-integration 10               # L2 集成测试
 /mp-review-integration 10             # Agent review L2 集成测试
-/mp-workflow-update user L2 集成测试完成
+/mp-workflow-update user L2 集成测试 #10 完成
 ```
 
 ### 7. E2E + 验收（Step 6-7）

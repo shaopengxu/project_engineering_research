@@ -226,7 +226,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 调用 skill：`/mp-impl-infra {issue-number}`
 Agent review：`/mp-review-infra {issue-number}`
 技术负责人参考 Agent 结论，review infra 代码（快速扫描：配置正确、依赖合理、能跑通）
-通过 → `/mp-workflow-update infra review 通过`
+通过 → `/mp-workflow-update infra #N review 通过`（N 为 infra Issue 编号）
 
 #### 5b. 测试先行
 
@@ -252,7 +252,7 @@ Agent review：`/mp-review-infra {issue-number}`
 - [ ] 用户交互处理已验证
 - [ ] 测试独立且注释标注来源
 ```
-通过 → `/mp-workflow-update {module} 契约测试 review 通过`
+通过 → `/mp-workflow-update {module} 契约测试 #N review 通过`（N 为契约测试 Issue 编号）
 
 #### 5c-5e. 实现 → Review → 修复循环
 
@@ -263,14 +263,14 @@ Agent review：`/mp-review-infra {issue-number}`
 **技术负责人 Task 流转**：
 ```
 每个 Task Review 通过后：
-- [ ] 更新 GitHub Issue 状态（gh issue close {NUMBER}）
 - [ ] 检查是否解锁了下游依赖任务
 - [ ] 如果涉及文档变更，按变更传播规则处理
 ```
+> Issue 关闭由 `/mp-workflow-update` 在状态推进时自动执行，无需手动操作。
+
 管理命令：
 ```bash
 gh issue list --state open --label "module:{module-name}"    # 按模块筛选
-gh issue close {NUMBER} --comment "Review 通过，Task 完成。"  # 关闭已完成
 ```
 
 #### 5f. 模块 Review
@@ -291,7 +291,7 @@ LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 调用 skill：`/mp-test-integration {issue-number}`
 Agent review：`/mp-review-integration {issue-number}`
 技术负责人参考 Agent 结论确认
-完成 → `/mp-workflow-update {module} L2 集成测试完成`
+完成 → `/mp-workflow-update {module} L2 集成测试 #N 完成`（N 为 L2 Issue 编号）
 
 ---
 
