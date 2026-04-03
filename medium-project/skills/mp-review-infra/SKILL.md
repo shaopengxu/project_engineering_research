@@ -37,6 +37,6 @@ argument-hint: "<issue-number>"
 - OPTIONAL: 建议优化
 - 如果没有 MUST FIX 和 SHOULD FIX，输出 "LGTM"
 
-完成后：将 Review 结果输出给技术负责人，**不自动更新 `docs/workflow-state.md`**。
+完成后用 `gh issue comment {ISSUE_NUMBER} --body "<Review 结果>"` 将完整的 Review 结果（LGTM / MUST FIX / SHOULD FIX 清单）写入 Issue，然后将同样的结果输出给技术负责人。**不自动更新 `docs/workflow-state.md`**。
 
 > **状态更新边界**：Review 类 skill 只输出结论，不修改 workflow-state。状态转换由技术负责人通过 `/mp-workflow-update` 触发（如 `/mp-workflow-update infra review 通过`）。
