@@ -63,6 +63,7 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-review-contract` | 契约测试 Review | `<module> <issue-number> [feature]` |
 | `/mp-review-task` | Task 代码 Review | `<module> <issue-number> [feature]` |
 | `/mp-review-fix` | Review 问题修复 | `<module> <issue-number> [feature]` |
+| `/mp-review-feature` | 前端 Feature 级整体 Review | `<module> <feature>` |
 | `/mp-review-module` | 后端模块级整体 Review | `<module>` |
 | `/mp-review-module-frontend` | 前端模块级整体 Review | `<module>` |
 | `/mp-review-integration` | L2 集成测试 Review | `<issue-number>` |
@@ -186,12 +187,35 @@ git init && gh repo create {项目名} --private
 
 # ... 更多 Task ...
 
-/mp-review-module user                # Agent 模块 Review
+/mp-review-module user                # Agent 后端模块 Review
 /mp-workflow-update user 模块 Review LGTM
 
 /mp-test-integration 10               # L2 集成测试
 /mp-review-integration 10             # Agent review L2 集成测试
 /mp-workflow-update user L2 集成测试 #10 完成
+
+# 前端模块（每个 feature 重复以下循环）：
+/mp-test-frontend web-app auth 8      # 写前端测试
+/mp-review-contract web-app 8 auth    # Agent review 前端测试
+/mp-workflow-update web-app auth 契约测试 #8 review 通过
+
+/mp-impl web-app 9 auth              # 实现 Task
+/mp-review-task web-app 9 auth       # Agent review Task
+/mp-workflow-update Issue #9 review LGTM
+
+# ... auth feature 更多 Task ...
+
+/mp-review-feature web-app auth       # Agent Feature Review
+/mp-workflow-update web-app auth Feature Review LGTM
+
+# ... 更多 feature（product 等）...
+
+/mp-review-module-frontend web-app    # Agent 前端模块 Review（跨 feature 一致性）
+/mp-workflow-update web-app 模块 Review LGTM
+
+/mp-test-integration 15               # L2 集成测试
+/mp-review-integration 15
+/mp-workflow-update web-app L2 集成测试 #15 完成
 ```
 
 ### 7. E2E + 验收（Step 6-7）
@@ -229,7 +253,7 @@ git init && gh repo create {项目名} --private
 medium-project/                         # 工作流定义
 ├── README.md                           # 本文件
 ├── tech-lead-guide.md                  # 技术负责人操作指南
-└── skills/                             # Skill 定义（26 个）
+└── skills/                             # Skill 定义（27 个）
     ├── mp-workflow/                     # 流程查询
     ├── mp-workflow-update/              # 状态更新
     ├── mp-review-prd/                  # Step 1: PRD Review
@@ -248,6 +272,7 @@ medium-project/                         # 工作流定义
     ├── mp-review-contract/             # Step 5b: 契约测试 Review
     ├── mp-impl/                        # Step 5c: 业务实现
     ├── mp-review-task/                 # Step 5d: Task Review
+    ├── mp-review-feature/              # Step 5f: 前端 Feature Review
     ├── mp-review-fix/                  # Step 5e: Review 修复
     ├── mp-review-module/               # Step 5f: 后端模块 Review
     ├── mp-review-module-frontend/      # Step 5f: 前端模块 Review

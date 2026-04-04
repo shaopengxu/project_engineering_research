@@ -43,6 +43,7 @@ argument-hint: "<状态变更描述> | init"
 - "Issue #12 修复完成"
 - "user 模块所有 Task 完成"
 - "web-app auth 所有 Task 完成"
+- "web-app auth Feature Review LGTM"
 - "user 模块 Review LGTM"
 - "web-app 模块 Review LGTM"
 - "user L2 集成测试 #15 完成"
@@ -69,7 +70,9 @@ argument-hint: "<状态变更描述> | init"
 | Issue #N review LGTM | substep → 5c（下一个 Task）, 模块进度表 > Task Review → in_progress; **关闭 Issue #N** |
 | Issue #N review 有问题 | substep → 5e |
 | Issue #N 修复完成 | substep → 5e-review |
-| 模块所有 Task 完成 | substep → 5f, 模块进度表 > 实现 → done, Task Review → done（前端模块：仅当所有 feature 的 Task 均已完成时才进入 5f；否则切换到下一个未完成 feature，substep → 5b） |
+| 模块所有 Task 完成 | substep → 5f, 模块进度表 > 实现 → done, Task Review → done（仅后端模块；前端模块使用下方"feature 所有 Task 完成"） |
+| feature 所有 Task 完成 | 模块进度表 > 该 feature 行：实现 → done, Task Review → done, Feature Review → review, substep → 5f（仅前端模块） |
+| Feature Review LGTM | 模块进度表 > Feature Review → done；若该前端模块所有 feature 的 Feature Review 均为 done → substep 不变（等待模块 Review）；否则切换到下一个未完成 feature，substep → 5b |
 | 模块 Review LGTM | 模块进度表 > 模块 Review → done, substep → 5g（前端模块：在最后一个 feature 行标记） |
 | L2 集成测试 #N 完成 | 模块进度表 > L2 集成测试 → done, module → 下一个模块（前端模块：在最后一个 feature 行标记）; **关闭 Issue #N** |
 | 开始处理某模块 | module → 该模块, substep → 5b |
