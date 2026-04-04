@@ -21,7 +21,8 @@
 | 5c. 实现 Task | `/mp-impl` | `<module> <issue-number> [feature]` |
 | 5d. Task Review | `/mp-review-task` | `<module> <issue-number> [feature]` |
 | 5e. Review 修复 | `/mp-review-fix` | `<module> <issue-number> [feature]` |
-| 5f. 模块 Review | `/mp-review-module` | `<module>` |
+| 5f. 后端模块 Review | `/mp-review-module` | `<module>` |
+| 5f. 前端模块 Review | `/mp-review-module-frontend` | `<module>` |
 | 5g. L2 集成测试 | `/mp-test-integration` | `<issue-number>` |
 | 5g. L2 集成测试 Review | `/mp-review-integration` | `<issue-number>` |
 | 6. E2E 测试 | `/mp-test-e2e` | — |

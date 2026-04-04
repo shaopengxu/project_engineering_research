@@ -63,7 +63,8 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-review-contract` | 契约测试 Review | `<module> <issue-number> [feature]` |
 | `/mp-review-task` | Task 代码 Review | `<module> <issue-number> [feature]` |
 | `/mp-review-fix` | Review 问题修复 | `<module> <issue-number> [feature]` |
-| `/mp-review-module` | 模块级整体 Review | `<module>` |
+| `/mp-review-module` | 后端模块级整体 Review | `<module>` |
+| `/mp-review-module-frontend` | 前端模块级整体 Review | `<module>` |
 | `/mp-review-integration` | L2 集成测试 Review | `<issue-number>` |
 | `/mp-review-e2e` | E2E 测试 Review | — |
 | `/mp-review-acceptance` | 验收预检 | — |
@@ -228,7 +229,7 @@ git init && gh repo create {项目名} --private
 medium-project/                         # 工作流定义
 ├── README.md                           # 本文件
 ├── tech-lead-guide.md                  # 技术负责人操作指南
-└── skills/                             # Skill 定义（25 个）
+└── skills/                             # Skill 定义（26 个）
     ├── mp-workflow/                     # 流程查询
     ├── mp-workflow-update/              # 状态更新
     ├── mp-review-prd/                  # Step 1: PRD Review
@@ -248,7 +249,8 @@ medium-project/                         # 工作流定义
     ├── mp-impl/                        # Step 5c: 业务实现
     ├── mp-review-task/                 # Step 5d: Task Review
     ├── mp-review-fix/                  # Step 5e: Review 修复
-    ├── mp-review-module/               # Step 5f: 模块 Review
+    ├── mp-review-module/               # Step 5f: 后端模块 Review
+    ├── mp-review-module-frontend/      # Step 5f: 前端模块 Review
     ├── mp-test-integration/            # Step 5g: L2 集成测试
     ├── mp-review-integration/          # Step 5g: L2 集成测试 Review
     ├── mp-test-e2e/                    # Step 6: E2E 测试
