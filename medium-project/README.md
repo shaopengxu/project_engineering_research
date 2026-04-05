@@ -14,7 +14,7 @@
 - **TDD**：契约测试在实现之前编写，先红后绿
 - **短上下文**：主会话进行项目流程跟踪，真正做事在子会话（执行类 skill 以 `context: fork` 在隔离子 agent 中运行；流程管控 skill `mp-workflow` / `mp-workflow-update` 在主会话运行）
 - **状态可追踪**：`docs/workflow-state.md` 记录当前阶段；模块进度通过 GitHub Issues 追踪
-- **状态更新职责分离**：执行类 skill（含 `mp-review-fix`）只将全局阶段推进到"等待 review"；Review 类 skill（`mp-review-*`，`mp-review-fix` 除外）只输出结论写入 GitHub Issue comment，不修改状态；review 通过/不通过的状态闸门一律由技术负责人通过 `/mp-workflow-update` 触发
+- **状态更新职责分离**：执行类 skill（含 `mp-review-fix`）只将全局阶段推进到"等待 review"（部分执行类 skill 如 `mp-test-contract`、`mp-test-frontend`、`mp-test-integration`、`mp-module-design` 非 `--summary` 模式不更新 workflow-state，其进度通过 GitHub Issues 追踪）；Review 类 skill（`mp-review-*`，`mp-review-fix` 除外）只输出结论写入 GitHub Issue comment，不修改状态；review 通过/不通过的状态闸门一律由技术负责人通过 `/mp-workflow-update` 触发
 
 ## 角色分工
 
@@ -25,7 +25,7 @@
 | Architect agent | AI | 架构设计、模块设计、脚手架、任务拆分 |
 | Tester agent | AI | 契约测试、前端测试、E2E 测试 |
 | Implementer agent | AI | 实现业务代码、集成测试 |
-| Reviewer agent | AI | 全阶段 Review（PRD / 架构 / 设计 / 脚手架 / Issues / infra / 契约测试 / Task / 模块 / L2 / E2E / 验收预检） |
+| Reviewer agent | AI | 全阶段 Review（PRD / 架构 / 设计 / 脚手架 / Issues / infra / 契约测试 / Task / Feature / 模块 / L2 / E2E / 验收预检） |
 
 技术负责人是唯一的操作者，通过调用不同的 `/mp-*` skill 驱动 AI agent 完成各阶段工作。
 
@@ -91,7 +91,7 @@ Step 7  验收                                 ← 产品经理手动操作
 |-------|------|------|
 | `/mp-impl-infra` | 实现 infra 基础设施 | `<issue-number>` |
 | `/mp-test-contract` | 后端模块契约测试 | `<module> <issue-number>` |
-| `/mp-test-frontend` | 前端 feature 测试 | `<module> <feature> <issue-number>` |
+| `/mp-test-frontend` | 前端 feature 测试 | `<module> <issue-number> <feature>` |
 | `/mp-impl` | 实现业务 Task | `<module> <issue-number> [feature]` |
 | `/mp-review-fix` | Review 问题修复 | `<module> <issue-number> [feature]` |
 | `/mp-test-integration` | L2 跨模块集成测试 | `<issue-number>` |
@@ -205,7 +205,7 @@ git init && gh repo create {项目名} --private
 /mp-workflow-update user L2 集成测试 #10 完成
 
 # 前端模块（每个 feature 重复以下循环）：
-/mp-test-frontend web-app auth 8      # 写前端测试
+/mp-test-frontend web-app 8 auth      # 写前端测试
 /mp-review-contract web-app 8 auth    # Agent review 前端测试
 /mp-workflow-update web-app auth 契约测试 #8 review 通过
 
@@ -283,12 +283,12 @@ medium-project/                         # 工作流定义
     ├── mp-review-contract/             # Step 5b: 契约测试 Review
     ├── mp-impl/                        # Step 5c: 业务实现
     ├── mp-review-task/                 # Step 5c-review: Task Review
-    ├── mp-review-fix/                  # Step 5e: Review 修复
-    ├── mp-review-feature/              # Step 5f: 前端 Feature Review
-    ├── mp-review-module/               # Step 5f: 后端模块 Review
-    ├── mp-review-module-frontend/      # Step 5f: 前端模块 Review
-    ├── mp-test-integration/            # Step 5g: L2 集成测试
-    ├── mp-review-integration/          # Step 5g: L2 集成测试 Review
+    ├── mp-review-fix/                  # Step 5d: Review 修复
+    ├── mp-review-feature/              # Step 5e: 前端 Feature Review
+    ├── mp-review-module/               # Step 5e: 后端模块 Review
+    ├── mp-review-module-frontend/      # Step 5e: 前端模块 Review
+    ├── mp-test-integration/            # Step 5f: L2 集成测试
+    ├── mp-review-integration/          # Step 5f: L2 集成测试 Review
     ├── mp-test-e2e/                    # Step 6: E2E 测试
     ├── mp-review-e2e/                  # Step 6: E2E Review
     └── mp-review-acceptance/           # Step 7: 验收预检

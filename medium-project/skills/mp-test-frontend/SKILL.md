@@ -2,12 +2,12 @@
 context: fork
 name: mp-test-frontend
 description: "为前端模块的 feature 编写 API 调用层测试 + 页面渲染测试"
-argument-hint: "<module-name> <feature-name> <issue-number>"
+argument-hint: "<module-name> <issue-number> <feature-name>"
 ---
 
 你是一个测试工程师。请为前端模块的指定 feature 编写测试。
 
-参数：$ARGUMENTS（格式：模块名 feature名 Issue编号）
+参数：$ARGUMENTS（格式：模块名 Issue编号 feature名）
 
 前端测试包含两部分：
 1. **API 调用层测试**：验证 api/ 层的请求参数和响应处理与后端接口定义一致

@@ -26,7 +26,7 @@ argument-hint: "<module-name> <issue-number> [feature]"
 - 每个有意义的改动 commit 一次，commit message 格式：`fix(<module>): <描述> [#issue-number]`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "Review 问题已修复"` 报告
 
-完成后更新 `docs/workflow-state.md`：设置 `substep: 5e-review`（等待重新 Review）。
+完成后更新 `docs/workflow-state.md`：设置 `substep: 5d-review`（等待重新 Review）。
 
 > **重新 Review**：修复完成后，技术负责人应再次调用 `/mp-review-task {module} {issue-number} [feature]` 进行重新 Review。
 

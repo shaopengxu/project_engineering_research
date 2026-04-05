@@ -73,13 +73,14 @@ argument-hint: "<状态变更描述> | init"
 | {module} 契约测试 #N review 通过 | substep → 5c | **关闭 Task Issue #N** |
 | Issue #N 实现完成 | substep → 5c-review | （不操作 Issue） |
 | Issue #N review LGTM | substep → 5c（下一个 Task） | **关闭 Task Issue #N** |
-| Issue #N review 有 MUST FIX | substep → 5e | （不操作 Issue） |
-| Issue #N 修复完成 | substep → 5e-review | （不操作 Issue） |
-| {module} 模块所有 Task 完成 | substep → 5f | （不操作 Issue） |
-| {feature} 所有 Task 完成 | substep → 5f | （不操作 Issue） |
+| Issue #N review 有 MUST FIX | substep → 5d | （不操作 Issue） |
+| Issue #N 修复完成 | substep → 5d-review | （不操作 Issue） |
+| {module} 模块所有 Task 完成 | substep → 5e | （不操作 Issue） |
+| {feature} 所有 Task 完成 | substep → 5e | （不操作 Issue） |
 | {module} {feature} Feature Review LGTM | substep → 5b（下一个 feature）或不变（等待模块 Review） | **关闭阶段 Issue**: `type:feature-review` + `module:{module}` 标题含 "Feature Review: {module}/{feature}" |
-| {module} 模块 Review LGTM | substep → 5g | **关闭阶段 Issue**: `type:module-review` + `module:{module}` 标题含 "模块 Review: {module}" |
-| L2 集成测试 #N 完成 | module → 下一个模块 | **关闭 Task Issue #N** |
+| {module} 模块 Review LGTM | substep → 5f | **关闭阶段 Issue**: `type:module-review` + `module:{module}` 标题含 "模块 Review: {module}" |
+| L2 集成测试 #N 完成（非最后模块） | module → 下一个模块, substep → 5b | **关闭 Task Issue #N** |
+| L2 集成测试 #N 完成（最后模块） | step → 6, substep/module/feature → 清空 | **关闭 Task Issue #N** |
 | 开始处理某模块 | module → 该模块, substep → 5b | （不操作 Issue） |
 | 开始处理某 feature | module → 该模块, feature → 该 feature, substep → 5b | （不操作 Issue） |
 | E2E 测试通过 | step → 7 | **关闭阶段 Issue**: `type:e2e` 标题含 "E2E 测试" |

@@ -4,6 +4,8 @@
 
 | Step | Skill | 参数 |
 |------|-------|------|
+| 全流程 | `/mp-workflow` | — |
+| 全流程 | `/mp-workflow-update` | `<状态变更描述>` / `init` |
 | 1. PRD Review | `/mp-review-prd` | — |
 | 2. 系统架构 | `/mp-architecture` | — |
 | 2. 架构 Review | `/mp-review-architecture` | — |
@@ -16,16 +18,16 @@
 | 5a. infra 实现 | `/mp-impl-infra` | `<issue-number>` |
 | 5a. infra Review | `/mp-review-infra` | `<issue-number>` |
 | 5b. 后端契约测试 | `/mp-test-contract` | `<module> <issue-number>` |
-| 5b. 前端测试 | `/mp-test-frontend` | `<module> <feature> <issue-number>` |
+| 5b. 前端测试 | `/mp-test-frontend` | `<module> <issue-number> <feature>` |
 | 5b. 契约测试 Review | `/mp-review-contract` | `<module> <issue-number> [feature]` |
 | 5c. 实现 Task | `/mp-impl` | `<module> <issue-number> [feature]` |
 | 5c-review. Task Review | `/mp-review-task` | `<module> <issue-number> [feature]` |
-| 5e. Review 修复 | `/mp-review-fix` | `<module> <issue-number> [feature]` |
-| 5f. 前端 Feature Review | `/mp-review-feature` | `<module> <feature>` |
-| 5f. 后端模块 Review | `/mp-review-module` | `<module>` |
-| 5f. 前端模块 Review | `/mp-review-module-frontend` | `<module>` |
-| 5g. L2 集成测试 | `/mp-test-integration` | `<issue-number>` |
-| 5g. L2 集成测试 Review | `/mp-review-integration` | `<issue-number>` |
+| 5d. Review 修复 | `/mp-review-fix` | `<module> <issue-number> [feature]` |
+| 5e. 前端 Feature Review | `/mp-review-feature` | `<module> <feature>` |
+| 5e. 后端模块 Review | `/mp-review-module` | `<module>` |
+| 5e. 前端模块 Review | `/mp-review-module-frontend` | `<module>` |
+| 5f. L2 集成测试 | `/mp-test-integration` | `<issue-number>` |
+| 5f. L2 集成测试 Review | `/mp-review-integration` | `<issue-number>` |
 | 6. E2E 测试 | `/mp-test-e2e` | — |
 | 6. E2E Review | `/mp-review-e2e` | — |
 | 7. 验收预检 | `/mp-review-acceptance` | — |
@@ -415,7 +417,7 @@ Milestone 3: 辅助模块
 |------|---------|------|
 | 新增业务模块 | Step 2（评估对现有架构影响） | 更新 architecture.md 依赖图，然后 3 → 4 → ... |
 | 已有模块增加接口 | Step 3（更新 module-design/{module}.md） | 同时更新 architecture.md 依赖矩阵 |
-| 跨多模块的新功能 | Step 2（影响评估） | 查接口依赖矩阵确定影响范围 → 3 → 5 |
+| 跨多模块的新功能 | Step 2（影响评估） | 查接口依赖矩阵确定影响范围 → 3 → 4b → 5 |
 | 模块内重构不改接口 | Step 5（实现阶段） | 契约测试不需要改（接口没变） |
 | 修 bug | 不走流程 | 直接改 + 补测试 + 提交 |
 

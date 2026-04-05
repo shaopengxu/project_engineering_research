@@ -296,7 +296,7 @@ Agent review：`/mp-review-infra {issue-number}`
 ```
 通过 → `/mp-workflow-update {module} 契约测试 #N review 通过`（N 为契约测试 Issue 编号）
 
-#### 5c-5e. 实现 → Review → 修复循环
+#### 5c-5d. 实现 → Review → 修复循环
 
 - 实现：`/mp-impl {module} {issue-number} [feature]`
 - Review：`/mp-review-task {module} {issue-number} [feature]`
@@ -315,7 +315,7 @@ Agent review：`/mp-review-infra {issue-number}`
 gh issue list --state open --label "module:{module-name}"    # 按模块筛选
 ```
 
-#### 5f. 模块 Review
+#### 5e. 模块 Review
 
 - 后端模块：`/mp-review-module {module}`
 - 前端 feature 全部完成后：`/mp-review-feature {module} {feature}`（逐个 feature）
@@ -331,7 +331,7 @@ LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 - [ ] 跑全量测试确认无回归
 ```
 
-#### 5g. L2 集成测试
+#### 5f. L2 集成测试
 
 调用 skill：`/mp-test-integration {issue-number}`
 Agent review：`/mp-review-integration {issue-number}`
@@ -409,7 +409,7 @@ Agent 验收预检：`/mp-review-acceptance`
 |------|---------|
 | 新增业务模块 | Step 2 |
 | 已有模块增加接口 | Step 3 |
-| 跨多模块新功能 | Step 2 |
+| 跨多模块新功能 | Step 2 → 3 → 4b → 5 |
 | 模块内重构不改接口 | Step 5 |
 | 修 bug | 不走流程 |
 
