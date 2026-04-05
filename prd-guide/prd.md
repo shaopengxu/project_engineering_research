@@ -108,22 +108,20 @@
 
 ### 5.4 原型
 
-> 以下线框图由原型生成 Agent 基于上述 UX/交互说明自动生成，用于辅助理解页面布局和操作流程。
+> 以下 HTML 原型基于上述 UX/交互说明生成，可在浏览器中直接打开预览和交互。
 > 文字描述（5.1-5.3）为需求权威来源，若原型与文字不一致，以文字为准。
 
-**页面流程总览**:
+**页面导航索引**: [原型总览](prototypes/index.html)
 
-![页面流程总览](prototypes/prototype-flow.svg)
-
-**各页面线框图**:
+**各页面原型**:
 
 #### {页面A名称}
-![{页面A名称}](prototypes/prototype-{页面A}.svg)
+[打开原型](prototypes/prototype-{页面A}.html)
 
 - 关键说明: {补充原型中不易看出的交互细节或状态变化}
 
 #### {页面B名称}
-![{页面B名称}](prototypes/prototype-{页面B}.svg)
+[打开原型](prototypes/prototype-{页面B}.html)
 
 - 关键说明: {补充原型中不易看出的交互细节或状态变化}
 
