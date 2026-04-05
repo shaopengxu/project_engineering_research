@@ -289,7 +289,7 @@ gh label create "type:scaffold" --color "c2e0c6" --description "脚手架"
 gh label create "type:task-split" --color "fef2c0" --description "任务拆分"
 gh label create "type:module-review" --color "f9d0c4" --description "模块级 Review"
 gh label create "type:feature-review" --color "e6ccb3" --description "Feature 级 Review"
-gh label create "type:acceptance" --color "0e8a16" --description "验收"
+gh label create "type:acceptance" --color "2ea44f" --description "验收"
 ```
 
 ### 创建 Milestones
@@ -436,7 +436,7 @@ Milestone 3: 辅助模块
 | 3 | Architect | architecture.md, PRD | module-design/*.md | 每模块内部设计 + 接口契约完整；数据模型清晰 |
 | 4 | Architect | 架构 + 模块设计 | 脚手架, Issues | 脚手架能运行；Issues 含依赖关系 |
 | 5 | Tester + Impl + Reviewer | module-design + 测试 | 契约测试 + 业务代码 + L1/L2 集成测试 | 按模块串行：契约测试 Issue closed → 实现 Issue closed → Feature Review Issue closed（前端模块）→ 模块 Review Issue closed → L2 Issue closed |
-| 6 | Tester + 技术负责人 | PRD 验收标准 | E2E 测试, README.md | 核心路径 E2E 通过；README.md 完成 |
+| 6 | Tester + 技术负责人 | PRD 验收标准 | E2E 测试, README.md（推荐） | 核心路径 E2E 通过；README.md 完成（推荐） |
 | 7 | 产品经理 | PRD | 验收确认 | 分批验收全部通过 |
 
 ### 常见故障与恢复

@@ -123,7 +123,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
    gh label create "type:task-split" --color "fef2c0" --description "任务拆分"
    gh label create "type:module-review" --color "f9d0c4" --description "模块级 Review"
    gh label create "type:feature-review" --color "e6ccb3" --description "Feature 级 Review"
-   gh label create "type:acceptance" --color "0e8a16" --description "验收"
+   gh label create "type:acceptance" --color "2ea44f" --description "验收"
 
    # 模块标签（为每个模块创建）
    gh label create "module:{name}" --color "fbca04" --description "{name} 模块"

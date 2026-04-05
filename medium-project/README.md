@@ -187,6 +187,7 @@ git init && gh repo create {项目名} --private
 /mp-workflow-update infra #1 review 通过
 
 # 每个模块重复以下循环：
+/mp-workflow-update 开始处理 user 模块
 /mp-test-contract user 5              # 写契约测试
 /mp-review-contract user 5            # Agent review 契约测试
 /mp-workflow-update user 契约测试 #5 review 通过
@@ -205,6 +206,7 @@ git init && gh repo create {项目名} --private
 /mp-workflow-update user L2 集成测试 #10 完成
 
 # 前端模块（每个 feature 重复以下循环）：
+/mp-workflow-update 开始处理 web-app auth feature
 /mp-test-frontend web-app 8 auth      # 写前端测试
 /mp-review-contract web-app 8 auth    # Agent review 前端测试
 /mp-workflow-update web-app auth 契约测试 #8 review 通过
@@ -218,7 +220,10 @@ git init && gh repo create {项目名} --private
 /mp-review-feature web-app auth       # Agent Feature Review
 /mp-workflow-update web-app auth Feature Review LGTM
 
-# ... 更多 feature（product 等）...
+# ... 更多 feature：
+/mp-workflow-update 开始处理 web-app product feature
+# ... product feature 的 测试 → 实现 → Review 循环 ...
+/mp-workflow-update web-app product Feature Review LGTM
 
 /mp-review-module-frontend web-app    # Agent 前端模块 Review（跨 feature 一致性）
 /mp-workflow-update web-app 模块 Review LGTM
