@@ -273,7 +273,7 @@ Agent review：`/mp-review-infra {issue-number}`
 #### 5b. 测试先行
 
 - 后端模块：`/mp-test-contract {module} {issue-number}`
-- 前端模块：`/mp-test-frontend {module} {feature} {issue-number}`
+- 前端模块：`/mp-test-frontend {module} {issue-number} {feature}`
 
 **Review 流程**：
 1. Agent review：
