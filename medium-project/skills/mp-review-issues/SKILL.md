@@ -30,6 +30,20 @@ description: "Review GitHub Issues 的任务拆分和依赖关系"
 - OPTIONAL: 建议优化
 - 如果没有 MUST FIX 和 SHOULD FIX，输出 "LGTM"
 
-完成后：将 Review 结果输出给技术负责人，**不自动更新 `docs/workflow-state.md`**。
+完成后：
+
+### Issue 定位与 Comment
+
+将 Review 结果写入 GitHub Issue：
+
+1. 搜索现有 Issue：
+   `gh issue list --label "type:task-split" --search "任务拆分 in:title" --state open --json number --jq '.[0].number'`
+2. 如果未找到，创建：
+   `gh issue create --title "任务拆分" --label "type:task-split" --body "跟踪任务拆分的 Review 过程。"`
+3. 将完整的 Review 结果（LGTM / MUST FIX / SHOULD FIX 清单）写入 Issue：
+   `gh issue comment {ISSUE_NUMBER} --body "<Review 结果>"`
+4. 将同样的结果输出给技术负责人。
+
+**不自动更新 `docs/workflow-state.md`**。
 
 > **状态更新边界**：Review 类 skill 只输出结论，不修改 workflow-state。状态转换由技术负责人通过 `/mp-workflow-update` 触发（如 `/mp-workflow-update Issues review 通过`）。

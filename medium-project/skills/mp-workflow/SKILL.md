@@ -8,43 +8,72 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 2. 指导下一步：技术负责人需要做什么、需要调用哪个 skill
 3. 当轮到技术负责人操作时，输出对应的操作指引和 checklist
 
-**注意：本 skill 只查询，不修改状态文件。状态更新请使用 `/mp-workflow-update`。**
+**注意：本 skill 只查询，不修改状态文件和 Issue。状态更新请使用 `/mp-workflow-update`。**
 
-## 状态文件
+## 状态来源
 
-状态文件路径：`docs/workflow-state.md`
+本 skill 从两个来源获取项目状态：
 
-如果文件不存在，提示用户先调用 `/mp-workflow-update init` 初始化。
+1. **全局阶段指针**：`docs/workflow-state.md`（step/substep/module/feature）
+2. **模块进度**：GitHub Issues（通过 `gh issue list` 查询，从 Issue 状态推导各模块进度）
+
+如果 `docs/workflow-state.md` 不存在，提示用户先调用 `/mp-workflow-update init` 初始化。
 
 ## 查询逻辑
 
-1. 读取 `docs/workflow-state.md`
-2. 根据 `step` 和 `substep` 确定当前位置
-3. 查看模块进度表确定哪些模块/feature 已完成、当前在处理哪个
-4. 输出当前阶段、下一步操作
-5. **如果下一步是技术负责人操作，输出下方对应的操作指引和 checklist**
+1. 读取 `docs/workflow-state.md`，获取 step/substep/module/feature
+2. 查询 GitHub Issues 重建模块进度（见下方"模块进度查询"）
+3. 根据 step/substep 确定当前位置
+4. 结合模块进度确定哪些模块/feature 已完成、当前在处理哪个
+5. 输出当前阶段、模块进度、下一步操作
+6. **如果下一步是技术负责人操作，输出下方对应的操作指引和 checklist**
 
-## 进度表读取规则
+## 模块进度查询
 
-- **infra 行**：只关注"实现"列，其余列为 `N/A`
-- **后端模块行**：按模块粒度，所有列均适用
-- **前端 feature 行**（如 `web-app/auth`）：每个 feature 独立跟踪设计、契约测试、实现、Task Review；"模块 Review"和"L2 集成测试"只在该前端模块的最后一个 feature 行标记
+从 GitHub Issues 重建模块进度（替代读取矩阵）：
+
+1. 获取所有 Issues：
+   `gh issue list --state all --limit 200 --json number,title,labels,state`
+
+2. 按 `module:*` 标签分组，每个模块内按 `type:*` 标签统计：
+
+| type 标签 | 对应进度列 | 判定方法 |
+|----------|-----------|---------|
+| `type:design` | 设计 | 存在 closed Issue → done；存在 open → review；不存在 → - |
+| `type:contract-test` | 契约测试 | 全部 closed → done；部分 closed → {closed}/{total}；不存在 → - |
+| `type:impl` | 实现 | 全部 closed → done；部分 closed → {closed}/{total}；不存在 → - |
+| `type:feature-review` | Feature Review | closed → done；open → review；不存在 → -（仅前端模块） |
+| `type:module-review` | 模块 Review | closed → done；open → review；不存在 → - |
+| `type:integration-test` | L2 集成测试 | closed → done；open → review；不存在 → - |
+
+3. 特殊处理：
+   - **infra**：只看 `type:infra` 标签的 Issue，报告实现状态（done/review/-）
+   - **前端模块**：`type:impl` 和 `type:contract-test` 的 Issue 按标题中的 feature 名拆行显示
+   - **无 module 标签的 Issue**（`type:architecture`, `type:scaffold`, `type:prd-review` 等）不纳入模块进度表，属于全局阶段 Issue
 
 ## 输出格式
 
 ```
 当前阶段: Step {N} - {阶段名称}
 子步骤: {substep 描述}
-当前模块: {module} [feature: {feature}]（{进度}）
+当前模块: {module} [feature: {feature}]
+
+模块进度:
+| 模块            | 设计 | 契约测试 | 实现  | Feature Review | 模块 Review | L2  |
+|----------------|------|---------|-------|---------------|------------|-----|
+| infra          | N/A  | N/A     | done  | N/A           | N/A        | N/A |
+| {module-a}     | done | done    | 3/5   | N/A           | -          | -   |
+| {module-b}     | done | -       | -     | N/A           | -          | -   |
+| {frontend}/auth   | done | done | 2/3   | -             | -          | -   |
+| {frontend}/product| done | -   | -     | -             | -          | -   |
 
 下一步:
 {具体操作描述或 skill 调用命令}
 
 {如果是技术负责人操作，附上对应的操作指引/checklist}
-
-模块进度:
-{进度摘要}
 ```
+
+> 进度列中的符号：`done` = 全部完成，`3/5` = 5 个中完成了 3 个，`review` = 等待 review，`-` = 未开始，`N/A` = 不适用
 
 ---
 
@@ -79,11 +108,24 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
    - Priority: P0, P1, P2
 6. 创建标签：
    ```bash
+   # 任务类型标签
    gh label create "type:contract-test" --color "1d76db" --description "契约测试任务"
    gh label create "type:impl" --color "0e8a16" --description "实现任务"
    gh label create "type:integration-test" --color "5319e7" --description "集成测试任务"
    gh label create "type:e2e" --color "d93f0b" --description "E2E 测试任务"
    gh label create "type:infra" --color "c5def5" --description "基础设施任务"
+
+   # 阶段 Issue 标签
+   gh label create "type:prd-review" --color "0075ca" --description "PRD Review"
+   gh label create "type:architecture" --color "bfd4f2" --description "架构设计"
+   gh label create "type:design" --color "d4c5f9" --description "模块设计"
+   gh label create "type:scaffold" --color "c2e0c6" --description "脚手架"
+   gh label create "type:task-split" --color "fef2c0" --description "任务拆分"
+   gh label create "type:module-review" --color "f9d0c4" --description "模块级 Review"
+   gh label create "type:feature-review" --color "e6ccb3" --description "Feature 级 Review"
+   gh label create "type:acceptance" --color "0e8a16" --description "验收"
+
+   # 模块标签（为每个模块创建）
    gh label create "module:{name}" --color "fbca04" --description "{name} 模块"
    ```
 7. 配置 Project 视图（Board / Table / Roadmap）
@@ -275,12 +317,15 @@ gh issue list --state open --label "module:{module-name}"    # 按模块筛选
 
 #### 5f. 模块 Review
 
-调用 skill：`/mp-review-module {module}`
+- 后端模块：`/mp-review-module {module}`
+- 前端 feature 全部完成后：`/mp-review-feature {module} {feature}`（逐个 feature）
+- 前端模块所有 feature Review 通过后：`/mp-review-module-frontend {module}`
+
 LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 
 **技术负责人确认模块完成**：
 ```
-- [ ] 该模块所有 Task 已完成
+- [ ] 该模块所有 Task 已完成（前端模块：所有 feature 已通过 Feature Review）
 - [ ] 模块 Review LGTM
 - [ ] 如有跨模块依赖且被依赖模块已完成，触发 L2 集成测试
 - [ ] 跑全量测试确认无回归

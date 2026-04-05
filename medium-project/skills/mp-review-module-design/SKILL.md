@@ -69,6 +69,26 @@ argument-hint: "<module-name> | --summary"
 - OPTIONAL: 建议优化
 - 如果没有 MUST FIX 和 SHOULD FIX，输出 "LGTM"
 
-完成后：将 Review 结果输出给技术负责人，**不自动更新 `docs/workflow-state.md`**。
+完成后：
+
+### Issue 定位与 Comment
+
+将 Review 结果写入 GitHub Issue。根据参数模式确定 Issue 标题和标签：
+
+| 参数模式 | Issue 标题 | 标签 |
+|---------|-----------|------|
+| `{module}`（后端模块或前端整体） | `模块设计: {module}` | `type:design,module:{module}` |
+| `{module} {feature}`（前端 feature） | `模块设计: {module}/{feature}` | `type:design,module:{module}` |
+| `--summary` | `模块设计: 汇总检查` | `type:design` |
+
+1. 搜索现有 Issue：
+   `gh issue list --label "{LABELS}" --search "{TITLE} in:title" --state open --json number --jq '.[0].number'`
+2. 如果未找到，创建：
+   `gh issue create --title "{TITLE}" --label "{LABELS}" --body "跟踪 {SCOPE} 的 Review 过程。"`
+3. 将完整的 Review 结果（LGTM / MUST FIX / SHOULD FIX 清单）写入 Issue：
+   `gh issue comment {ISSUE_NUMBER} --body "<Review 结果>"`
+4. 将同样的结果输出给技术负责人。
+
+**不自动更新 `docs/workflow-state.md`**。
 
 > **状态更新边界**：Review 类 skill 只输出结论，不修改 workflow-state。状态转换由技术负责人通过 `/mp-workflow-update` 触发（如 `/mp-workflow-update user 模块设计 review 通过`）。

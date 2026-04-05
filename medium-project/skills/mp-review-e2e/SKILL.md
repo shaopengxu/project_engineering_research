@@ -30,6 +30,20 @@ description: "Review E2E 测试"
 - OPTIONAL: 建议优化
 - 如果没有 MUST FIX 和 SHOULD FIX，输出 "LGTM"
 
-完成后：将 Review 结果输出给技术负责人，**不自动更新 `docs/workflow-state.md`**。
+完成后：
+
+### Issue 定位与 Comment
+
+将 Review 结果写入 GitHub Issue：
+
+1. 搜索现有 Issue：
+   `gh issue list --label "type:e2e" --search "E2E 测试 in:title" --state open --json number --jq '.[0].number'`
+2. 如果未找到，创建：
+   `gh issue create --title "E2E 测试" --label "type:e2e" --body "跟踪 E2E 测试的 Review 过程。"`
+3. 将完整的 Review 结果（LGTM / MUST FIX / SHOULD FIX 清单）写入 Issue：
+   `gh issue comment {ISSUE_NUMBER} --body "<Review 结果>"`
+4. 将同样的结果输出给技术负责人。
+
+**不自动更新 `docs/workflow-state.md`**。
 
 > **状态更新边界**：Review 类 skill 只输出结论，不修改 workflow-state。状态转换由技术负责人通过 `/mp-workflow-update` 触发（如 `/mp-workflow-update E2E 测试通过`）。

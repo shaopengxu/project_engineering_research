@@ -156,11 +156,9 @@ argument-hint: "<module-name> [feature-name] | --summary"
 - 需求追溯表中不允许出现"未覆盖"的条目
 - 如果发现 PRD 中的功能点/业务规则在已有接口中未覆盖，停下来指出遗漏
 
-完成后更新 `docs/workflow-state.md`：
+完成后：
 
-- **后端模块**：更新模块进度表中该模块行的"设计"列为 `review`
-- **前端整体设计**：不更新进度表（整体设计无独立行，状态跟踪在 feature 级）
-- **前端 feature 级设计**：更新模块进度表中 `{module}/{feature}` 行的"设计"列为 `review`
-- **`--summary`**：设置 `step: 3`，`substep: review`
+- **后端模块 / 前端整体设计 / 前端 feature 级设计**：不更新 `docs/workflow-state.md`（模块级进度通过 GitHub Issues 追踪）
+- **`--summary`**：更新 `docs/workflow-state.md`，设置 `step: 3`，`substep: review`
 
 > **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。
