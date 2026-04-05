@@ -20,7 +20,7 @@ description: "验收前的自动化预检"
 4. 逐条核对 PRD 验收标准：
    - 每条验收标准有对应的 E2E 测试
    - 对应的 E2E 测试处于通过状态
-5. 无未关闭的 MUST FIX Issue（运行 `gh issue list --state open --label "type:impl"` 检查）
+5. 所有实现类 Task Issue 均已关闭（运行 `gh issue list --state open --label "type:impl"` 检查）
 6. README.md 包含项目启动说明
 7. .env.example 包含所有必要的环境变量
 

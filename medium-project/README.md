@@ -315,7 +315,7 @@ project/
 ├── admin/                              # 管理后台
 └── tests/
     ├── contracts/                      # 契约测试（按模块组织，前端按 feature 子目录）
-    ├── unit/                           # 单元测试（按需）
+    ├── unit/                           # 单元测试（按模块组织）
     ├── integration/                    # L1 + L2 集成测试
     │   ├── {module}/                   # L1: 后端模块内集成
     │   ├── {module}/{feature}/         # L1: 前端按 feature 子目录

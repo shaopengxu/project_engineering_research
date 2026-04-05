@@ -73,7 +73,7 @@ argument-hint: "<状态变更描述> | init"
 | {module} 契约测试 #N review 通过 | substep → 5c | **关闭 Task Issue #N** |
 | Issue #N 实现完成 | substep → 5c-review | （不操作 Issue） |
 | Issue #N review LGTM | substep → 5c（下一个 Task） | **关闭 Task Issue #N** |
-| Issue #N review 有问题 | substep → 5e | （不操作 Issue） |
+| Issue #N review 有 MUST FIX | substep → 5e | （不操作 Issue） |
 | Issue #N 修复完成 | substep → 5e-review | （不操作 Issue） |
 | {module} 模块所有 Task 完成 | substep → 5f | （不操作 Issue） |
 | {feature} 所有 Task 完成 | substep → 5f | （不操作 Issue） |

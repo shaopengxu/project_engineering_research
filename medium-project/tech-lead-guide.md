@@ -32,7 +32,7 @@
 
 执行类 skill 以 `context: fork` 运行，无需手动开新会话。流程管控 skill（`mp-workflow`、`mp-workflow-update`）在主会话运行。
 
-> **状态更新职责分离**：执行类 skill 完成后自动将状态推进到"等待 review"；Review 类 skill 只输出结论，不修改状态。技术负责人 review 后通过 `/mp-workflow-update` 推进状态闸门。
+> **状态更新职责分离**：执行类 skill（含 `mp-review-fix`）完成后将全局阶段推进到"等待 review"（部分执行类 skill 如 `mp-test-contract`、`mp-test-frontend`、`mp-test-integration`、`mp-module-design` 非 `--summary` 模式不更新 workflow-state，其进度通过 GitHub Issues 追踪）；Review 类 skill（`mp-review-*`，`mp-review-fix` 除外）只输出结论写入 GitHub Issue comment，不修改状态。技术负责人 review 后通过 `/mp-workflow-update` 推进状态闸门。
 
 ---
 
@@ -433,7 +433,7 @@ Milestone 3: 辅助模块
 | 2 | Architect | PRD, CLAUDE.md | architecture.md | 模块划分清晰；依赖单向无环；数据流完整 |
 | 3 | Architect | architecture.md, PRD | module-design/*.md | 每模块内部设计 + 接口契约完整；数据模型清晰 |
 | 4 | Architect | 架构 + 模块设计 | 脚手架, Issues | 脚手架能运行；Issues 含依赖关系 |
-| 5 | Tester + Impl + Reviewer | module-design + 测试 | 契约测试 + 业务代码 + L1/L2 集成测试 | 按模块串行：契约测试 Issue closed → 实现 Issue closed → 模块 Review Issue closed → L2 Issue closed |
+| 5 | Tester + Impl + Reviewer | module-design + 测试 | 契约测试 + 业务代码 + L1/L2 集成测试 | 按模块串行：契约测试 Issue closed → 实现 Issue closed → Feature Review Issue closed（前端模块）→ 模块 Review Issue closed → L2 Issue closed |
 | 6 | Tester + 技术负责人 | PRD 验收标准 | E2E 测试, README.md | 核心路径 E2E 通过；README.md 完成 |
 | 7 | 产品经理 | PRD | 验收确认 | 分批验收全部通过 |
 
