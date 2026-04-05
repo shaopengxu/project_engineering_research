@@ -278,6 +278,16 @@ gh label create "type:infra" --color "c5def5" --description "基础设施任务"
 
 # 模块标签（为每个模块创建）
 gh label create "module:{name}" --color "fbca04" --description "{name} 模块"
+
+# 阶段 Issue 标签
+gh label create "type:prd-review" --color "0075ca" --description "PRD Review"
+gh label create "type:architecture" --color "bfd4f2" --description "架构设计"
+gh label create "type:design" --color "d4c5f9" --description "模块设计"
+gh label create "type:scaffold" --color "c2e0c6" --description "脚手架"
+gh label create "type:task-split" --color "fef2c0" --description "任务拆分"
+gh label create "type:module-review" --color "f9d0c4" --description "模块级 Review"
+gh label create "type:feature-review" --color "e6ccb3" --description "Feature 级 Review"
+gh label create "type:acceptance" --color "0e8a16" --description "验收"
 ```
 
 ### 创建 Milestones
@@ -312,7 +322,7 @@ gh issue list --state open --search "阻塞 in:comments"       # 查看阻塞
 gh issue close {NUMBER} --comment "Review 通过，Task 完成。"  # 关闭已完成
 ```
 
-**状态管理原则**：Agent 通过 Issue comment 报告进展，`/mp-workflow-update` 在状态推进时自动关闭已完成的 Issue（配合 GitHub Project 自动化规则 "Item closed → Status = Done" 同步 Board 状态）。
+**状态管理原则**：Agent 通过 Issue comment 报告进展和 Review 结论。`/mp-workflow-update` 在状态推进时自动关闭已完成的 Task Issue 和阶段 Issue（配合 GitHub Project 自动化规则 "Item closed → Status = Done" 同步 Board 状态）。模块进度通过 GitHub Issues 状态推导，不再维护 workflow-state.md 中的进度矩阵。
 
 ### Task 流转
 
@@ -423,7 +433,7 @@ Milestone 3: 辅助模块
 | 2 | Architect | PRD, CLAUDE.md | architecture.md | 模块划分清晰；依赖单向无环；数据流完整 |
 | 3 | Architect | architecture.md, PRD | module-design/*.md | 每模块内部设计 + 接口契约完整；数据模型清晰 |
 | 4 | Architect | 架构 + 模块设计 | 脚手架, Issues | 脚手架能运行；Issues 含依赖关系 |
-| 5 | Tester + Impl + Reviewer | module-design + 测试 | 契约测试 + 业务代码 + L1/L2 集成测试 | 按模块串行：契约测试通过 → L1 通过 → 模块 Review 通过 → L2 通过 |
+| 5 | Tester + Impl + Reviewer | module-design + 测试 | 契约测试 + 业务代码 + L1/L2 集成测试 | 按模块串行：契约测试 Issue closed → 实现 Issue closed → 模块 Review Issue closed → L2 Issue closed |
 | 6 | Tester + 技术负责人 | PRD 验收标准 | E2E 测试, README.md | 核心路径 E2E 通过；README.md 完成 |
 | 7 | 产品经理 | PRD | 验收确认 | 分批验收全部通过 |
 
@@ -472,8 +482,8 @@ Milestone 3: 辅助模块
 
 6. workflow-state 重置
    - [ ] `/mp-workflow-update` 将 step 回退到 2，substep 设为 review
-   - [ ] 模块进度表：删除已失效模块行，受影响模块行的进度列清空
-   - [ ] 新增模块在后续 Step 4b 时填入
+   - [ ] 关闭已失效模块的阶段 Issue（type:design 等），comment 说明原因
+   - [ ] 新增模块在后续 Step 3/4 时由 Review skill 自动创建新的阶段 Issue
 ```
 
 #### 回退到 Step 3（接口契约调整）
@@ -504,9 +514,8 @@ Milestone 3: 辅助模块
    - [ ] 未实现的模块：无需处理，后续按新契约实现
 
 5. workflow-state 更新
-   - [ ] 受影响模块的"契约测试"列回退为空或 in_progress
-   - [ ] 受影响模块的"实现"列：已完成的标记为 in_progress（需更新）
    - [ ] substep 按实际进度调整
+   - [ ] 重新打开受影响模块的阶段 Issue（或创建新的），comment 说明变更原因
 ```
 
 #### 通用原则
