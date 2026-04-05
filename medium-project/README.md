@@ -13,8 +13,8 @@
 - **文档驱动**：architecture.md → module-design → 契约测试 → 实现，先设计后编码
 - **TDD**：契约测试在实现之前编写，先红后绿
 - **短上下文**：主会话进行项目流程跟踪，真正做事在子会话（执行类 skill 以 `context: fork` 在隔离子 agent 中运行；流程管控 skill `mp-workflow` / `mp-workflow-update` 在主会话运行）
-- **状态可追踪**：`docs/workflow-state.md` 记录当前阶段和模块进度
-- **状态更新职责分离**：执行类 skill 只将状态推进到"等待 review"；review 通过/不通过的状态闸门一律由技术负责人通过 `/mp-workflow-update` 触发
+- **状态可追踪**：`docs/workflow-state.md` 记录当前阶段；模块进度通过 GitHub Issues 追踪
+- **状态更新职责分离**：执行类 skill 只将全局阶段推进到"等待 review"；Review 类 skill 将结论写入 GitHub Issue comment；review 通过/不通过的状态闸门一律由技术负责人通过 `/mp-workflow-update` 触发
 
 ## 角色分工
 
@@ -69,6 +69,8 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-review-integration` | L2 集成测试 Review | `<issue-number>` |
 | `/mp-review-e2e` | E2E 测试 Review | — |
 | `/mp-review-acceptance` | 验收预检 | — |
+
+> 所有 Review skill 都会将 Review 结果写入对应的 GitHub Issue comment。无 Issue 参数的 skill 会自动查找或创建阶段 Issue。
 
 ### 设计阶段（Step 2-3）
 
@@ -238,6 +240,7 @@ git init && gh repo create {项目名} --private
 - **前端契约测试（API 层 + 页面渲染）**：由 `/mp-test-frontend` 编写，验证 API 请求/响应规格和页面渲染正确性，mock 粒度较粗（mock hooks 或 MSW）。
 - **前端 L1 集成测试（端内串联）**：由 `/mp-impl` 在实现时编写，验证页面 → hooks → API 层的真实数据流转，仅在网络层使用 MSW mock。两者测试目标不同，不应重复。
 - **consumers 字段**：接口契约中每个接口标注的消费方列表，用于变更影响评估。
+- **阶段 Issue（Phase Issue）**：为 Step 1-4 / 5（模块级）/ 6-7 的设计、review、测试等阶段创建的 GitHub Issue，用于承载 review comment 和追踪阶段进度。与 Task Issue（由 `/mp-task-split` 创建的实现类任务）通过 `type:*` 标签区分。
 
 ## 随时查看进度
 
@@ -245,7 +248,7 @@ git init && gh repo create {项目名} --private
 /mp-workflow
 ```
 
-输出当前阶段、当前模块进度、下一步操作建议。
+输出当前阶段（读取 workflow-state.md）、模块进度（查询 GitHub Issues）、下一步操作建议。
 
 ## 文件结构
 
@@ -294,7 +297,7 @@ project/
 │   ├── prd.md                          # 产品需求
 │   ├── architecture.md                 # 系统架构
 │   ├── module-design/                  # 模块设计 + 接口契约
-│   └── workflow-state.md               # 流程状态追踪
+│   └── workflow-state.md               # 全局阶段指针（step/substep/module/feature）
 ├── server/                             # 后端 (Express + Prisma)
 │   ├── modules/{module}/               # 业务模块（controller/service/repository）
 │   └── infra/                          # 基础设施
