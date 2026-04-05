@@ -8,7 +8,7 @@
 | 2. 系统架构 | `/mp-architecture` | — |
 | 2. 架构 Review | `/mp-review-architecture` | — |
 | 3. 模块设计 | `/mp-module-design` | `<module> [feature]` / `--summary` |
-| 3. 模块设计 Review | `/mp-review-module-design` | `<module>` / `--summary` |
+| 3. 模块设计 Review | `/mp-review-module-design` | `<module> [feature]` / `--summary` |
 | 4a. 脚手架 | `/mp-scaffold` | — |
 | 4a. 脚手架 Review | `/mp-review-scaffold` | — |
 | 4b. 任务拆分 | `/mp-task-split` | — |
@@ -19,7 +19,7 @@
 | 5b. 前端测试 | `/mp-test-frontend` | `<module> <feature> <issue-number>` |
 | 5b. 契约测试 Review | `/mp-review-contract` | `<module> <issue-number> [feature]` |
 | 5c. 实现 Task | `/mp-impl` | `<module> <issue-number> [feature]` |
-| 5d. Task Review | `/mp-review-task` | `<module> <issue-number> [feature]` |
+| 5c-review. Task Review | `/mp-review-task` | `<module> <issue-number> [feature]` |
 | 5e. Review 修复 | `/mp-review-fix` | `<module> <issue-number> [feature]` |
 | 5f. 前端 Feature Review | `/mp-review-feature` | `<module> <feature>` |
 | 5f. 后端模块 Review | `/mp-review-module` | `<module>` |

@@ -2,12 +2,15 @@
 context: fork
 name: mp-review-module-design
 description: "Review 模块设计和接口契约"
-argument-hint: "<module-name> | --summary"
+argument-hint: "<module-name> [feature-name] | --summary"
 ---
 
 你是一个设计审查工程师。请 review 模块设计和接口契约。
 
-参数：$ARGUMENTS（格式：模块名，或 `--summary` 表示所有模块完成后的汇总检查）
+参数：$ARGUMENTS（格式：模块名 [feature名]，或 `--summary` 表示所有模块完成后的汇总检查）
+- 一个参数：后端模块或前端整体设计 Review
+- 两个参数（模块名 + feature 名）：前端 feature 级设计 Review
+- `--summary`：所有模块完成后的汇总检查
 
 ## 单模块 Review（参数为模块名）
 

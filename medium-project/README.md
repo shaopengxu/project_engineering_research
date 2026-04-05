@@ -14,7 +14,7 @@
 - **TDD**：契约测试在实现之前编写，先红后绿
 - **短上下文**：主会话进行项目流程跟踪，真正做事在子会话（执行类 skill 以 `context: fork` 在隔离子 agent 中运行；流程管控 skill `mp-workflow` / `mp-workflow-update` 在主会话运行）
 - **状态可追踪**：`docs/workflow-state.md` 记录当前阶段；模块进度通过 GitHub Issues 追踪
-- **状态更新职责分离**：执行类 skill 只将全局阶段推进到"等待 review"；Review 类 skill 将结论写入 GitHub Issue comment；review 通过/不通过的状态闸门一律由技术负责人通过 `/mp-workflow-update` 触发
+- **状态更新职责分离**：执行类 skill（含 `mp-review-fix`）只将全局阶段推进到"等待 review"；Review 类 skill（`mp-review-*`，`mp-review-fix` 除外）只输出结论写入 GitHub Issue comment，不修改状态；review 通过/不通过的状态闸门一律由技术负责人通过 `/mp-workflow-update` 触发
 
 ## 角色分工
 
@@ -56,13 +56,12 @@ Step 7  验收                                 ← 产品经理手动操作
 |-------|------|------|
 | `/mp-review-prd` | PRD Review | — |
 | `/mp-review-architecture` | 架构 Review | — |
-| `/mp-review-module-design` | 模块设计 + 接口契约 Review | `<module>` / `--summary` |
+| `/mp-review-module-design` | 模块设计 + 接口契约 Review | `<module> [feature]` / `--summary` |
 | `/mp-review-scaffold` | 脚手架 Review | — |
 | `/mp-review-issues` | Issues Review | — |
 | `/mp-review-infra` | infra 实现 Review | `<issue-number>` |
 | `/mp-review-contract` | 契约测试 Review | `<module> <issue-number> [feature]` |
 | `/mp-review-task` | Task 代码 Review | `<module> <issue-number> [feature]` |
-| `/mp-review-fix` | Review 问题修复 | `<module> <issue-number> [feature]` |
 | `/mp-review-feature` | 前端 Feature 级整体 Review | `<module> <feature>` |
 | `/mp-review-module` | 后端模块级整体 Review | `<module>` |
 | `/mp-review-module-frontend` | 前端模块级整体 Review | `<module>` |
@@ -94,6 +93,7 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-test-contract` | 后端模块契约测试 | `<module> <issue-number>` |
 | `/mp-test-frontend` | 前端 feature 测试 | `<module> <feature> <issue-number>` |
 | `/mp-impl` | 实现业务 Task | `<module> <issue-number> [feature]` |
+| `/mp-review-fix` | Review 问题修复 | `<module> <issue-number> [feature]` |
 | `/mp-test-integration` | L2 跨模块集成测试 | `<issue-number>` |
 
 ### 测试阶段（Step 6）
@@ -149,8 +149,16 @@ git init && gh repo create {项目名} --private
 
 # 前端模块
 /mp-module-design web-app              # 整体设计
+/mp-review-module-design web-app       # Agent review 前端整体设计
+/mp-workflow-update web-app 模块设计 review 通过
+
 /mp-module-design web-app auth         # feature 级
+/mp-review-module-design web-app auth  # Agent review feature 设计
+/mp-workflow-update web-app auth 模块设计 review 通过
+
 /mp-module-design web-app product      # feature 级
+/mp-review-module-design web-app product
+/mp-workflow-update web-app product 模块设计 review 通过
 
 # 汇总
 /mp-module-design --summary
@@ -274,9 +282,9 @@ medium-project/                         # 工作流定义
     ├── mp-test-frontend/               # Step 5b: 前端测试
     ├── mp-review-contract/             # Step 5b: 契约测试 Review
     ├── mp-impl/                        # Step 5c: 业务实现
-    ├── mp-review-task/                 # Step 5d: Task Review
-    ├── mp-review-feature/              # Step 5f: 前端 Feature Review
+    ├── mp-review-task/                 # Step 5c-review: Task Review
     ├── mp-review-fix/                  # Step 5e: Review 修复
+    ├── mp-review-feature/              # Step 5f: 前端 Feature Review
     ├── mp-review-module/               # Step 5f: 后端模块 Review
     ├── mp-review-module-frontend/      # Step 5f: 前端模块 Review
     ├── mp-test-integration/            # Step 5g: L2 集成测试

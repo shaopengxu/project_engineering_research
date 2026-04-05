@@ -30,6 +30,4 @@ argument-hint: "<issue-number>"
 
 > **前端模块的 L2 集成测试**：前端模块的 L2 测试验证前端页面触发的关键业务路径在后端的跨模块协作正确性。如果该路径已被后端模块的 L2 测试覆盖，可直接关闭对应 L2 Issue 并 comment 说明原因（无需重复测试）。
 
-完成后：不更新 `docs/workflow-state.md`（模块级进度通过 GitHub Issues 追踪）。
-
-> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。
+完成后：不更新 `docs/workflow-state.md`（模块级进度通过 GitHub Issues 追踪）。状态转换由技术负责人通过 `/mp-workflow-update` 触发。

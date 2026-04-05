@@ -299,8 +299,8 @@ Agent review：`/mp-review-infra {issue-number}`
 #### 5c-5e. 实现 → Review → 修复循环
 
 - 实现：`/mp-impl {module} {issue-number} [feature]`
-- Review：`/mp-review-task {module} {issue-number}`
-- 修复：`/mp-review-fix {module} {issue-number}`
+- Review：`/mp-review-task {module} {issue-number} [feature]`
+- 修复：`/mp-review-fix {module} {issue-number} [feature]`
 
 **技术负责人 Task 流转**：
 ```

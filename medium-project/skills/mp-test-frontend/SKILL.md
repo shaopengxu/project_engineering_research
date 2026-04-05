@@ -52,6 +52,4 @@ API 调用层测试：
 
 注意：你只需要阅读本 feature 的设计文档和整体设计文档，不需要阅读其他 feature 的文档。
 
-完成后：不更新 `docs/workflow-state.md`（模块级进度通过 GitHub Issues 追踪）。
-
-> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。
+完成后：不更新 `docs/workflow-state.md`（模块级进度通过 GitHub Issues 追踪）。状态转换由技术负责人通过 `/mp-workflow-update` 触发。
