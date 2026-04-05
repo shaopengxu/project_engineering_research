@@ -322,7 +322,7 @@ gh issue list --state open --search "阻塞 in:comments"       # 查看阻塞
 gh issue close {NUMBER} --comment "Review 通过，Task 完成。"  # 关闭已完成
 ```
 
-**状态管理原则**：Agent 通过 Issue comment 报告进展和 Review 结论。`/mp-workflow-update` 在状态推进时自动关闭已完成的 Task Issue 和阶段 Issue（配合 GitHub Project 自动化规则 "Item closed → Status = Done" 同步 Board 状态）。模块进度通过 GitHub Issues 状态推导，不再维护 workflow-state.md 中的进度矩阵。
+**状态管理原则**：Agent 通过 Issue comment 报告进展和 Review 结论。`/mp-workflow-update` 在状态推进时自动关闭已完成的 Task Issue 和阶段 Issue（配合 GitHub Project 自动化规则 "Item closed → Status = Done" 同步 Board 状态）。模块进度通过 GitHub Issues 状态推导。
 
 ### Task 流转
 

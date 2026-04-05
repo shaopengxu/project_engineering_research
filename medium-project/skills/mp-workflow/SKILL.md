@@ -30,7 +30,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 
 ## 模块进度查询
 
-从 GitHub Issues 重建模块进度（替代读取矩阵）：
+从 GitHub Issues 查询各模块进度：
 
 1. 获取所有 Issues：
    `gh issue list --state all --limit 200 --json number,title,labels,state`
