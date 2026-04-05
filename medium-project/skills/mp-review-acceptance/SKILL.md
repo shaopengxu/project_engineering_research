@@ -14,7 +14,7 @@ description: "验收前的自动化预检"
 然后执行以下验证：
 
 检查清单：
-1. 所有模块的状态均已完成（workflow-state.md 中无遗漏模块）
+1. 所有模块的 `type:module-review` Issue 均已关闭（`gh issue list --label "type:module-review" --state open` 应为空）
 2. 全量测试通过（运行 `npm test` 验证）
 3. E2E 测试全部通过（运行 E2E 测试命令验证）
 4. 逐条核对 PRD 验收标准：
