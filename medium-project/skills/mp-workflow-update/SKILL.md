@@ -62,7 +62,7 @@ argument-hint: "<状态变更描述> | init"
 | 用户描述 | workflow-state 更新 | GitHub Issue 操作 |
 |---------|-------------------|------------------|
 | Step 1 完成 | step → 2, substep → 清空 | **关闭阶段 Issue**: `type:prd-review` 标题含 "PRD Review" |
-| Step 2 review 通过 | step → 3, substep → 清空 | **关闭阶段 Issue**: `type:architecture` 标题含 "架构设计" |
+| Step 2 review 通过 | step → 3, substep → 清空 | **关闭阶段 Issue**: `type:architecture` 标题含 "架构设计"；**批量创建 design Issue**（见下方） |
 | {module} 模块设计 review 通过 | （不更新） | **关闭阶段 Issue**: `type:design` + `module:{module}` 标题含 "模块设计: {module}" |
 | {module} {feature} 模块设计 review 通过 | （不更新） | **关闭阶段 Issue**: `type:design` + `module:{module}` 标题含 "模块设计: {module}/{feature}" |
 | 前端整体设计完成 | 备注中记录 | **关闭阶段 Issue**（如存在）: `type:design` + `module:{module}` 标题含 "模块设计: {module}" |
@@ -141,3 +141,33 @@ fi
 | 验收预检 | `type:acceptance` | `验收预检` |
 
 > **Project Board 配置**：在 GitHub Project Settings → Workflows 中启用 "Item closed → set Status to Done"，这样关闭 Issue 后 Project Board Status 会自动更新为 Done，无需手动操作。
+
+### 3. Step 3 Design Issue 批量创建
+
+当处理 "Step 2 review 通过" 时，在关闭架构 Issue 和更新 workflow-state 之后，读取 `docs/architecture.md` 中的模块列表，批量创建所有 design Issue，使 Step 3 一开始就能在进度表中看到完整的模块设计待办。
+
+**步骤**：
+
+1. 读取 `docs/architecture.md`，提取：
+   - 所有后端业务模块名称
+   - 所有前端模块名称（如 web-app、admin）
+   - 每个前端模块下的 feature 列表
+
+2. 按以下模板批量创建 Issue：
+
+   **后端模块 / 前端整体**（每个模块一个）：
+   ```bash
+   gh issue create --title "模块设计: {module}" --label "type:design,module:{module}" --body "跟踪 {module} 的模块设计和 Review 过程。"
+   ```
+
+   **前端 feature**（每个 feature 一个）：
+   ```bash
+   gh issue create --title "模块设计: {module}/{feature}" --label "type:design,module:{module}" --body "跟踪 {module}/{feature} 的模块设计和 Review 过程。"
+   ```
+
+   **汇总检查**（1 个）：
+   ```bash
+   gh issue create --title "模块设计: 汇总检查" --label "type:design" --body "跟踪所有模块设计完成后的汇总检查和 Review 过程。"
+   ```
+
+3. 在输出中列出所有创建的 Issue 编号和标题，供技术负责人确认。

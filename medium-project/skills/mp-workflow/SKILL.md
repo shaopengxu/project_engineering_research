@@ -39,7 +39,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 
 | type 标签 | 对应进度列 | 判定方法 |
 |----------|-----------|---------|
-| `type:design` | 设计 | closed → done；open → 进行中；不存在 → - |
+| `type:design` | 设计 | closed → done；open → open；不存在 → - |
 | `type:contract-test` | 契约测试 | 全部 closed → done；部分 closed → {closed}/{total}；不存在 → - |
 | `type:impl` | 实现 | 全部 closed → done；部分 closed → {closed}/{total}；不存在 → - |
 | `type:feature-review` | Feature Review | closed → done；open → review；不存在 → -（仅前端模块） |
@@ -73,7 +73,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 {如果是技术负责人操作，附上对应的操作指引/checklist}
 ```
 
-> 进度列中的符号：`done` = 全部完成，`3/5` = 5 个中完成了 3 个，`进行中` = 设计/review/修复进行中，`review` = 等待 review，`-` = 未开始，`N/A` = 不适用
+> 进度列中的符号：`done` = 全部完成，`3/5` = 5 个中完成了 3 个，`open` = Issue 已创建（详细状态见 Issue comment），`review` = 等待 review，`-` = 未开始，`N/A` = 不适用
 
 ---
 

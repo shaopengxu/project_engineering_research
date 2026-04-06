@@ -158,24 +158,25 @@ argument-hint: "<module-name> [feature-name] | --summary"
 
 完成后：
 
-### Issue 创建
+### Issue 更新
 
-设计完成后创建 GitHub Issue，用于追踪该模块的设计进度和承载后续 Review comment。
+设计完成后，在对应的 GitHub Issue 中写入完成信息（Issue 已由 `/mp-workflow-update Step 2 review 通过` 批量创建）。
 
-根据参数模式确定 Issue 标题和标签：
+根据参数模式确定搜索条件：
 
-| 参数模式 | Issue 标题 | 标签 |
-|---------|-----------|------|
-| `{module}`（后端模块或前端整体） | `模块设计: {module}` | `type:design,module:{module}` |
-| `{module} {feature}`（前端 feature） | `模块设计: {module}/{feature}` | `type:design,module:{module}` |
-| `--summary` | `模块设计: 汇总检查` | `type:design` |
+| 参数模式 | 搜索标签 | 标题关键词 |
+|---------|---------|-----------|
+| `{module}`（后端模块或前端整体） | `type:design,module:{module}` | `模块设计: {module}` |
+| `{module} {feature}`（前端 feature） | `type:design,module:{module}` | `模块设计: {module}/{feature}` |
+| `--summary` | `type:design` | `模块设计: 汇总检查` |
 
-1. 搜索是否已存在：
+1. 搜索 Issue：
    `gh issue list --label "{LABELS}" --search "{TITLE} in:title" --state open --json number --jq '.[0].number'`
-2. 如果未找到，创建：
-   `gh issue create --title "{TITLE}" --label "{LABELS}" --body "跟踪 {SCOPE} 的设计和 Review 过程。"`
-3. 将设计完成信息写入 Issue：
+2. 写入完成信息：
    `gh issue comment {ISSUE_NUMBER} --body "模块设计完成，等待 Review。"`
+
+> 如果未找到 Issue（如技术负责人跳过了批量创建），则自行创建：
+> `gh issue create --title "{TITLE}" --label "{LABELS}" --body "跟踪 {SCOPE} 的设计和 Review 过程。"`
 
 ### 状态更新
 
