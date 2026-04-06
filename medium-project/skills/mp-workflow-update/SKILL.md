@@ -41,8 +41,6 @@ argument-hint: "<状态变更描述> | init"
 - "web-app auth 契约测试 #8 review 通过"
 - "Issue #12 实现完成"
 - "Issue #12 review LGTM"
-- "Issue #12 review 有 MUST FIX"
-- "Issue #12 修复完成"
 - "user 模块所有 Task 完成"
 - "web-app auth 所有 Task 完成"
 - "web-app auth Feature Review LGTM"
@@ -73,8 +71,6 @@ argument-hint: "<状态变更描述> | init"
 | {module} 契约测试 #N review 通过 | substep → 5c | **关闭 Task Issue #N** |
 | Issue #N 实现完成 | substep → 5c-review | （不操作 Issue） |
 | Issue #N review LGTM | substep → 5c（下一个 Task） | **关闭 Task Issue #N** |
-| Issue #N review 有 MUST FIX | substep → 5d | （不操作 Issue） |
-| Issue #N 修复完成 | substep → 5d-review | （不操作 Issue） |
 | {module} 模块所有 Task 完成 | substep → 5e | （不操作 Issue） |
 | {feature} 所有 Task 完成 | substep → 5e | （不操作 Issue） |
 | {module} {feature} Feature Review LGTM | substep → 5b（下一个 feature）或不变（等待模块 Review） | **关闭阶段 Issue**: `type:feature-review` + `module:{module}` 标题含 "Feature Review: {module}/{feature}" |

@@ -312,7 +312,17 @@ Agent review：`/mp-review-infra {issue-number}`
 - Review：`/mp-review-task {module} {issue-number} [feature]`
 - 修复：`/mp-fix-task {module} {issue-number} [feature]`
 
-**技术负责人 Task 流转**：
+每个 Task 的流转：
+```
+/mp-impl-task → (substep 自动设为 5c-review)
+/mp-review-task → (不改状态，输出 Review 结论到 Issue)
+  LGTM → /mp-workflow-update Issue #N review LGTM（关闭 Issue，进入下一个 Task）
+  有问题 → /mp-fix-task（substep 自动设为 5d-review）→ /mp-review-task 重新 review
+```
+
+> 不需要额外调用 `/mp-workflow-update` 来标记"有 MUST FIX"或"修复完成"— fix skill 自动推进 substep。
+
+**技术负责人 Task 流转 checklist**：
 ```
 每个 Task Review 通过后：
 - [ ] 检查是否解锁了下游依赖任务
@@ -336,6 +346,11 @@ LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 - 后端模块：`/mp-fix-module {module}` 修复 → `/mp-review-module {module}` 重新 review
 - 前端 Feature：`/mp-fix-feature {module} {feature}` 修复 → `/mp-review-feature {module} {feature}` 重新 review
 - 前端模块：`/mp-fix-module-frontend {module}` 修复 → `/mp-review-module-frontend {module}` 重新 review
+
+**跨模块回溯**：模块 Review 发现本模块调用其他模块接口的方式有问题（如参数传错、错误处理不一致），且问题根源在对方模块时，fix skill 会在 Issue comment 中指出。技术负责人应协调处理：
+1. 评估影响 — 是本模块调用方式的问题（改本模块即可）还是对方模块接口定义/实现的问题
+2. 如需修改对方模块：`/mp-fix-task {对方模块} {新建或已有 issue-number}` 修复 → `/mp-review-task` review → `/mp-workflow-update Issue #N review LGTM`
+3. 修复后重新跑全量测试确认无回归，再继续本模块的 Review 流程
 
 **技术负责人确认模块完成**：
 ```
