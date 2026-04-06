@@ -94,17 +94,30 @@ Step 7  验收                                 ← 产品经理手动操作
 | Skill | 用途 | 参数 |
 |-------|------|------|
 | `/mp-impl-infra` | 实现 infra 基础设施 | `<issue-number>` |
+| `/mp-fix-infra` | infra Review 问题修复 | `<issue-number>` |
 | `/mp-test-contract` | 后端模块契约测试 | `<module> <issue-number>` |
 | `/mp-test-frontend` | 前端 feature 测试 | `<module> <issue-number> <feature>` |
+| `/mp-fix-contract` | 契约测试 Review 问题修复 | `<module> <issue-number> [feature]` |
 | `/mp-impl` | 实现业务 Task | `<module> <issue-number> [feature]` |
 | `/mp-fix-task` | Task Review 问题修复 | `<module> <issue-number> [feature]` |
+| `/mp-fix-feature` | 前端 Feature Review 问题修复 | `<module> <feature>` |
+| `/mp-fix-module` | 后端模块 Review 问题修复 | `<module>` |
+| `/mp-fix-module-frontend` | 前端模块 Review 问题修复 | `<module>` |
 | `/mp-test-integration` | L2 跨模块集成测试 | `<issue-number>` |
+| `/mp-fix-integration` | L2 集成测试 Review 问题修复 | `<issue-number>` |
 
 ### 测试阶段（Step 6）
 
 | Skill | 用途 | 参数 |
 |-------|------|------|
 | `/mp-test-e2e` | E2E 测试 | — |
+| `/mp-fix-e2e` | E2E 测试 Review 问题修复 | — |
+
+### 验收阶段（Step 7）
+
+| Skill | 用途 | 参数 |
+|-------|------|------|
+| `/mp-fix-acceptance` | 验收预检问题修复 | — |
 
 ## 快速开始
 
@@ -215,40 +228,64 @@ git init && gh repo create {项目名} --private
 # infra
 /mp-impl-infra 1
 /mp-review-infra 1                     # Agent review infra
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-infra 1                        # Agent 修复 infra 问题
+/mp-review-infra 1                     # Agent 重新 review
 /mp-workflow-update infra #1 review 通过
 
 # 每个模块重复以下循环：
 /mp-workflow-update 开始处理 user 模块
 /mp-test-contract user 5              # 写契约测试
 /mp-review-contract user 5            # Agent review 契约测试
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-contract user 5               # Agent 修复契约测试问题
+/mp-review-contract user 5            # Agent 重新 review
 /mp-workflow-update user 契约测试 #5 review 通过
 
 /mp-impl user 6                       # 实现 Task（skill 自动设状态为"等待 review"）
 /mp-review-task user 6                # Agent review Task（skill 只输出结论，不改状态）
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-task user 6                    # Agent 修复 Task 问题
+/mp-review-task user 6                # Agent 重新 review
 /mp-workflow-update Issue #6 review LGTM  # 技术负责人确认后推进状态（自动关闭 Issue）
 
 # ... 更多 Task ...
 
 /mp-review-module user                # Agent 后端模块 Review
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-module user                    # Agent 修复模块问题
+/mp-review-module user                # Agent 重新 review
 /mp-workflow-update user 模块 Review LGTM
 
 /mp-test-integration 10               # L2 集成测试
 /mp-review-integration 10             # Agent review L2 集成测试
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-integration 10                 # Agent 修复集成测试问题
+/mp-review-integration 10             # Agent 重新 review
 /mp-workflow-update user L2 集成测试 #10 完成
 
 # 前端模块（每个 feature 重复以下循环）：
 /mp-workflow-update 开始处理 web-app auth feature
 /mp-test-frontend web-app 8 auth      # 写前端测试
 /mp-review-contract web-app 8 auth    # Agent review 前端测试
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-contract web-app 8 auth        # Agent 修复前端测试问题
+/mp-review-contract web-app 8 auth    # Agent 重新 review
 /mp-workflow-update web-app auth 契约测试 #8 review 通过
 
 /mp-impl web-app 9 auth              # 实现 Task
 /mp-review-task web-app 9 auth       # Agent review Task
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-task web-app 9 auth           # Agent 修复 Task 问题
+/mp-review-task web-app 9 auth       # Agent 重新 review
 /mp-workflow-update Issue #9 review LGTM
 
 # ... auth feature 更多 Task ...
 
 /mp-review-feature web-app auth       # Agent Feature Review
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-feature web-app auth           # Agent 修复 Feature 问题
+/mp-review-feature web-app auth       # Agent 重新 review
 /mp-workflow-update web-app auth Feature Review LGTM
 
 # ... 更多 feature：
@@ -257,9 +294,15 @@ git init && gh repo create {项目名} --private
 /mp-workflow-update web-app product Feature Review LGTM
 
 /mp-review-module-frontend web-app    # Agent 前端模块 Review（跨 feature 一致性）
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-module-frontend web-app        # Agent 修复前端模块问题
+/mp-review-module-frontend web-app    # Agent 重新 review
 /mp-workflow-update web-app 模块 Review LGTM
 
 /mp-test-integration 15               # L2 集成测试
+/mp-review-integration 15
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-integration 15
 /mp-review-integration 15
 /mp-workflow-update web-app L2 集成测试 #15 完成
 ```
@@ -269,9 +312,15 @@ git init && gh repo create {项目名} --private
 ```
 /mp-test-e2e
 /mp-review-e2e                         # Agent review E2E 测试
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-e2e                            # Agent 修复 E2E 测试问题
+/mp-review-e2e                         # Agent 重新 review
 /mp-workflow-update E2E 测试通过
 
 /mp-review-acceptance                  # Agent 验收预检
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-acceptance                     # Agent 修复验收预检问题
+/mp-review-acceptance                  # Agent 重新预检
 # 产品经理分批验收
 /mp-workflow-update 验收通过
 ```
@@ -300,7 +349,7 @@ git init && gh repo create {项目名} --private
 medium-project/                         # 工作流定义
 ├── README.md                           # 本文件
 ├── tech-lead-guide.md                  # 技术负责人操作指南
-└── skills/                             # Skill 定义（31 个）
+└── skills/                             # Skill 定义（39 个）
     ├── mp-workflow/                     # 流程查询
     ├── mp-workflow-update/              # 状态更新
     ├── mp-review-prd/                  # Step 1: PRD Review
@@ -318,20 +367,28 @@ medium-project/                         # 工作流定义
     ├── mp-fix-issues/                  # Step 4b: Issues Review 修复
     ├── mp-impl-infra/                  # Step 5a: infra 实现
     ├── mp-review-infra/                # Step 5a: infra Review
+    ├── mp-fix-infra/                   # Step 5a: infra Review 修复
     ├── mp-test-contract/               # Step 5b: 后端契约测试
     ├── mp-test-frontend/               # Step 5b: 前端测试
     ├── mp-review-contract/             # Step 5b: 契约测试 Review
+    ├── mp-fix-contract/                # Step 5b: 契约测试 Review 修复
     ├── mp-impl/                        # Step 5c: 业务实现
     ├── mp-review-task/                 # Step 5c-review: Task Review
-    ├── mp-fix-task/                     # Step 5d: Task Review 修复
+    ├── mp-fix-task/                    # Step 5d: Task Review 修复
     ├── mp-review-feature/              # Step 5e: 前端 Feature Review
+    ├── mp-fix-feature/                 # Step 5e: 前端 Feature Review 修复
     ├── mp-review-module/               # Step 5e: 后端模块 Review
+    ├── mp-fix-module/                  # Step 5e: 后端模块 Review 修复
     ├── mp-review-module-frontend/      # Step 5e: 前端模块 Review
+    ├── mp-fix-module-frontend/         # Step 5e: 前端模块 Review 修复
     ├── mp-test-integration/            # Step 5f: L2 集成测试
     ├── mp-review-integration/          # Step 5f: L2 集成测试 Review
+    ├── mp-fix-integration/             # Step 5f: L2 集成测试 Review 修复
     ├── mp-test-e2e/                    # Step 6: E2E 测试
     ├── mp-review-e2e/                  # Step 6: E2E Review
-    └── mp-review-acceptance/           # Step 7: 验收预检
+    ├── mp-fix-e2e/                     # Step 6: E2E Review 修复
+    ├── mp-review-acceptance/           # Step 7: 验收预检
+    └── mp-fix-acceptance/              # Step 7: 验收预检修复
 ```
 
 ## 目标项目结构

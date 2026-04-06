@@ -21,20 +21,28 @@
 | 4b. Issues Review 修复 | `/mp-fix-issues` | — |
 | 5a. infra 实现 | `/mp-impl-infra` | `<issue-number>` |
 | 5a. infra Review | `/mp-review-infra` | `<issue-number>` |
+| 5a. infra Review 修复 | `/mp-fix-infra` | `<issue-number>` |
 | 5b. 后端契约测试 | `/mp-test-contract` | `<module> <issue-number>` |
 | 5b. 前端测试 | `/mp-test-frontend` | `<module> <issue-number> <feature>` |
 | 5b. 契约测试 Review | `/mp-review-contract` | `<module> <issue-number> [feature]` |
+| 5b. 契约测试 Review 修复 | `/mp-fix-contract` | `<module> <issue-number> [feature]` |
 | 5c. 实现 Task | `/mp-impl` | `<module> <issue-number> [feature]` |
 | 5c-review. Task Review | `/mp-review-task` | `<module> <issue-number> [feature]` |
 | 5d. Task Review 修复 | `/mp-fix-task` | `<module> <issue-number> [feature]` |
 | 5e. 前端 Feature Review | `/mp-review-feature` | `<module> <feature>` |
+| 5e. 前端 Feature Review 修复 | `/mp-fix-feature` | `<module> <feature>` |
 | 5e. 后端模块 Review | `/mp-review-module` | `<module>` |
+| 5e. 后端模块 Review 修复 | `/mp-fix-module` | `<module>` |
 | 5e. 前端模块 Review | `/mp-review-module-frontend` | `<module>` |
+| 5e. 前端模块 Review 修复 | `/mp-fix-module-frontend` | `<module>` |
 | 5f. L2 集成测试 | `/mp-test-integration` | `<issue-number>` |
 | 5f. L2 集成测试 Review | `/mp-review-integration` | `<issue-number>` |
+| 5f. L2 集成测试 Review 修复 | `/mp-fix-integration` | `<issue-number>` |
 | 6. E2E 测试 | `/mp-test-e2e` | — |
 | 6. E2E Review | `/mp-review-e2e` | — |
+| 6. E2E Review 修复 | `/mp-fix-e2e` | — |
 | 7. 验收预检 | `/mp-review-acceptance` | — |
+| 7. 验收预检修复 | `/mp-fix-acceptance` | — |
 
 执行类 skill 以 `context: fork` 运行，无需手动开新会话。流程管控 skill（`mp-workflow`、`mp-workflow-update`）在主会话运行。
 
