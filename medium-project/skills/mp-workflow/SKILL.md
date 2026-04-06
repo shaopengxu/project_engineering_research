@@ -308,7 +308,7 @@ Agent review：`/mp-review-infra {issue-number}`
 
 #### 5c-5d. 实现 → Review → 修复循环
 
-- 实现：`/mp-impl {module} {issue-number} [feature]`
+- 实现：`/mp-impl-task {module} {issue-number} [feature]`
 - Review：`/mp-review-task {module} {issue-number} [feature]`
 - 修复：`/mp-fix-task {module} {issue-number} [feature]`
 
@@ -371,7 +371,7 @@ Agent review：`/mp-review-e2e`
 |---------|---------|
 | E2E 测试代码问题（选择器、时序、断言、覆盖不足） | `/mp-fix-e2e` 修复 → `/mp-review-e2e` 重新 review |
 | 种子数据不足或不正确 | 补充 tests/fixtures/ 和 prisma/seed.ts，重跑 |
-| 某模块存在 bug | `/mp-impl {module} {issue-number}` 修复 → `/mp-review-task {module} {issue-number}` review |
+| 某模块存在 bug | `/mp-impl-task {module} {issue-number}` 修复 → `/mp-review-task {module} {issue-number}` review |
 | 跨模块集成问题 | `/mp-test-integration {issue-number}` 补充覆盖以定位问题，再修复对应模块 |
 
 修复完成后重新走 Step 6 正常流程：`/mp-review-e2e` → 技术负责人确认全部通过后再进入 Step 7。

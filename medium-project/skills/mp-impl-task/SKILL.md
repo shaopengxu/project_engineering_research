@@ -1,6 +1,6 @@
 ---
 context: fork
-name: mp-impl
+name: mp-impl-task
 description: "实现业务代码 Task（后端或前端）"
 argument-hint: "<module-name> <issue-number> [feature-name]"
 ---

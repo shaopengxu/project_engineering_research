@@ -98,7 +98,7 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-test-contract` | 后端模块契约测试 | `<module> <issue-number>` |
 | `/mp-test-frontend` | 前端 feature 测试 | `<module> <issue-number> <feature>` |
 | `/mp-fix-contract` | 契约测试 Review 问题修复 | `<module> <issue-number> [feature]` |
-| `/mp-impl` | 实现业务 Task | `<module> <issue-number> [feature]` |
+| `/mp-impl-task` | 实现业务 Task | `<module> <issue-number> [feature]` |
 | `/mp-fix-task` | Task Review 问题修复 | `<module> <issue-number> [feature]` |
 | `/mp-fix-feature` | 前端 Feature Review 问题修复 | `<module> <feature>` |
 | `/mp-fix-module` | 后端模块 Review 问题修复 | `<module>` |
@@ -245,7 +245,7 @@ git init && gh repo create {项目名} --private
 /mp-review-contract user 5            # Agent 重新 review
 /mp-workflow-update user 契约测试 #5 review 通过
 
-/mp-impl user 6                       # 实现 Task（skill 自动设状态为"等待 review"）
+/mp-impl-task user 6                   # 实现 Task（skill 自动设状态为"等待 review"）
 /mp-review-task user 6                # Agent review Task（skill 只输出结论，不改状态）
 # 如果有 MUST FIX / SHOULD FIX：
 /mp-fix-task user 6                    # Agent 修复 Task 问题
@@ -276,7 +276,7 @@ git init && gh repo create {项目名} --private
 /mp-review-contract web-app 8 auth    # Agent 重新 review
 /mp-workflow-update web-app auth 契约测试 #8 review 通过
 
-/mp-impl web-app 9 auth              # 实现 Task
+/mp-impl-task web-app 9 auth          # 实现 Task
 /mp-review-task web-app 9 auth       # Agent review Task
 # 如果有 MUST FIX / SHOULD FIX：
 /mp-fix-task web-app 9 auth           # Agent 修复 Task 问题
@@ -334,7 +334,7 @@ git init && gh repo create {项目名} --private
 - **L1 集成测试（模块内）**：验证模块内部各层（如 controller → service → repository）的真实串联，使用真实依赖（如内存数据库），不 Mock 模块内部组件。
 - **L2 集成测试（跨模块 / 关键路径）**：验证关键业务路径上多个模块的真实协作（如 下单 → 扣库存 → 创建支付单），不 Mock 其他模块。
 - **前端契约测试（API 层 + 页面渲染）**：由 `/mp-test-frontend` 编写，验证 API 请求/响应规格和页面渲染正确性，mock 粒度较粗（mock hooks 或 MSW）。
-- **前端 L1 集成测试（端内串联）**：由 `/mp-impl` 在实现时编写，验证页面 → hooks → API 层的真实数据流转，仅在网络层使用 MSW mock。两者测试目标不同，不应重复。
+- **前端 L1 集成测试（端内串联）**：由 `/mp-impl-task` 在实现时编写，验证页面 → hooks → API 层的真实数据流转，仅在网络层使用 MSW mock。两者测试目标不同，不应重复。
 - **consumers 字段**：接口契约中每个接口标注的消费方列表，用于变更影响评估。
 - **阶段 Issue（Phase Issue）**：为 Step 1-4 / 5（模块级）/ 6-7 的设计、review、测试等阶段创建的 GitHub Issue，用于承载 review comment 和追踪阶段进度。与 Task Issue（由 `/mp-task-split` 创建的实现类任务）通过 `type:*` 标签区分。
 
@@ -375,7 +375,7 @@ medium-project/                         # 工作流定义
     ├── mp-test-frontend/               # Step 5b: 前端测试
     ├── mp-review-contract/             # Step 5b: 契约测试 Review
     ├── mp-fix-contract/                # Step 5b: 契约测试 Review 修复
-    ├── mp-impl/                        # Step 5c: 业务实现
+    ├── mp-impl-task/                    # Step 5c: 业务实现
     ├── mp-review-task/                 # Step 5c-review: Task Review
     ├── mp-fix-task/                    # Step 5d: Task Review 修复
     ├── mp-review-feature/              # Step 5e: 前端 Feature Review

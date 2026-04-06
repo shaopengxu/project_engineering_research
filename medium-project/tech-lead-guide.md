@@ -26,7 +26,7 @@
 | 5b. 前端测试 | `/mp-test-frontend` | `<module> <issue-number> <feature>` |
 | 5b. 契约测试 Review | `/mp-review-contract` | `<module> <issue-number> [feature]` |
 | 5b. 契约测试 Review 修复 | `/mp-fix-contract` | `<module> <issue-number> [feature]` |
-| 5c. 实现 Task | `/mp-impl` | `<module> <issue-number> [feature]` |
+| 5c. 实现 Task | `/mp-impl-task` | `<module> <issue-number> [feature]` |
 | 5c-review. Task Review | `/mp-review-task` | `<module> <issue-number> [feature]` |
 | 5d. Task Review 修复 | `/mp-fix-task` | `<module> <issue-number> [feature]` |
 | 5e. 前端 Feature Review | `/mp-review-feature` | `<module> <feature>` |

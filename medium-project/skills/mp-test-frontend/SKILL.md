@@ -15,7 +15,7 @@ argument-hint: "<module-name> <issue-number> <feature-name>"
 
 这些测试将在实现之前编写，作为 TDD 的驱动力。
 
-> **与 L1 集成测试的区别**：本 skill 编写的测试属于"契约级"，聚焦于 API 层请求/响应规格和页面渲染正确性，mock 粒度较粗（mock hooks 或 MSW）。后续 `/mp-impl` 中编写的前端 L1 集成测试属于"集成级"，聚焦于页面 → hooks → API 层的真实数据流转串联，仅在网络层使用 MSW mock，不 mock hooks。两者测试目标不同，不应重复：
+> **与 L1 集成测试的区别**：本 skill 编写的测试属于"契约级"，聚焦于 API 层请求/响应规格和页面渲染正确性，mock 粒度较粗（mock hooks 或 MSW）。后续 `/mp-impl-task` 中编写的前端 L1 集成测试属于"集成级"，聚焦于页面 → hooks → API 层的真实数据流转串联，仅在网络层使用 MSW mock，不 mock hooks。两者测试目标不同，不应重复：
 > - **本 skill（契约级）**：API 函数的请求格式对不对？页面拿到数据能不能正确渲染？→ 验证"接口契约"
 > - **mp-impl（集成级）**：页面触发操作后，hook 是否正确调用 API 函数、状态是否正确更新、页面是否正确响应？→ 验证"端内串联"
 
