@@ -90,7 +90,7 @@ argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-n
 
 要求：
 - 本文档只设计整体结构和共享层，不设计各 feature 的页面细节
-- 各 feature 的详细设计将在独立会话中通过 `/mp-module-design {module-name} {feature}` 产出
+- 各 feature 的详细设计将在独立会话中通过 `/mp-module-design {module-name} {issue-number} {feature}` 产出
 - Feature 划分应与后端模块对应（如 auth feature 对应 user 后端模块）
 - 如果 admin 页面较少（< 5 个），可以不拆 feature，一个文件写完整体 + 页面细节
 
