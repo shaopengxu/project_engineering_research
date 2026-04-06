@@ -39,7 +39,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 
 | type 标签 | 对应进度列 | 判定方法 |
 |----------|-----------|---------|
-| `type:design` | 设计 | 存在 closed Issue → done；存在 open → review；不存在 → - |
+| `type:design` | 设计 | closed → done；open → 进行中；不存在 → - |
 | `type:contract-test` | 契约测试 | 全部 closed → done；部分 closed → {closed}/{total}；不存在 → - |
 | `type:impl` | 实现 | 全部 closed → done；部分 closed → {closed}/{total}；不存在 → - |
 | `type:feature-review` | Feature Review | closed → done；open → review；不存在 → -（仅前端模块） |
@@ -73,7 +73,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 {如果是技术负责人操作，附上对应的操作指引/checklist}
 ```
 
-> 进度列中的符号：`done` = 全部完成，`3/5` = 5 个中完成了 3 个，`review` = 等待 review，`-` = 未开始，`N/A` = 不适用
+> 进度列中的符号：`done` = 全部完成，`3/5` = 5 个中完成了 3 个，`进行中` = 设计/review/修复进行中，`review` = 等待 review，`-` = 未开始，`N/A` = 不适用
 
 ---
 
@@ -215,6 +215,12 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 ```
 通过 → `/mp-workflow-update {module} 模块设计 review 通过`
 不通过 → `/mp-fix-module-design {module} [feature] | --summary` 修复 → 对应 `/mp-review-module-design` 重新 review
+
+**跨模块回溯**：设计后续模块时如果发现已 review 通过的模块接口有缺失或不一致（如设计 order 模块时发现 user 模块缺少某个接口），Agent 会停下来指出问题。技术负责人应按以下流程处理：
+1. `/mp-fix-module-design {被影响的模块}` — 修复已有模块的设计文档
+2. `/mp-review-module-design {被影响的模块}` — 重新 review 该模块
+3. `/mp-workflow-update {被影响的模块} 模块设计 review 通过` — 确认后继续
+4. 继续当前模块的设计（重新调用 `/mp-module-design {当前模块}`）
 
 ---
 

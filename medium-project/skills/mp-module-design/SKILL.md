@@ -158,6 +158,27 @@ argument-hint: "<module-name> [feature-name] | --summary"
 
 完成后：
 
+### Issue 创建
+
+设计完成后创建 GitHub Issue，用于追踪该模块的设计进度和承载后续 Review comment。
+
+根据参数模式确定 Issue 标题和标签：
+
+| 参数模式 | Issue 标题 | 标签 |
+|---------|-----------|------|
+| `{module}`（后端模块或前端整体） | `模块设计: {module}` | `type:design,module:{module}` |
+| `{module} {feature}`（前端 feature） | `模块设计: {module}/{feature}` | `type:design,module:{module}` |
+| `--summary` | `模块设计: 汇总检查` | `type:design` |
+
+1. 搜索是否已存在：
+   `gh issue list --label "{LABELS}" --search "{TITLE} in:title" --state open --json number --jq '.[0].number'`
+2. 如果未找到，创建：
+   `gh issue create --title "{TITLE}" --label "{LABELS}" --body "跟踪 {SCOPE} 的设计和 Review 过程。"`
+3. 将设计完成信息写入 Issue：
+   `gh issue comment {ISSUE_NUMBER} --body "模块设计完成，等待 Review。"`
+
+### 状态更新
+
 - **后端模块 / 前端整体设计 / 前端 feature 级设计**：不更新 `docs/workflow-state.md`（模块级进度通过 GitHub Issues 追踪）
 - **`--summary`**：更新 `docs/workflow-state.md`，设置 `step: 3`，`substep: review`
 
