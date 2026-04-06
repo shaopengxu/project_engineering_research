@@ -30,4 +30,4 @@ argument-hint: "<module-name> <issue-number> [feature]"
 
 > **重新 Review**：修复完成后，技术负责人应再次调用 `/mp-review-task {module} {issue-number} [feature]` 进行重新 Review。
 
-> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。
+> **状态更新边界**：skill 只将状态推进到"等待重新 review"（substep: 5d-review）。Review 通过后由技术负责人通过 `/mp-workflow-update Issue #N review LGTM` 推进；仍不通过时直接再次调用 `/mp-fix-task` 修复（无需额外 workflow-update）。

@@ -46,7 +46,7 @@
 
 执行类 skill 以 `context: fork` 运行，无需手动开新会话。流程管控 skill（`mp-workflow`、`mp-workflow-update`）在主会话运行。
 
-> **状态更新职责分离**：执行类 skill（含 `mp-fix-*`）完成后将全局阶段推进到"等待 review"（部分执行类 skill 如 `mp-test-contract`、`mp-test-frontend`、`mp-test-integration`、`mp-module-design` 非 `--summary` 模式不更新 workflow-state，其进度通过 GitHub Issues 追踪）；Review 类 skill（`mp-review-*`）只输出结论写入 GitHub Issue comment，不修改状态。技术负责人 review 后通过 `/mp-workflow-update` 推进状态闸门。
+> **状态更新职责分离**：执行类 skill（含 `mp-fix-*`）完成后将全局阶段推进到"等待 review"（部分执行类 skill 如 `mp-test-contract`、`mp-test-frontend`、`mp-test-integration`、`mp-module-design` 非 `--summary` 模式不更新 workflow-state，其进度通过 GitHub Issues 追踪）；Review 类 skill（`mp-review-*`）只输出结论写入 GitHub Issue comment，不修改状态。review 通过后技术负责人通过 `/mp-workflow-update` 推进状态闸门；review 不通过时直接调用对应 `mp-fix-*` skill 修复。
 
 ---
 

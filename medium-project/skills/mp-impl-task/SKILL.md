@@ -36,4 +36,4 @@ argument-hint: "<module-name> <issue-number> [feature-name]"
 
 完成后更新 `docs/workflow-state.md`：设置 `substep: 5c-review`。
 
-> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。
+> **状态更新边界**：skill 只将状态推进到"等待 review"（substep: 5c-review）。Review 通过后由技术负责人通过 `/mp-workflow-update Issue #N review LGTM` 推进；Review 不通过时直接调用 `/mp-fix-task` 修复（无需额外 workflow-update）。

@@ -14,7 +14,7 @@
 - **TDD**：契约测试在实现之前编写，先红后绿
 - **短上下文**：主会话进行项目流程跟踪，真正做事在子会话（执行类 skill 以 `context: fork` 在隔离子 agent 中运行；流程管控 skill `mp-workflow` / `mp-workflow-update` 在主会话运行）
 - **状态可追踪**：`docs/workflow-state.md` 记录当前阶段；模块进度通过 GitHub Issues 追踪
-- **状态更新职责分离**：执行类 skill（含 `mp-fix-*`）只将全局阶段推进到"等待 review"（部分执行类 skill 如 `mp-test-contract`、`mp-test-frontend`、`mp-test-integration`、`mp-module-design` 非 `--summary` 模式不更新 workflow-state，其进度通过 GitHub Issues 追踪）；Review 类 skill（`mp-review-*`）只输出结论写入 GitHub Issue comment，不修改状态；review 通过/不通过的状态闸门一律由技术负责人通过 `/mp-workflow-update` 触发
+- **状态更新职责分离**：执行类 skill（含 `mp-fix-*`）只将全局阶段推进到"等待 review"（部分执行类 skill 如 `mp-test-contract`、`mp-test-frontend`、`mp-test-integration`、`mp-module-design` 非 `--summary` 模式不更新 workflow-state，其进度通过 GitHub Issues 追踪）；Review 类 skill（`mp-review-*`）只输出结论写入 GitHub Issue comment，不修改状态；review 通过的状态闸门由技术负责人通过 `/mp-workflow-update` 触发；review 不通过时直接调用对应 `mp-fix-*` skill 修复
 
 ## 角色分工
 
