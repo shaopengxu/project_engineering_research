@@ -1,7 +1,7 @@
 ---
 context: fork
-name: mp-review-fix
-description: "根据 Review 反馈修复问题"
+name: mp-fix-task
+description: "根据 Task Review 反馈修复实现代码"
 argument-hint: "<module-name> <issue-number> [feature]"
 ---
 

@@ -9,12 +9,16 @@
 | 1. PRD Review | `/mp-review-prd` | — |
 | 2. 系统架构 | `/mp-architecture` | — |
 | 2. 架构 Review | `/mp-review-architecture` | — |
+| 2. 架构 Review 修复 | `/mp-fix-architecture` | — |
 | 3. 模块设计 | `/mp-module-design` | `<module> [feature]` / `--summary` |
 | 3. 模块设计 Review | `/mp-review-module-design` | `<module> [feature]` / `--summary` |
+| 3. 模块设计 Review 修复 | `/mp-fix-module-design` | `<module> [feature]` / `--summary` |
 | 4a. 脚手架 | `/mp-scaffold` | — |
 | 4a. 脚手架 Review | `/mp-review-scaffold` | — |
+| 4a. 脚手架 Review 修复 | `/mp-fix-scaffold` | — |
 | 4b. 任务拆分 | `/mp-task-split` | — |
 | 4b. Issues Review | `/mp-review-issues` | — |
+| 4b. Issues Review 修复 | `/mp-fix-issues` | — |
 | 5a. infra 实现 | `/mp-impl-infra` | `<issue-number>` |
 | 5a. infra Review | `/mp-review-infra` | `<issue-number>` |
 | 5b. 后端契约测试 | `/mp-test-contract` | `<module> <issue-number>` |
@@ -22,7 +26,7 @@
 | 5b. 契约测试 Review | `/mp-review-contract` | `<module> <issue-number> [feature]` |
 | 5c. 实现 Task | `/mp-impl` | `<module> <issue-number> [feature]` |
 | 5c-review. Task Review | `/mp-review-task` | `<module> <issue-number> [feature]` |
-| 5d. Review 修复 | `/mp-review-fix` | `<module> <issue-number> [feature]` |
+| 5d. Task Review 修复 | `/mp-fix-task` | `<module> <issue-number> [feature]` |
 | 5e. 前端 Feature Review | `/mp-review-feature` | `<module> <feature>` |
 | 5e. 后端模块 Review | `/mp-review-module` | `<module>` |
 | 5e. 前端模块 Review | `/mp-review-module-frontend` | `<module>` |
@@ -34,7 +38,7 @@
 
 执行类 skill 以 `context: fork` 运行，无需手动开新会话。流程管控 skill（`mp-workflow`、`mp-workflow-update`）在主会话运行。
 
-> **状态更新职责分离**：执行类 skill（含 `mp-review-fix`）完成后将全局阶段推进到"等待 review"（部分执行类 skill 如 `mp-test-contract`、`mp-test-frontend`、`mp-test-integration`、`mp-module-design` 非 `--summary` 模式不更新 workflow-state，其进度通过 GitHub Issues 追踪）；Review 类 skill（`mp-review-*`，`mp-review-fix` 除外）只输出结论写入 GitHub Issue comment，不修改状态。技术负责人 review 后通过 `/mp-workflow-update` 推进状态闸门。
+> **状态更新职责分离**：执行类 skill（含 `mp-fix-*`）完成后将全局阶段推进到"等待 review"（部分执行类 skill 如 `mp-test-contract`、`mp-test-frontend`、`mp-test-integration`、`mp-module-design` 非 `--summary` 模式不更新 workflow-state，其进度通过 GitHub Issues 追踪）；Review 类 skill（`mp-review-*`）只输出结论写入 GitHub Issue comment，不修改状态。技术负责人 review 后通过 `/mp-workflow-update` 推进状态闸门。
 
 ---
 

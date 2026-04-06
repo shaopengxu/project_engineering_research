@@ -300,7 +300,7 @@ Agent review：`/mp-review-infra {issue-number}`
 
 - 实现：`/mp-impl {module} {issue-number} [feature]`
 - Review：`/mp-review-task {module} {issue-number} [feature]`
-- 修复：`/mp-review-fix {module} {issue-number} [feature]`
+- 修复：`/mp-fix-task {module} {issue-number} [feature]`
 
 **技术负责人 Task 流转**：
 ```

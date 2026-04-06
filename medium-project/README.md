@@ -14,7 +14,7 @@
 - **TDD**：契约测试在实现之前编写，先红后绿
 - **短上下文**：主会话进行项目流程跟踪，真正做事在子会话（执行类 skill 以 `context: fork` 在隔离子 agent 中运行；流程管控 skill `mp-workflow` / `mp-workflow-update` 在主会话运行）
 - **状态可追踪**：`docs/workflow-state.md` 记录当前阶段；模块进度通过 GitHub Issues 追踪
-- **状态更新职责分离**：执行类 skill（含 `mp-review-fix`）只将全局阶段推进到"等待 review"（部分执行类 skill 如 `mp-test-contract`、`mp-test-frontend`、`mp-test-integration`、`mp-module-design` 非 `--summary` 模式不更新 workflow-state，其进度通过 GitHub Issues 追踪）；Review 类 skill（`mp-review-*`，`mp-review-fix` 除外）只输出结论写入 GitHub Issue comment，不修改状态；review 通过/不通过的状态闸门一律由技术负责人通过 `/mp-workflow-update` 触发
+- **状态更新职责分离**：执行类 skill（含 `mp-fix-*`）只将全局阶段推进到"等待 review"（部分执行类 skill 如 `mp-test-contract`、`mp-test-frontend`、`mp-test-integration`、`mp-module-design` 非 `--summary` 模式不更新 workflow-state，其进度通过 GitHub Issues 追踪）；Review 类 skill（`mp-review-*`）只输出结论写入 GitHub Issue comment，不修改状态；review 通过/不通过的状态闸门一律由技术负责人通过 `/mp-workflow-update` 触发
 
 ## 角色分工
 
@@ -97,7 +97,7 @@ Step 7  验收                                 ← 产品经理手动操作
 | `/mp-test-contract` | 后端模块契约测试 | `<module> <issue-number>` |
 | `/mp-test-frontend` | 前端 feature 测试 | `<module> <issue-number> <feature>` |
 | `/mp-impl` | 实现业务 Task | `<module> <issue-number> [feature]` |
-| `/mp-review-fix` | Review 问题修复 | `<module> <issue-number> [feature]` |
+| `/mp-fix-task` | Task Review 问题修复 | `<module> <issue-number> [feature]` |
 | `/mp-test-integration` | L2 跨模块集成测试 | `<issue-number>` |
 
 ### 测试阶段（Step 6）
@@ -323,7 +323,7 @@ medium-project/                         # 工作流定义
     ├── mp-review-contract/             # Step 5b: 契约测试 Review
     ├── mp-impl/                        # Step 5c: 业务实现
     ├── mp-review-task/                 # Step 5c-review: Task Review
-    ├── mp-review-fix/                  # Step 5d: Review 修复
+    ├── mp-fix-task/                     # Step 5d: Task Review 修复
     ├── mp-review-feature/              # Step 5e: 前端 Feature Review
     ├── mp-review-module/               # Step 5e: 后端模块 Review
     ├── mp-review-module-frontend/      # Step 5e: 前端模块 Review
