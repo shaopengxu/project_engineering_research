@@ -158,7 +158,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 - [ ] 部署概要已说明（如影响模块设计）
 ```
 通过 → `/mp-workflow-update Step 2 review 通过`
-不通过 → 再次调用 `/mp-architecture` 修订
+不通过 → `/mp-fix-architecture` 修复 → `/mp-review-architecture` 重新 review
 
 ---
 
@@ -214,7 +214,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 - [ ] 接口依赖矩阵完整，覆盖所有跨模块调用
 ```
 通过 → `/mp-workflow-update {module} 模块设计 review 通过`
-不通过 → 对应模块再次调用 `/mp-module-design` 修订
+不通过 → `/mp-fix-module-design {module} [feature] | --summary` 修复 → 对应 `/mp-review-module-design` 重新 review
 
 ---
 
@@ -238,6 +238,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 - [ ] 前端 dev server 能启动（`npm run dev:web`；如有管理后台 `npm run dev:admin`）
 ```
 通过 → `/mp-workflow-update 脚手架 review 通过`
+不通过 → `/mp-fix-scaffold` 修复 → `/mp-review-scaffold` 重新 review
 
 ---
 
@@ -258,6 +259,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 - [ ] 标签（type + module）正确
 ```
 通过 → `/mp-workflow-update Issues review 通过`
+不通过 → `/mp-fix-issues` 修复 → `/mp-review-issues` 重新 review
 
 ---
 
@@ -269,6 +271,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 Agent review：`/mp-review-infra {issue-number}`
 技术负责人参考 Agent 结论，review infra 代码（快速扫描：配置正确、依赖合理、能跑通）
 通过 → `/mp-workflow-update infra #N review 通过`（N 为 infra Issue 编号）
+不通过 → `/mp-fix-infra {issue-number}` 修复 → `/mp-review-infra {issue-number}` 重新 review
 
 #### 5b. 测试先行
 
@@ -295,6 +298,7 @@ Agent review：`/mp-review-infra {issue-number}`
 - [ ] 测试独立且注释标注来源
 ```
 通过 → `/mp-workflow-update {module} 契约测试 #N review 通过`（N 为契约测试 Issue 编号）
+不通过 → `/mp-fix-contract {module} {issue-number} [feature]` 修复 → `/mp-review-contract` 重新 review
 
 #### 5c-5d. 实现 → Review → 修复循环
 
@@ -322,6 +326,10 @@ gh issue list --state open --label "module:{module-name}"    # 按模块筛选
 - 前端模块所有 feature Review 通过后：`/mp-review-module-frontend {module}`
 
 LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
+不通过 →
+- 后端模块：`/mp-fix-module {module}` 修复 → `/mp-review-module {module}` 重新 review
+- 前端 Feature：`/mp-fix-feature {module} {feature}` 修复 → `/mp-review-feature {module} {feature}` 重新 review
+- 前端模块：`/mp-fix-module-frontend {module}` 修复 → `/mp-review-module-frontend {module}` 重新 review
 
 **技术负责人确认模块完成**：
 ```
@@ -337,6 +345,7 @@ LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 Agent review：`/mp-review-integration {issue-number}`
 技术负责人参考 Agent 结论确认
 完成 → `/mp-workflow-update {module} L2 集成测试 #N 完成`（N 为 L2 Issue 编号）
+不通过 → `/mp-fix-integration {issue-number}` 修复 → `/mp-review-integration {issue-number}` 重新 review
 
 ---
 
@@ -346,6 +355,7 @@ Agent review：`/mp-review-integration {issue-number}`
 Agent review：`/mp-review-e2e`
 技术负责人参考 Agent 结论确认 E2E 通过，编写 README.md（推荐）
 完成 → `/mp-workflow-update E2E 测试通过`
+不通过 → `/mp-fix-e2e` 修复 → `/mp-review-e2e` 重新 review
 
 **E2E 测试失败处理**：
 
@@ -353,12 +363,12 @@ Agent review：`/mp-review-e2e`
 
 | 失败原因 | 修复方式 |
 |---------|---------|
-| E2E 测试代码本身有问题（选择器、时序、断言） | 直接修改 tests/e2e/ 下的测试代码并重跑 |
+| E2E 测试代码问题（选择器、时序、断言、覆盖不足） | `/mp-fix-e2e` 修复 → `/mp-review-e2e` 重新 review |
 | 种子数据不足或不正确 | 补充 tests/fixtures/ 和 prisma/seed.ts，重跑 |
 | 某模块存在 bug | `/mp-impl {module} {issue-number}` 修复 → `/mp-review-task {module} {issue-number}` review |
 | 跨模块集成问题 | `/mp-test-integration {issue-number}` 补充覆盖以定位问题，再修复对应模块 |
 
-修复完成后重新走 Step 6 正常流程：`/mp-test-e2e`（或直接重跑已有 E2E 测试）→ `/mp-review-e2e` → 技术负责人确认全部通过后再进入 Step 7。
+修复完成后重新走 Step 6 正常流程：`/mp-review-e2e` → 技术负责人确认全部通过后再进入 Step 7。
 
 ---
 
@@ -367,6 +377,7 @@ Agent review：`/mp-review-e2e`
 Agent 验收预检：`/mp-review-acceptance`
 技术负责人参考预检结果，协调产品经理按模块组分批验收，核心模块优先。
 完成 → `/mp-workflow-update 验收通过`
+不通过 → `/mp-fix-acceptance` 修复 → `/mp-review-acceptance` 重新预检
 
 ---
 
