@@ -56,7 +56,7 @@ Step 7  验收                                 ← 产品经理手动操作
 |-------|------|------|
 | `/mp-review-prd` | PRD Review | — |
 | `/mp-review-architecture` | 架构 Review | — |
-| `/mp-review-module-design` | 模块设计 + 接口契约 Review | `<module> [feature]` / `--summary` |
+| `/mp-review-module-design` | 模块设计 + 接口契约 Review | `<module> <issue-number> [feature]` / `--summary <issue-number>` |
 | `/mp-review-scaffold` | 脚手架 Review | — |
 | `/mp-review-issues` | Issues Review | — |
 | `/mp-review-infra` | infra 实现 Review | `<issue-number>` |
@@ -77,8 +77,8 @@ Step 7  验收                                 ← 产品经理手动操作
 |-------|------|------|
 | `/mp-architecture` | 系统架构设计 → `docs/architecture.md` | — |
 | `/mp-fix-architecture` | 架构 Review 问题修复 | — |
-| `/mp-module-design` | 模块详细设计 + 接口契约 | `<module> [feature]` / `--summary` |
-| `/mp-fix-module-design` | 模块设计 Review 问题修复 | `<module> [feature]` / `--summary` |
+| `/mp-module-design` | 模块详细设计 + 接口契约 | `<module> <issue-number> [feature]` / `--summary <issue-number>` |
+| `/mp-fix-module-design` | 模块设计 Review 问题修复 | `<module> <issue-number> [feature]` / `--summary <issue-number>` |
 
 ### 初始化阶段（Step 4）
 
@@ -157,50 +157,53 @@ git init && gh repo create {项目名} --private
 
 ### 4. 模块设计（Step 3）
 
+> `/mp-workflow-update Step 2 review 通过` 已批量创建所有 design Issue，
+> 用 `/mp-workflow` 查看各 Issue 编号。以下示例中 #3~#8 为 Issue 编号占位。
+
 ```
 # 后端模块（按依赖顺序）
-/mp-module-design user
-/mp-review-module-design user          # Agent review 模块设计
+/mp-module-design user 3
+/mp-review-module-design user 3        # Agent review 模块设计
 # 如果有 MUST FIX / SHOULD FIX：
-/mp-fix-module-design user             # Agent 修复模块设计问题
-/mp-review-module-design user          # Agent 重新 review
+/mp-fix-module-design user 3           # Agent 修复模块设计问题
+/mp-review-module-design user 3        # Agent 重新 review
 /mp-workflow-update user 模块设计 review 通过
 
-/mp-module-design order
-/mp-review-module-design order
+/mp-module-design order 4
+/mp-review-module-design order 4
 # 如果有 MUST FIX / SHOULD FIX：
-/mp-fix-module-design order
-/mp-review-module-design order
+/mp-fix-module-design order 4
+/mp-review-module-design order 4
 /mp-workflow-update order 模块设计 review 通过
 
 # 前端模块
-/mp-module-design web-app              # 整体设计
-/mp-review-module-design web-app       # Agent review 前端整体设计
+/mp-module-design web-app 5            # 整体设计
+/mp-review-module-design web-app 5     # Agent review 前端整体设计
 # 如果有 MUST FIX / SHOULD FIX：
-/mp-fix-module-design web-app
-/mp-review-module-design web-app
+/mp-fix-module-design web-app 5
+/mp-review-module-design web-app 5
 /mp-workflow-update web-app 模块设计 review 通过
 
-/mp-module-design web-app auth         # feature 级
-/mp-review-module-design web-app auth  # Agent review feature 设计
+/mp-module-design web-app 6 auth       # feature 级
+/mp-review-module-design web-app 6 auth  # Agent review feature 设计
 # 如果有 MUST FIX / SHOULD FIX：
-/mp-fix-module-design web-app auth
-/mp-review-module-design web-app auth
+/mp-fix-module-design web-app 6 auth
+/mp-review-module-design web-app 6 auth
 /mp-workflow-update web-app auth 模块设计 review 通过
 
-/mp-module-design web-app product      # feature 级
-/mp-review-module-design web-app product
+/mp-module-design web-app 7 product    # feature 级
+/mp-review-module-design web-app 7 product
 # 如果有 MUST FIX / SHOULD FIX：
-/mp-fix-module-design web-app product
-/mp-review-module-design web-app product
+/mp-fix-module-design web-app 7 product
+/mp-review-module-design web-app 7 product
 /mp-workflow-update web-app product 模块设计 review 通过
 
 # 汇总
-/mp-module-design --summary
-/mp-review-module-design --summary     # Agent 汇总检查
+/mp-module-design --summary 8
+/mp-review-module-design --summary 8   # Agent 汇总检查
 # 如果有 MUST FIX / SHOULD FIX：
-/mp-fix-module-design --summary
-/mp-review-module-design --summary
+/mp-fix-module-design --summary 8
+/mp-review-module-design --summary 8
 /mp-workflow-update Step 3 review 通过
 ```
 

@@ -2,15 +2,15 @@
 context: fork
 name: mp-review-module-design
 description: "Review 模块设计和接口契约"
-argument-hint: "<module-name> [feature-name] | --summary"
+argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-number>"
 ---
 
 你是一个设计审查工程师。请 review 模块设计和接口契约。
 
-参数：$ARGUMENTS（格式：模块名 [feature名]，或 `--summary` 表示所有模块完成后的汇总检查）
-- 一个参数：后端模块或前端整体设计 Review
-- 两个参数（模块名 + feature 名）：前端 feature 级设计 Review
-- `--summary`：所有模块完成后的汇总检查
+参数：$ARGUMENTS（格式：模块名 Issue编号 [feature名]，或 `--summary Issue编号`）
+- 两个参数（模块名 + Issue 编号）：后端模块或前端整体设计 Review
+- 三个参数（模块名 + Issue 编号 + feature 名）：前端 feature 级设计 Review
+- `--summary` + Issue 编号：所有模块完成后的汇总检查
 
 ## 单模块 Review（参数为模块名）
 
@@ -74,23 +74,12 @@ argument-hint: "<module-name> [feature-name] | --summary"
 
 完成后：
 
-### Issue 定位与 Comment
+### Issue Comment
 
-将 Review 结果写入 GitHub Issue。根据参数模式确定 Issue 标题和标签：
+将 Review 结果写入参数指定的 GitHub Issue：
 
-| 参数模式 | Issue 标题 | 标签 |
-|---------|-----------|------|
-| `{module}`（后端模块或前端整体） | `模块设计: {module}` | `type:design,module:{module}` |
-| `{module} {feature}`（前端 feature） | `模块设计: {module}/{feature}` | `type:design,module:{module}` |
-| `--summary` | `模块设计: 汇总检查` | `type:design` |
-
-1. 搜索现有 Issue：
-   `gh issue list --label "{LABELS}" --search "{TITLE} in:title" --state open --json number --jq '.[0].number'`
-2. 如果未找到，创建：
-   `gh issue create --title "{TITLE}" --label "{LABELS}" --body "跟踪 {SCOPE} 的 Review 过程。"`
-3. 将完整的 Review 结果（LGTM / MUST FIX / SHOULD FIX 清单）写入 Issue：
-   `gh issue comment {ISSUE_NUMBER} --body "<Review 结果>"`
-4. 将同样的结果输出给技术负责人。
+1. `gh issue comment {issue-number} --body "<Review 结果>"`
+2. 将同样的结果输出给技术负责人。
 
 **不自动更新 `docs/workflow-state.md`**。
 

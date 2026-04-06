@@ -10,9 +10,9 @@
 | 2. 系统架构 | `/mp-architecture` | — |
 | 2. 架构 Review | `/mp-review-architecture` | — |
 | 2. 架构 Review 修复 | `/mp-fix-architecture` | — |
-| 3. 模块设计 | `/mp-module-design` | `<module> [feature]` / `--summary` |
-| 3. 模块设计 Review | `/mp-review-module-design` | `<module> [feature]` / `--summary` |
-| 3. 模块设计 Review 修复 | `/mp-fix-module-design` | `<module> [feature]` / `--summary` |
+| 3. 模块设计 | `/mp-module-design` | `<module> <issue-number> [feature]` / `--summary <issue-number>` |
+| 3. 模块设计 Review | `/mp-review-module-design` | `<module> <issue-number> [feature]` / `--summary <issue-number>` |
+| 3. 模块设计 Review 修复 | `/mp-fix-module-design` | `<module> <issue-number> [feature]` / `--summary <issue-number>` |
 | 4a. 脚手架 | `/mp-scaffold` | — |
 | 4a. 脚手架 Review | `/mp-review-scaffold` | — |
 | 4a. 脚手架 Review 修复 | `/mp-fix-scaffold` | — |

@@ -164,15 +164,15 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 
 ### Step 3: 模块详细设计 + 接口契约
 
-调用 skill（按依赖顺序串行）：
-- 后端模块：`/mp-module-design {module}`
-- 前端整体：`/mp-module-design web-app`
-- 前端 feature：`/mp-module-design web-app {feature}`
-- 汇总：`/mp-module-design --summary`
+调用 skill（按依赖顺序串行，Issue 编号从 `/mp-workflow` 查看）：
+- 后端模块：`/mp-module-design {module} {issue-number}`
+- 前端整体：`/mp-module-design web-app {issue-number}`
+- 前端 feature：`/mp-module-design web-app {issue-number} {feature}`
+- 汇总：`/mp-module-design --summary {issue-number}`
 
 **Review 流程**：
-1. 每个模块设计完成后，Agent review：`/mp-review-module-design {module}`
-2. 所有模块完成后，Agent 汇总检查：`/mp-review-module-design --summary`
+1. 每个模块设计完成后，Agent review：`/mp-review-module-design {module} {issue-number} [feature]`
+2. 所有模块完成后，Agent 汇总检查：`/mp-review-module-design --summary {issue-number}`
 3. 技术负责人参考 Agent 结论，review — 模块设计 Review Checklist：
 ```
 后端模块设计：
@@ -214,13 +214,13 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 - [ ] 接口依赖矩阵完整，覆盖所有跨模块调用
 ```
 通过 → `/mp-workflow-update {module} 模块设计 review 通过`
-不通过 → `/mp-fix-module-design {module} [feature] | --summary` 修复 → 对应 `/mp-review-module-design` 重新 review
+不通过 → `/mp-fix-module-design {module} {issue-number} [feature] | --summary {issue-number}` 修复 → 对应 `/mp-review-module-design` 重新 review
 
 **跨模块回溯**：设计后续模块时如果发现已 review 通过的模块接口有缺失或不一致（如设计 order 模块时发现 user 模块缺少某个接口），Agent 会停下来指出问题。技术负责人应按以下流程处理：
-1. `/mp-fix-module-design {被影响的模块}` — 修复已有模块的设计文档
-2. `/mp-review-module-design {被影响的模块}` — 重新 review 该模块
+1. `/mp-fix-module-design {被影响的模块} {其 issue-number}` — 修复已有模块的设计文档
+2. `/mp-review-module-design {被影响的模块} {其 issue-number}` — 重新 review 该模块
 3. `/mp-workflow-update {被影响的模块} 模块设计 review 通过` — 确认后继续
-4. 继续当前模块的设计（重新调用 `/mp-module-design {当前模块}`）
+4. 继续当前模块的设计（重新调用 `/mp-module-design {当前模块} {其 issue-number}`）
 
 ---
 
