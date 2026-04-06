@@ -76,14 +76,18 @@ Step 7  验收                                 ← 产品经理手动操作
 | Skill | 用途 | 参数 |
 |-------|------|------|
 | `/mp-architecture` | 系统架构设计 → `docs/architecture.md` | — |
+| `/mp-fix-architecture` | 架构 Review 问题修复 | — |
 | `/mp-module-design` | 模块详细设计 + 接口契约 | `<module> [feature]` / `--summary` |
+| `/mp-fix-module-design` | 模块设计 Review 问题修复 | `<module> [feature]` / `--summary` |
 
 ### 初始化阶段（Step 4）
 
 | Skill | 用途 | 参数 |
 |-------|------|------|
 | `/mp-scaffold` | 项目脚手架 + 回填 CLAUDE.md | — |
+| `/mp-fix-scaffold` | 脚手架 Review 问题修复 | — |
 | `/mp-task-split` | 拆分任务 + 创建 GitHub Issues | — |
+| `/mp-fix-issues` | Issues Review 问题修复 | — |
 
 ### 实现阶段（Step 5）
 
@@ -131,6 +135,9 @@ git init && gh repo create {项目名} --private
 ```
 /mp-architecture
 /mp-review-architecture                # Agent review 架构
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-architecture                   # Agent 修复架构问题
+/mp-review-architecture                # Agent 重新 review
 # 技术负责人参考 Agent 结论，确认后：
 /mp-workflow-update Step 2 review 通过
 ```
@@ -141,28 +148,46 @@ git init && gh repo create {项目名} --private
 # 后端模块（按依赖顺序）
 /mp-module-design user
 /mp-review-module-design user          # Agent review 模块设计
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-module-design user             # Agent 修复模块设计问题
+/mp-review-module-design user          # Agent 重新 review
 /mp-workflow-update user 模块设计 review 通过
 
 /mp-module-design order
+/mp-review-module-design order
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-module-design order
 /mp-review-module-design order
 /mp-workflow-update order 模块设计 review 通过
 
 # 前端模块
 /mp-module-design web-app              # 整体设计
 /mp-review-module-design web-app       # Agent review 前端整体设计
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-module-design web-app
+/mp-review-module-design web-app
 /mp-workflow-update web-app 模块设计 review 通过
 
 /mp-module-design web-app auth         # feature 级
 /mp-review-module-design web-app auth  # Agent review feature 设计
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-module-design web-app auth
+/mp-review-module-design web-app auth
 /mp-workflow-update web-app auth 模块设计 review 通过
 
 /mp-module-design web-app product      # feature 级
+/mp-review-module-design web-app product
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-module-design web-app product
 /mp-review-module-design web-app product
 /mp-workflow-update web-app product 模块设计 review 通过
 
 # 汇总
 /mp-module-design --summary
 /mp-review-module-design --summary     # Agent 汇总检查
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-module-design --summary
+/mp-review-module-design --summary
 /mp-workflow-update Step 3 review 通过
 ```
 
@@ -171,10 +196,16 @@ git init && gh repo create {项目名} --private
 ```
 /mp-scaffold
 /mp-review-scaffold                    # Agent review 脚手架
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-scaffold                       # Agent 修复脚手架问题
+/mp-review-scaffold                    # Agent 重新 review
 /mp-workflow-update 脚手架 review 通过
 
 /mp-task-split
 /mp-review-issues                      # Agent review Issues
+# 如果有 MUST FIX / SHOULD FIX：
+/mp-fix-issues                         # Agent 修复 Issues 问题
+/mp-review-issues                      # Agent 重新 review
 /mp-workflow-update Issues review 通过
 ```
 
@@ -269,18 +300,22 @@ git init && gh repo create {项目名} --private
 medium-project/                         # 工作流定义
 ├── README.md                           # 本文件
 ├── tech-lead-guide.md                  # 技术负责人操作指南
-└── skills/                             # Skill 定义（27 个）
+└── skills/                             # Skill 定义（31 个）
     ├── mp-workflow/                     # 流程查询
     ├── mp-workflow-update/              # 状态更新
     ├── mp-review-prd/                  # Step 1: PRD Review
     ├── mp-architecture/                # Step 2: 架构设计
     ├── mp-review-architecture/         # Step 2: 架构 Review
+    ├── mp-fix-architecture/            # Step 2: 架构 Review 修复
     ├── mp-module-design/               # Step 3: 模块设计
     ├── mp-review-module-design/        # Step 3: 模块设计 Review
+    ├── mp-fix-module-design/           # Step 3: 模块设计 Review 修复
     ├── mp-scaffold/                    # Step 4a: 脚手架
     ├── mp-review-scaffold/             # Step 4a: 脚手架 Review
+    ├── mp-fix-scaffold/                # Step 4a: 脚手架 Review 修复
     ├── mp-task-split/                  # Step 4b: 任务拆分
     ├── mp-review-issues/               # Step 4b: Issues Review
+    ├── mp-fix-issues/                  # Step 4b: Issues Review 修复
     ├── mp-impl-infra/                  # Step 5a: infra 实现
     ├── mp-review-infra/                # Step 5a: infra Review
     ├── mp-test-contract/               # Step 5b: 后端契约测试
