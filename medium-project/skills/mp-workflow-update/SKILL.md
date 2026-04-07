@@ -31,142 +31,42 @@ argument-hint: "<状态变更描述> | init"
 
 参数：$ARGUMENTS
 
-用户会用自然语言描述状态变更，例如：
-- "Step 1 完成，PRD 和 CLAUDE.md 已就绪"
-- "Step 2 review 通过了"
-- "user 模块设计 review 通过"
-- "web-app 整体设计完成"
-- "web-app auth feature 设计 review 通过"
-- "Step 3 review 通过"
-- "脚手架 review 通过"
-- "Issues review 通过"
-- "infra #1 review 通过"
-- "user 契约测试 #5 review 通过"
-- "web-app auth 契约测试 #8 review 通过"
-- "Issue #12 实现完成"
-- "Issue #12 review LGTM"
-- "user 模块所有 Task 完成"
-- "web-app auth 所有 Task 完成"
-- "web-app auth Feature Review LGTM"
-- "user 模块 Review LGTM"
-- "web-app 模块 Review LGTM"
-- "user L2 集成测试 #15 完成"
-- "开始处理 order 模块"
-- "开始处理 web-app auth feature"
-- "E2E 测试通过"
-- "验收通过"
+运行本 skill 目录下的 [mp-state-machine.py](mp-state-machine.py) 处理状态转换：
 
-## 更新逻辑
+```bash
+python mp-state-machine.py "$ARGUMENTS"
+```
 
-1. 读取当前 `docs/workflow-state.md`
-2. 根据用户描述确定要更新的字段和需要关闭的 Issue：
+脚本会自动完成：读取 workflow-state.md → 匹配转换规则 → 更新状态 → 关闭相关 Issue → 输出 JSON 结果。
 
-| 用户描述 | workflow-state 更新 | GitHub Issue 操作 |
-|---------|-------------------|------------------|
-| Step 1 完成 | step → 2, substep → 清空 | **关闭阶段 Issue**: `type:prd-review` 标题含 "PRD Review" |
-| Step 2 review 通过 | step → 3, substep → 清空, 填写 module_order / feature_order（见下方） | **关闭阶段 Issue**: `type:architecture` 标题含 "架构设计"；**批量创建 design Issue**（见下方） |
-| {module} 模块设计 review 通过 | （不更新） | **关闭阶段 Issue**: `type:design` + `module:{module}` 标题含 "模块设计: {module}" |
-| {module} {feature} 模块设计 review 通过 | （不更新） | **关闭阶段 Issue**: `type:design` + `module:{module}` 标题含 "模块设计: {module}/{feature}" |
-| 前端整体设计完成 | 备注中记录 | **关闭阶段 Issue**（如存在）: `type:design` + `module:{module}` 标题含 "模块设计: {module}" |
-| Step 3 review 通过 | step → 4, substep → 4a | **关闭阶段 Issue**: `type:design` 标题含 "模块设计: 汇总检查" |
-| 脚手架 review 通过 | step → 4, substep → 4b | **关闭阶段 Issue**: `type:scaffold` 标题含 "脚手架" |
-| Issues review 通过 | step → 5, substep → 5a, module → infra | **关闭阶段 Issue**: `type:task-split` 标题含 "任务拆分" |
-| infra #N review 通过 | substep → 5b, module → module_order 中 infra 之后的第一个模块 | **关闭 Task Issue #N** |
-| {module} 契约测试 #N review 通过 | substep → 5c | **关闭 Task Issue #N** |
-| Issue #N 实现完成 | substep → 5c-review（通常由 mp-impl-task 自动完成，此条为手动回退/补救） | （不操作 Issue） |
-| Issue #N review LGTM | substep → 5c（下一个 Task） | **关闭 Task Issue #N** |
-| {module} 模块所有 Task 完成 | substep → 5e | （不操作 Issue） |
-| {feature} 所有 Task 完成 | substep → 5e | （不操作 Issue） |
-| {module} {feature} Feature Review LGTM | （见下方"推进逻辑"） | **关闭阶段 Issue**: `type:feature-review` + `module:{module}` 标题含 "Feature Review: {module}/{feature}" |
-| {module} 模块 Review LGTM | （见下方"推进逻辑"） | **关闭阶段 Issue**: `type:module-review` + `module:{module}` 标题含 "模块 Review: {module}" |
-| L2 集成测试 #N 完成 | （见下方"推进逻辑"） | **关闭 Task Issue #N** |
-| 开始处理某模块 | module → 该模块；substep：Step 5 中设为 5b，其他 Step 不变 | （不操作 Issue） |
-| 开始处理某 feature | module → 该模块, feature → 该 feature；substep：Step 5 中设为 5b，其他 Step 不变 | （不操作 Issue） |
-| E2E 测试通过 | step → 7 | **关闭阶段 Issue**: `type:e2e` 标题含 "E2E 测试" |
-| 验收通过 | step → done | **关闭阶段 Issue**: `type:acceptance` 标题含 "验收预检" |
+输出格式为 JSON：`{"updated": {...}, "issue_ops": [...], "next": "下一步提示"}`
 
-3. 更新 `docs/workflow-state.md`
-4. 执行 GitHub Issue 操作（见下方"GitHub Issue 同步"）
-5. commit 状态文件，commit message：`docs: 更新 workflow 状态 - {简要描述}`
-6. 输出：
+收到脚本输出后：
+
+1. 如果 `error` 字段存在，将错误信息告诉技术负责人
+2. commit 状态文件，commit message：`docs: 更新 workflow 状态 - {简要描述}`
+3. 将结果转述给技术负责人：
 
 ```
-已更新: {变更摘要}
+已更新: {updated 字段的变更摘要}
+Issue 操作: {issue_ops 中的操作列表}
 
 下一步:
-{具体操作描述或 skill 调用命令}
+{next 字段的内容}
 ```
 
-### Feature / 模块完成推进逻辑
+### 特殊处理：Step 2 review 通过
 
-状态转换表中 Feature Review LGTM、模块 Review LGTM、L2 集成测试完成三种输入需要根据 `module_order` 和 `feature_order` 动态推进状态。
-
-**Feature Review LGTM 后**：
-1. 关闭 Feature Review Issue
-2. 读取 `feature_order` 中当前 module 的 feature 列表，定位当前 feature
-3. 非最后 feature → `feature → 下一个, substep → 5b`
-4. 最后 feature → `feature → 清空, substep → 5e`（等待模块级 Review）
-
-**模块 Review LGTM 后**：
-1. 关闭模块 Review Issue
-2. 查询 open 的 `type:integration-test` Issue：`gh issue list --label "type:integration-test" --state open --json number`
-3. 存在 open 的 L2 Issue → `substep → 5f`
-4. 不存在 → 执行下方"切换到下一模块"
-
-> 如果进入 5f 后技术负责人判断当前 L2 尚不可执行（被依赖模块未完成），可通过 `开始处理 {下一模块名} 模块` 跳过，后续再回来执行 L2。
-
-**L2 集成测试 #N 完成后**：
-1. 关闭 Task Issue #N
-2. 查询剩余 open 的 `type:integration-test` Issue
-3. 仍有 open → 保持 `substep: 5f`，提示继续执行下一个 L2 或开始下一模块
-4. 全部完成 → 执行下方"切换到下一模块"
-
-**切换到下一模块**：
-1. 读取 `module_order`，定位当前 module
-2. 非最后模块 → `module → module_order 中下一个, feature → 清空, substep → 5b`
-3. 最后模块 → `step → 6, substep/module/feature → 清空`
-
-## GitHub Issue 同步
-
-本 skill 在状态推进时执行两类 Issue 操作：
-
-### 1. Task Issue 关闭
-
-当表格中标注 **关闭 Task Issue #N** 时，直接关闭：
-```bash
-gh issue close {N} --comment "Review 通过，Task 完成。"
-```
-
-### 2. 阶段 Issue 关闭
-
-当表格中标注 **关闭阶段 Issue** 时，先按标签 + 标题搜索 open 状态的 Issue，找到后关闭：
-```bash
-# 搜索（以架构设计为例）
-ISSUE_NUM=$(gh issue list --label "type:architecture" --search "架构设计 in:title" --state open --json number --jq '.[0].number')
-
-# 如果找到，关闭
-if [ -n "$ISSUE_NUM" ]; then
-  gh issue close $ISSUE_NUM --comment "Review 通过，阶段完成。"
-fi
-```
-
-如果未找到匹配的 Issue 则跳过（可能尚未创建或已关闭），不报错。
-
-### 阶段 Issue 搜索模式速查
-
-| 阶段 Issue | 搜索标签 | 标题关键词 |
-|-----------|---------|-----------|
-| PRD Review | `type:prd-review` | `PRD Review` |
-| 架构设计 | `type:architecture` | `架构设计` |
-| 模块设计: {module} | `type:design` + `module:{module}` | `模块设计: {module}` |
-| 模块设计: {module}/{feature} | `type:design` + `module:{module}` | `模块设计: {module}/{feature}` |
-| 模块设计: 汇总检查 | `type:design` | `模块设计: 汇总检查` |
-| 脚手架 | `type:scaffold` | `脚手架` |
-| 任务拆分 | `type:task-split` | `任务拆分` |
-| Feature Review | `type:feature-review` + `module:{module}` | `Feature Review: {module}/{feature}` |
-| 模块 Review | `type:module-review` + `module:{module}` | `模块 Review: {module}` |
-| E2E 测试 | `type:e2e` | `E2E 测试` |
-| 验收预检 | `type:acceptance` | `验收预检` |
+脚本完成基础状态更新和 Issue 关闭后，`next` 字段会提示需要额外操作。此时 Agent 需要：
+1. 读取 `docs/architecture.md`，提取模块列表和 feature 列表
+2. 填写 `docs/workflow-state.md` 的 `module_order` 和 `feature_order`：
+   - `module_order`：按依赖顺序列出所有模块（infra 在首位，前端模块在末位），例如 `[infra, user, order, product, web-app]`
+   - `feature_order`：列出每个前端模块的 feature 顺序，例如 `{ web-app: [auth, product, cart, settings] }`
+   - 顺序原则：被依赖的模块/feature 排在前面
+3. 批量创建 design Issue（每个后端模块/前端整体各一个、每个前端 feature 各一个、汇总检查一个）：
+   - 使用 `python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:design,module:{module}" --search "模块设计: {module}" --create-title "模块设计: {module}" --create-body "跟踪 {module} 的模块设计和 Review 过程。"`
+   - 汇总检查：`--label "type:design" --search "模块设计: 汇总检查" --create-title "模块设计: 汇总检查"`
+4. 在输出中列出所有创建的 Issue 编号和标题
 
 > **Project Board 配置**：在 GitHub Project Settings → Workflows 中启用 "Item closed → set Status to Done"，这样关闭 Issue 后 Project Board Status 会自动更新为 Done，无需手动操作。
 
