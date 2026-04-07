@@ -22,7 +22,8 @@ argument-hint: "<issue-number>"
 要求：
 - 在 tests/integration/paths/ 目录下创建集成测试文件
 - 使用真实的模块间调用（不 Mock 其他模块）
-- 外部依赖（数据库等）使用测试环境（内存数据库或测试容器）
+- 内部外部依赖（数据库等）使用测试环境（内存数据库或测试容器）
+- 第三方外部 API：核心业务路径（如支付）使用 sandbox/test 模式 API key；非核心路径可 Mock
 - 覆盖关键路径的正常流程和关键异常流程
 - 每个测试用例标注对应的业务路径
 - 每个有意义的改动 commit 一次，commit message 格式：`test(integration): <描述> [#issue-number]`

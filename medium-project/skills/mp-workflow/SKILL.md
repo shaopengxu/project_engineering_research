@@ -372,6 +372,8 @@ Agent review：`/mp-review-integration {issue-number}`
 
 ### Step 6: E2E 测试
 
+**前置检查**：确认 `.env` 中的外部 API key 已配置（sandbox/test 模式）。如 architecture.md 外部依赖清单中列出了第三方 API，E2E 测试需要这些 key 才能跑通完整流程。
+
 调用 skill：`/mp-test-e2e`
 Agent review：`/mp-review-e2e`
 技术负责人参考 Agent 结论确认 E2E 通过，编写 README.md（推荐）

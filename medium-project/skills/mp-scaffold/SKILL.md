@@ -26,7 +26,7 @@ description: "根据架构文档初始化项目脚手架 + 回填 CLAUDE.md"
 
 3. **环境配置**：
    - 创建 `docker-compose.yml`（至少包含 PostgreSQL 服务，配置开发和测试两个数据库）
-   - 创建 `.env.example`（DATABASE_URL、PORT、LOG_LEVEL 等必需环境变量）
+   - 创建 `.env.example`（DATABASE_URL、PORT、LOG_LEVEL 等必需环境变量；如 architecture.md 中有外部依赖清单，包含对应的 API key 占位变量并注释说明用途和获取方式）
    - `.env` 加入 `.gitignore`
 
 4. **导出桩文件**：
