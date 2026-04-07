@@ -49,9 +49,10 @@ gh issue list --label "module:{module}" --label "type:impl" --state open --json 
 
 将 Review 结果写入 GitHub Issue：
 
-使用 [Issue 工具](../../scripts/mp-issue-helper.py) 搜索/创建 Issue 并写入 Review 结果：
-`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:feature-review" --label "module:{module}" --search "Feature Review: {module}/{feature}" --create-title "Feature Review: {module}/{feature}" --create-body "跟踪 {module}/{feature} Feature 的 Review 过程。" --comment "<Review 结果>"`
-将同样的结果输出给技术负责人。
+1. 搜索现有 Issue：`gh issue list --label "type:feature-review" --label "module:{module}" --search "Feature Review: {module}/{feature} in:title" --state open --json number --jq '.[0].number'`
+2. 如果未找到，创建：`gh issue create --title "Feature Review: {module}/{feature}" --label "type:feature-review,module:{module}" --body "跟踪 {module}/{feature} Feature 的 Review 过程。"`
+3. 写入 Review 结果：`gh issue comment {ISSUE_NUMBER} --body "<Review 结果>"`
+4. 将同样的结果输出给技术负责人。
 
 **不自动更新 `docs/workflow-state.md`**。
 

@@ -15,7 +15,7 @@ description: "根据 E2E 测试 Review 反馈修复测试代码"
 - tests/e2e/ 目录下的所有测试文件
 
 然后查看 Review 反馈：
-1. 搜索 Issue：`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:e2e" --search "E2E 测试"`（只搜索，不传 --create-title 则不创建）
+1. 搜索 Issue：`gh issue list --label "type:e2e" --search "E2E 测试 in:title" --state open --json number --jq '.[0].number'`
 2. 查看 comments：`gh issue view {ISSUE_NUMBER} --comments`
 3. 取最后一条 Review comment 作为修复依据
 

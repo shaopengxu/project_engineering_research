@@ -17,7 +17,7 @@ argument-hint: "<module-name>"
 - server/modules/{module}/
 
 然后查看 Review 反馈：
-1. 搜索 Issue：`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:module-review" --label "module:{module}" --search "模块 Review: {module}"`（只搜索，不传 --create-title 则不创建）
+1. 搜索 Issue：`gh issue list --label "type:module-review" --label "module:{module}" --search "模块 Review: {module} in:title" --state open --json number --jq '.[0].number'`
 2. 查看 comments：`gh issue view {ISSUE_NUMBER} --comments`
 3. 取最后一条 Review comment 作为修复依据
 

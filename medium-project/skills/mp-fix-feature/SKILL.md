@@ -18,7 +18,7 @@ argument-hint: "<module-name> <feature-name>"
 - `{web|admin}/features/{feature}/`
 
 然后查看 Review 反馈：
-1. 搜索 Issue：`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:feature-review" --label "module:{module}" --search "Feature Review: {module}/{feature}"`（只搜索，不传 --create-title 则不创建）
+1. 搜索 Issue：`gh issue list --label "type:feature-review" --label "module:{module}" --search "Feature Review: {module}/{feature} in:title" --state open --json number --jq '.[0].number'`
 2. 查看 comments：`gh issue view {ISSUE_NUMBER} --comments`
 3. 取最后一条 Review comment 作为修复依据
 

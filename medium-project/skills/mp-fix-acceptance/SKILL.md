@@ -13,7 +13,7 @@ description: "根据验收预检反馈修复问题"
 - CLAUDE.md
 
 然后查看预检反馈：
-1. 搜索 Issue：`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:acceptance" --search "验收预检"`（只搜索，不传 --create-title 则不创建）
+1. 搜索 Issue：`gh issue list --label "type:acceptance" --search "验收预检 in:title" --state open --json number --jq '.[0].number'`
 2. 查看 comments：`gh issue view {ISSUE_NUMBER} --comments`
 3. 取最后一条预检 comment 作为修复依据
 

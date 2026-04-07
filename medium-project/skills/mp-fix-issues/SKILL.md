@@ -15,7 +15,7 @@ description: "根据 Issues Review 反馈修复任务拆分"
 - `gh issue list --state open --limit 100 --json number,title,labels,body` 查看所有 Issue
 
 然后查看 Review 反馈：
-1. 搜索 Issue：`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:task-split" --search "任务拆分"`（只搜索，不传 --create-title 则不创建）
+1. 搜索 Issue：`gh issue list --label "type:task-split" --search "任务拆分 in:title" --state open --json number --jq '.[0].number'`
 2. 查看 comments：`gh issue view {ISSUE_NUMBER} --comments`
 3. 取最后一条 Review comment 作为修复依据
 

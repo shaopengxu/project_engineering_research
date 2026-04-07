@@ -12,7 +12,7 @@ description: "根据脚手架 Review 反馈修复项目脚手架"
 - docs/module-design/*.md（验证桩文件签名）
 
 然后查看 Review 反馈：
-1. 搜索 Issue：`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:scaffold" --search "脚手架"`（只搜索，不传 --create-title 则不创建）
+1. 搜索 Issue：`gh issue list --label "type:scaffold" --search "脚手架 in:title" --state open --json number --jq '.[0].number'`
 2. 查看 comments：`gh issue view {ISSUE_NUMBER} --comments`
 3. 取最后一条 Review comment 作为修复依据
 
