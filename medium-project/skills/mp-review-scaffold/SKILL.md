@@ -40,13 +40,9 @@ description: "Review 项目脚手架"
 
 将 Review 结果写入 GitHub Issue：
 
-1. 搜索现有 Issue：
-   `gh issue list --label "type:scaffold" --search "脚手架 in:title" --state open --json number --jq '.[0].number'`
-2. 如果未找到，创建：
-   `gh issue create --title "脚手架" --label "type:scaffold" --body "跟踪脚手架的 Review 过程。"`
-3. 将完整的 Review 结果（LGTM / MUST FIX / SHOULD FIX 清单）写入 Issue：
-   `gh issue comment {ISSUE_NUMBER} --body "<Review 结果>"`
-4. 将同样的结果输出给技术负责人。
+使用 [Issue 工具](../../scripts/mp-issue-helper.py) 搜索/创建 Issue 并写入 Review 结果：
+`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:scaffold" --search "脚手架" --create-title "脚手架" --create-body "跟踪脚手架的 Review 过程。" --comment "<Review 结果>"`
+将同样的结果输出给技术负责人。
 
 **不自动更新 `docs/workflow-state.md`**。
 

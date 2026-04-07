@@ -31,13 +31,9 @@ description: "Review PRD 的结构完整性和可执行性"
 
 将 Review 结果写入 GitHub Issue：
 
-1. 搜索现有 Issue：
-   `gh issue list --label "type:prd-review" --search "PRD Review in:title" --state open --json number --jq '.[0].number'`
-2. 如果未找到，创建：
-   `gh issue create --title "PRD Review" --label "type:prd-review" --body "跟踪 PRD 的 Review 过程。"`
-3. 将完整的 Review 结果（LGTM / MUST FIX / SHOULD FIX 清单）写入 Issue：
-   `gh issue comment {ISSUE_NUMBER} --body "<Review 结果>"`
-4. 将同样的结果输出给技术负责人。
+使用 [Issue 工具](../../scripts/mp-issue-helper.py) 搜索/创建 Issue 并写入 Review 结果：
+`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:prd-review" --search "PRD Review" --create-title "PRD Review" --create-body "跟踪 PRD 的 Review 过程。" --comment "<Review 结果>"`
+将同样的结果输出给技术负责人。
 
 **不自动更新 `docs/workflow-state.md`**。
 

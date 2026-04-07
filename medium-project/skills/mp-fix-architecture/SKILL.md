@@ -12,8 +12,7 @@ description: "根据架构 Review 反馈修复 architecture.md"
 - docs/architecture.md
 
 然后查看 Review 反馈：
-1. 搜索 Issue：
-   `gh issue list --label "type:architecture" --search "架构设计 in:title" --state open --json number --jq '.[0].number'`
+1. 搜索 Issue：`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:architecture" --search "架构设计"`（只搜索，不传 --create-title 则不创建）
 2. 查看 comments：`gh issue view {ISSUE_NUMBER} --comments`
 3. 取最后一条 Review comment 作为修复依据
 

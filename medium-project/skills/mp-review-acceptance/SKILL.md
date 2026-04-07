@@ -39,13 +39,9 @@ description: "验收前的自动化预检"
 
 将预检结果写入 GitHub Issue：
 
-1. 搜索现有 Issue：
-   `gh issue list --label "type:acceptance" --search "验收预检 in:title" --state open --json number --jq '.[0].number'`
-2. 如果未找到，创建：
-   `gh issue create --title "验收预检" --label "type:acceptance" --body "跟踪验收预检过程。"`
-3. 将完整的预检结果（LGTM / MUST FIX / SHOULD FIX 清单）写入 Issue：
-   `gh issue comment {ISSUE_NUMBER} --body "<预检结果>"`
-4. 将同样的结果输出给技术负责人。
+使用 [Issue 工具](../../scripts/mp-issue-helper.py) 搜索/创建 Issue 并写入预检结果：
+`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:acceptance" --search "验收预检" --create-title "验收预检" --create-body "跟踪验收预检过程。" --comment "<预检结果>"`
+将同样的结果输出给技术负责人。
 
 **不自动更新 `docs/workflow-state.md`**。
 

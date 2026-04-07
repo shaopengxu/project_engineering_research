@@ -33,9 +33,8 @@ commit，commit message 格式：`test(e2e): <描述>`
 
 完成后：
 
-1. 搜索 E2E Issue：`gh issue list --label "type:e2e" --search "E2E 测试 in:title" --state open --json number --jq '.[0].number'`
-2. 如果未找到，创建：`gh issue create --title "E2E 测试" --label "type:e2e" --body "跟踪 E2E 测试编写和 Review 过程。"`
-3. 将测试结果（通过/失败分类）写入 Issue：`gh issue comment {ISSUE_NUMBER} --body "<测试结果>"`
+使用 [Issue 工具](../../scripts/mp-issue-helper.py) 搜索/创建 Issue 并写入测试结果：
+`python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:e2e" --search "E2E 测试" --create-title "E2E 测试" --create-body "跟踪 E2E 测试编写和 Review 过程。" --comment "<测试结果>"`
 
 更新 `docs/workflow-state.md`：
 - **全部通过**：设置 `step: 6`，`substep: review`
