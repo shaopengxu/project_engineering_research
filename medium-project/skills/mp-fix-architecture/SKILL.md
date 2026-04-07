@@ -21,7 +21,7 @@ description: "根据架构 Review 反馈修复 architecture.md"
 - 逐条修复 MUST FIX 和 SHOULD FIX
 - 不要修复 OPTIONAL 条目，除非修复成本极低
 - 不要趁修复之机重构 Review 未提及的部分
-- 如果 Review 涉及模块划分调整（增删模块），需同步更新 CLAUDE.md 的项目结构和架构约定
+- 如果 Review 涉及模块划分调整（增删模块），需同步更新 CLAUDE.md 的项目结构、架构约定和"不要做的事"
 - 如果 Review 涉及接口通用约定或日志约定，确保修改后文档内部自洽
 - 每个有意义的改动 commit 一次，commit message 格式：`fix(architecture): <描述>`
 - 完成后用 `gh issue comment {ISSUE_NUMBER} --body "Review 问题已修复，请重新 Review。"` 报告

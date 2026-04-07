@@ -27,7 +27,7 @@ argument-hint: "<issue-number>"
 4. 覆盖正常流程和关键异常流程
 5. 测试数据通过 fixtures 工厂函数创建，不依赖硬编码数据
 6. 测试间无共享状态，可独立运行
-7. 测试能编译并运行通过（运行 `npm test -- --testPathPattern=integration/paths` 验证）
+7. 测试能编译并运行通过（运行 CLAUDE.md 中定义的集成测试命令验证，如 `npm test -- --testPathPattern=integration/paths`）
 
 输出格式：
 - MUST FIX: 关键路径未覆盖、mock 了本应真实调用的模块、测试运行失败

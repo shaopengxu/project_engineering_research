@@ -59,4 +59,6 @@ gh issue list --label "module:{module}" --label "type:impl" --state open --json 
 
 **不自动更新 `docs/workflow-state.md`**。
 
+> **下一步提示**：当该前端模块的所有 feature 都通过 Feature Review 后，技术负责人应调用 `/mp-review-module-frontend {module}` 进行模块级前端 Review。
+
 > **状态更新边界**：Review 类 skill 只输出结论，不修改 workflow-state。状态转换由技术负责人根据 Review 结论调用 `/mp-workflow-update` 触发（如 `/mp-workflow-update web-app auth Feature Review LGTM`）。

@@ -73,7 +73,7 @@ argument-hint: "<状态变更描述> | init"
 | Issues review 通过 | step → 5, substep → 5a, module → infra | **关闭阶段 Issue**: `type:task-split` 标题含 "任务拆分" |
 | infra #N review 通过 | substep → 5b, module → module_order 中 infra 之后的第一个模块 | **关闭 Task Issue #N** |
 | {module} 契约测试 #N review 通过 | substep → 5c | **关闭 Task Issue #N** |
-| Issue #N 实现完成 | substep → 5c-review | （不操作 Issue） |
+| Issue #N 实现完成 | substep → 5c-review（通常由 mp-impl-task 自动完成，此条为手动回退/补救） | （不操作 Issue） |
 | Issue #N review LGTM | substep → 5c（下一个 Task） | **关闭 Task Issue #N** |
 | {module} 模块所有 Task 完成 | substep → 5e | （不操作 Issue） |
 | {feature} 所有 Task 完成 | substep → 5e | （不操作 Issue） |

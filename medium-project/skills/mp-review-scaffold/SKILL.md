@@ -18,8 +18,8 @@ description: "Review 项目脚手架"
 2. lint 命令能跑通（运行 `npm run lint` 验证）
 3. 测试框架能启动（运行 `npm test -- --passWithNoTests` 或类似命令验证）
 4. docker-compose.yml 已创建，`docker compose up -d` 能成功启动（运行验证）
-5. 后端模块导出桩文件存在且函数签名与 module-design 中的接口契约一致（逐个检查 server/modules/{module}/）
-6. 前端 feature 桩文件存在：api/ 层桩文件和页面组件桩文件（逐个检查 {web|admin}/features/{feature}/）
+5. 后端模块导出桩文件存在且函数签名与 module-design 中的接口契约一致（根据 architecture.md 定义的目录结构逐个检查）
+6. 前端 feature 桩文件存在：api/ 层桩文件和页面组件桩文件（根据 architecture.md 定义的前端目录结构逐个检查）
 7. .env.example 已创建，.env 已加入 .gitignore
 8. TypeScript 配置正确（根目录 + 各端独立 tsconfig）
 9. CLAUDE.md 已回填常用命令和测试环境配置（对比脚手架实际配置，确认一致）

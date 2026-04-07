@@ -16,6 +16,11 @@ argument-hint: "<module-name> <issue-number> [feature-name]"
 
 然后阅读对应的 GitHub Issue 了解任务描述和验收标准：
 - 运行 `gh issue view {issue-number}` 查看 Issue 详情
+- 检查 Issue body 中的依赖（`Depends on #N`），确认所有依赖 Issue 已关闭：`gh issue view {N} --json state`。如果有未关闭的依赖，**停止**并告知技术负责人
+
+然后定位并阅读该 Task 对应的契约测试文件，理解测试的输入输出期望：
+- 后端：`tests/contracts/{module}/`
+- 前端：`tests/contracts/{module}/{feature}/`
 
 要求：
 - 让相关契约测试全部通过

@@ -27,7 +27,7 @@ argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-n
 - docs/prd.md（重点关注：与该模块对应的业务需求部分）
 - docs/module-design/（如已有其他模块的设计文件，阅读以了解已定义的接口）
 
-请按照本 skill 目录下的 [backend-module-template.md](backend-module-template.md)，产出 `docs/module-design/{module-name}.md`，包含：
+请按照本 skill 目录下的 [backend-module-template.md](backend-module-template.md)，产出 `docs/module-design/{module}.md`，包含：
 
 1. 模块概述（职责、PRD 映射）
 2. 内部架构（分层结构、控制流）
@@ -77,7 +77,7 @@ argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-n
 - docs/prd.md（重点关注：页面功能、用户交互流程、UI 原型图或原型链接）
 - docs/module-design/（所有后端模块的设计文件，了解可调用的后端接口）
 
-请按照本 skill 目录下的 [frontend-overall-template.md](frontend-overall-template.md)，产出 `docs/module-design/{module-name}.md`（整体设计文档），包含：
+请按照本 skill 目录下的 [frontend-overall-template.md](frontend-overall-template.md)，产出 `docs/module-design/{module}.md`（整体设计文档），包含：
 
 1. 模块概述（职责、PRD 映射、类型标注为"前端模块"）
 2. Feature 划分（列出所有 feature 及其包含的页面，说明划分依据）
@@ -94,7 +94,7 @@ argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-n
 
 要求：
 - 本文档只设计整体结构和共享层，不设计各 feature 的页面细节
-- 各 feature 的详细设计将在独立会话中通过 `/mp-module-design {module-name} {issue-number} {feature}` 产出
+- 各 feature 的详细设计将在独立会话中通过 `/mp-module-design {module} {issue-number} {feature}` 产出
 - Feature 划分应与后端模块对应（如 auth feature 对应 user 后端模块）
 - 如果 admin 页面较少（< 5 个），可以不拆 feature，一个文件写完整体 + 页面细节
 
@@ -112,11 +112,11 @@ argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-n
 
 请先阅读以下文件：
 - CLAUDE.md
-- docs/module-design/{module-name}.md（整体设计：路由结构、共享层、类型定义）
+- docs/module-design/{module}.md（整体设计：路由结构、共享层、类型定义）
 - docs/module-design/（该 feature 对应的后端模块设计文件，了解可调用的后端接口）
 - docs/prd.md（重点关注：与该 feature 相关的页面功能、验收标准、UI 原型图或原型链接）
 
-请按照本 skill 目录下的 [frontend-feature-template.md](frontend-feature-template.md)，产出 `docs/module-design/{module-name}-{feature}.md`，包含：
+请按照本 skill 目录下的 [frontend-feature-template.md](frontend-feature-template.md)，产出 `docs/module-design/{module}-{feature}.md`，包含：
 
 1. Feature 概述（职责、包含的页面、对应的后端模块）
 2. **页面与路由** — 每个页面包含：

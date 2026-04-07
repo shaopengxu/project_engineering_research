@@ -21,6 +21,7 @@ argument-hint: "<module-name> <issue-number> [feature]"
 只 review 当前 Task 涉及的改动，不要评审其他 Task 的代码。
 
 检查清单（通用）：
+0. 运行该模块的契约测试和 L1 集成测试，确认全部通过
 1. 功能是否符合 module-design/{module}.md 中当前 Task 对应接口的定义
 2. L1 集成测试是否覆盖了真实串联（后端：controller→service→repository；前端：页面→hooks→API）
 3. 是否遵守 CLAUDE.md 的规范
