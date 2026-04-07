@@ -8,6 +8,9 @@
 
 输出：JSON 格式 {"updated": {...}, "issue_ops": [...], "next": "..."}
 供 mp-workflow-update skill 读取并转述给技术负责人。
+
+注意：feature_order 必须使用单行格式，如：
+  feature_order: { web-app: [auth, product, cart], admin: [dashboard, users] }
 """
 
 import json
@@ -20,8 +23,9 @@ import sys
 
 STATE_FILE = "docs/workflow-state.md"
 
-FIELDS = ["step", "substep", "module", "feature",
-          "module_order", "feature_order", "current_milestone"]
+# 字段名按长度降序排列，避免前缀误匹配（如 module 匹配到 module_order 的行）
+FIELDS = ["module_order", "feature_order", "current_milestone",
+          "substep", "step", "module", "feature"]
 
 
 def read_state():
@@ -31,17 +35,17 @@ def read_state():
         return None
     with open(STATE_FILE, encoding="utf-8") as f:
         for line in f:
-            line = line.strip()
+            stripped = line.strip()
             for field in FIELDS:
-                if line.startswith(f"{field}:"):
-                    val = line[len(field) + 1:].strip()
+                if stripped.startswith(f"{field}:"):
+                    val = stripped[len(field) + 1:].strip()
                     state[field] = val
                     break
     return state
 
 
 def write_state(state):
-    """将字段写回 workflow-state.md，保留原始结构。"""
+    """将字段写回 workflow-state.md，保留原始结构和缩进。"""
     if not os.path.exists(STATE_FILE):
         print(f"Error: {STATE_FILE} not found", file=sys.stderr)
         sys.exit(1)
@@ -53,7 +57,8 @@ def write_state(state):
         replaced = False
         for field in FIELDS:
             if stripped.startswith(f"{field}:"):
-                new_lines.append(f"{field}: {state.get(field, '')}\n")
+                indent = line[:len(line) - len(line.lstrip())]
+                new_lines.append(f"{indent}{field}: {state.get(field, '')}\n")
                 replaced = True
                 break
         if not replaced:
@@ -71,16 +76,18 @@ def parse_list(val):
 
 
 def parse_feature_order(val):
-    """解析 feature_order 字段。格式：{ web-app: [auth, product], admin: [dashboard] }"""
+    """解析 feature_order 单行格式：{ web-app: [auth, product], admin: [dashboard] }"""
     if not val:
         return {}
     val = val.strip().strip("{}")
     result = {}
-    for segment in re.split(r",\s*(?=\w+\s*:)", val):
+    # 按 ], 分割各模块段，支持含连字符的模块名
+    for segment in re.split(r"\],\s*", val):
+        segment = segment.strip()
         if ":" not in segment:
             continue
         mod, rest = segment.split(":", 1)
-        result[mod.strip()] = parse_list(rest)
+        result[mod.strip()] = parse_list(rest.strip() + "]")
     return result
 
 
@@ -111,14 +118,19 @@ def issue_close(number, comment="Review 通过，Task 完成。"):
     cmd = ["issue", "close", str(number)]
     if comment:
         cmd.extend(["--comment", comment])
-    _gh(cmd)
+    result = _gh(cmd)
+    if result.returncode != 0:
+        return f"关闭 #{number} 失败: {result.stderr.strip()}"
+    return None
 
 
 def issue_find_and_close(labels, search_keyword, comment="Review 通过，阶段完成。"):
     """搜索 open Issue 并关闭。返回描述字符串。"""
     issues = _issue_search(labels, search_keyword)
     if issues:
-        issue_close(issues[0]["number"], comment)
+        err = issue_close(issues[0]["number"], comment)
+        if err:
+            return err
         return f"已关闭 #{issues[0]['number']}"
     return "未找到匹配的 open Issue（跳过）"
 
@@ -151,12 +163,20 @@ def switch_to_next_module(state):
     """切换到下一模块的通用逻辑。返回 (updates_dict, description)。"""
     module_order = parse_list(state["module_order"])
     current = state["module"]
+    if not module_order:
+        return {}, "错误：module_order 为空，请先填写模块顺序"
+    if current not in module_order:
+        return {}, f"错误：当前模块 {current} 不在 module_order 中"
     if is_last_in_list(module_order, current):
         return {"step": "6", "substep": "", "module": "", "feature": ""}, "最后模块完成，进入 Step 6 E2E 测试"
     nxt = next_in_list(module_order, current)
-    if nxt:
-        return {"substep": "5b", "module": nxt, "feature": ""}, f"切换到模块 {nxt}"
-    return {"substep": "5b", "feature": ""}, "切换到下一模块"
+    return {"substep": "5b", "module": nxt, "feature": ""}, f"切换到模块 {nxt}"
+
+
+def is_frontend_module(state, module):
+    """根据 feature_order 判断模块是否为前端模块。"""
+    fo = parse_feature_order(state.get("feature_order", ""))
+    return module in fo
 
 
 # ── 转换处理函数 ──────────────────────────────────────────
@@ -181,7 +201,7 @@ def handle(state, desc):
         return updates, ops, msg
 
     # ── Step 2 review 通过 ──
-    if re.search(r"Step\s*2\s*review\s*通过", desc):
+    if re.search(r"Step\s*2\s*[Rr]eview\s*通过", desc):
         updates = {"step": "3", "substep": ""}
         ops.append(issue_find_and_close(["type:architecture"], "架构设计"))
         msg = ("下一步：\n"
@@ -191,23 +211,26 @@ def handle(state, desc):
                "填写 module_order/feature_order 并批量创建 design Issue")
         return updates, ops, msg
 
-    # ── {module} 模块设计 review 通过 ──
-    m = re.match(r"(\S+)\s+(\S+)\s*模块设计\s*review\s*通过", desc)
+    # ── {module} {feature} 模块设计 review 通过（双参数，须在单参数之前匹配） ──
+    m = re.match(r"(\S+)\s+(\S+)\s*模块设计\s*[Rr]eview\s*通过", desc)
     if m:
         module, feature = m.group(1), m.group(2)
+        # 不更新 workflow-state（Step 3 模块级进度通过 Issue 追踪）
         ops.append(issue_find_and_close(
             ["type:design", f"module:{module}"],
             f"模块设计: {module}/{feature}"))
-        msg = f"下一步：继续设计下一个模块/feature，或调用 /mp-module-design --summary 进行汇总"
+        msg = "下一步：继续设计下一个模块/feature，或调用 /mp-module-design --summary 进行汇总"
         return updates, ops, msg
 
-    m = re.match(r"(\S+)\s*模块设计\s*review\s*通过", desc)
+    # ── {module} 模块设计 review 通过（单参数） ──
+    m = re.match(r"(\S+)\s*模块设计\s*[Rr]eview\s*通过", desc)
     if m:
         module = m.group(1)
+        # 不更新 workflow-state
         ops.append(issue_find_and_close(
             ["type:design", f"module:{module}"],
             f"模块设计: {module}"))
-        msg = f"下一步：继续设计下一个模块，或调用 /mp-module-design --summary 进行汇总"
+        msg = "下一步：继续设计下一个模块，或调用 /mp-module-design --summary 进行汇总"
         return updates, ops, msg
 
     # ── 前端整体设计完成 ──
@@ -216,32 +239,38 @@ def handle(state, desc):
         return updates, ops, msg
 
     # ── Step 3 review 通过 ──
-    if re.search(r"Step\s*3\s*review\s*通过", desc):
+    if re.search(r"Step\s*3\s*[Rr]eview\s*通过", desc):
         updates = {"step": "4", "substep": "4a"}
         ops.append(issue_find_and_close(["type:design"], "模块设计: 汇总检查"))
         msg = "下一步：调用 /mp-scaffold 初始化项目脚手架"
         return updates, ops, msg
 
     # ── 脚手架 review 通过 ──
-    if re.search(r"脚手架\s*review\s*通过", desc):
+    if re.search(r"脚手架\s*[Rr]eview\s*通过", desc):
         updates = {"step": "4", "substep": "4b"}
         ops.append(issue_find_and_close(["type:scaffold"], "脚手架"))
         msg = "下一步：调用 /mp-task-split 拆分任务并创建 Issues"
         return updates, ops, msg
 
     # ── Issues review 通过 ──
-    if re.search(r"Issues?\s*review\s*通过", desc):
+    if re.search(r"Issues?\s*[Rr]eview\s*通过", desc):
         updates = {"step": "5", "substep": "5a", "module": "infra"}
         ops.append(issue_find_and_close(["type:task-split"], "任务拆分"))
         msg = "下一步：调用 /mp-impl-infra {issue-number} 实现 infra"
         return updates, ops, msg
 
     # ── infra #N review 通过 ──
-    m = re.search(r"infra\s*#?(\d+)\s*review\s*通过", desc)
+    m = re.search(r"infra\s*#?(\d+)\s*[Rr]eview\s*通过", desc)
     if m:
         issue_num = m.group(1)
         module_order = parse_list(state["module_order"])
-        nxt = next_in_list(module_order, "infra") or ""
+        if not module_order:
+            msg = "错误：module_order 为空，请先填写模块顺序"
+            return updates, ops, msg
+        nxt = next_in_list(module_order, "infra")
+        if not nxt:
+            msg = "错误：module_order 中 infra 之后没有模块"
+            return updates, ops, msg
         updates = {"substep": "5b", "module": nxt}
         issue_close(int(issue_num))
         ops.append(f"关闭 Task Issue #{issue_num}")
@@ -249,7 +278,7 @@ def handle(state, desc):
         return updates, ops, msg
 
     # ── {module} 契约测试 #N review 通过 ──
-    m = re.search(r"(\S+)\s*契约测试\s*#?(\d+)\s*review\s*通过", desc)
+    m = re.search(r"(\S+)\s*契约测试\s*#?(\d+)\s*[Rr]eview\s*通过", desc)
     if m:
         issue_num = m.group(2)
         updates = {"substep": "5c"}
@@ -258,15 +287,16 @@ def handle(state, desc):
         msg = "下一步：开始实现 Task"
         return updates, ops, msg
 
-    # ── Issue #N 实现完成 ──
+    # ── Issue #N 实现完成（通常由 mp-impl-task 自动完成，此条为手动补救） ──
     m = re.search(r"Issue\s*#?(\d+)\s*实现完成", desc)
     if m:
+        issue_num = m.group(1)
         updates = {"substep": "5c-review"}
-        msg = f"下一步：调用 /mp-review-task 进行 Review"
+        msg = f"下一步：调用 /mp-review-task {state['module']} #{issue_num} 进行 Review"
         return updates, ops, msg
 
     # ── Issue #N review LGTM ──
-    m = re.search(r"Issue\s*#?(\d+)\s*review\s*LGTM", desc)
+    m = re.search(r"Issue\s*#?(\d+)\s*[Rr]eview\s*LGTM", desc)
     if m:
         issue_num = m.group(1)
         updates = {"substep": "5c"}
@@ -278,15 +308,29 @@ def handle(state, desc):
     # ── {module} 模块所有 Task 完成 ──
     m = re.match(r"(\S+)\s*模块所有\s*Task\s*完成", desc)
     if m:
+        module = m.group(1)
         updates = {"substep": "5e"}
-        msg = f"下一步：调用 /mp-review-module {m.group(1)} 进行模块 Review"
+        if is_frontend_module(state, module):
+            msg = f"下一步：逐个调用 /mp-review-feature {module} {{feature}} 进行 Feature Review"
+        else:
+            msg = f"下一步：调用 /mp-review-module {module} 进行模块 Review"
         return updates, ops, msg
 
-    # ── {feature} 所有 Task 完成 ──
+    # ── {module} {feature} 所有 Task 完成 ──
+    m = re.match(r"(\S+)\s+(\S+)\s*所有\s*Task\s*完成", desc)
+    if m:
+        module, feature = m.group(1), m.group(2)
+        updates = {"substep": "5e"}
+        msg = f"下一步：调用 /mp-review-feature {module} {feature} 进行 Feature Review"
+        return updates, ops, msg
+
+    # ── {feature} 所有 Task 完成（无模块名，从 state 推断） ──
     m = re.match(r"(\S+)\s*所有\s*Task\s*完成", desc)
     if m:
+        feature = m.group(1)
+        module = state.get("module", "")
         updates = {"substep": "5e"}
-        msg = f"下一步：调用 /mp-review-feature 进行 Feature Review"
+        msg = f"下一步：调用 /mp-review-feature {module} {feature} 进行 Feature Review"
         return updates, ops, msg
 
     # ── {module} {feature} Feature Review LGTM ──
@@ -296,7 +340,6 @@ def handle(state, desc):
         ops.append(issue_find_and_close(
             ["type:feature-review", f"module:{module}"],
             f"Feature Review: {module}/{feature}"))
-        # 判断是否最后一个 feature
         fo = parse_feature_order(state["feature_order"])
         features = fo.get(module, [])
         if is_last_in_list(features, feature):
@@ -319,9 +362,7 @@ def handle(state, desc):
             updates = {"substep": "5f"}
             msg = "存在未完成的 L2 集成测试 Issue。下一步：执行 L2 集成测试或开始下一模块"
         else:
-            u, m2 = switch_to_next_module(state)
-            updates = u
-            msg = m2
+            updates, msg = switch_to_next_module(state)
         return updates, ops, msg
 
     # ── L2 集成测试 #N 完成 ──
@@ -334,9 +375,17 @@ def handle(state, desc):
             updates = {"substep": "5f"}
             msg = "仍有未完成的 L2 集成测试。继续执行下一个 L2 或开始下一模块"
         else:
-            u, m2 = switch_to_next_module(state)
-            updates = u
-            msg = m2
+            updates, msg = switch_to_next_module(state)
+        return updates, ops, msg
+
+    # ── 开始处理某 feature（须在"开始处理某模块"之前，避免被吞） ──
+    m = re.search(r"开始处理\s*(\S+)\s+(\S+)\s*feature", desc)
+    if m:
+        module, feature = m.group(1), m.group(2)
+        updates = {"module": module, "feature": feature}
+        if state.get("step") == "5":
+            updates["substep"] = "5b"
+        msg = f"已切换到 {module}/{feature}"
         return updates, ops, msg
 
     # ── 开始处理某模块 ──
@@ -349,26 +398,16 @@ def handle(state, desc):
         msg = f"已切换到模块 {module}"
         return updates, ops, msg
 
-    # ── 开始处理某 feature ──
-    m = re.search(r"开始处理\s*(\S+)\s+(\S+)\s*feature", desc)
-    if m:
-        module, feature = m.group(1), m.group(2)
-        updates = {"module": module, "feature": feature}
-        if state.get("step") == "5":
-            updates["substep"] = "5b"
-        msg = f"已切换到 {module}/{feature}"
-        return updates, ops, msg
-
     # ── E2E 测试通过 ──
     if re.search(r"E2E\s*测试通过", desc):
-        updates = {"step": "7"}
+        updates = {"step": "7", "substep": "", "module": "", "feature": ""}
         ops.append(issue_find_and_close(["type:e2e"], "E2E 测试"))
         msg = "下一步：调用 /mp-review-acceptance 进行验收预检"
         return updates, ops, msg
 
     # ── 验收通过 ──
     if re.search(r"验收通过", desc):
-        updates = {"step": "done"}
+        updates = {"step": "done", "substep": "", "module": "", "feature": ""}
         ops.append(issue_find_and_close(["type:acceptance"], "验收预检"))
         msg = "项目完成！"
         return updates, ops, msg

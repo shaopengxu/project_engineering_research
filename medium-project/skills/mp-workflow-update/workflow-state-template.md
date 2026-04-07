@@ -8,7 +8,7 @@ substep:
 module:
 feature:
 
-## 模块与 Feature 顺序（Step 2 review 通过后自动填写）
+## 模块与 Feature 顺序（Step 2 review 通过后自动填写，必须单行格式）
 module_order:
 feature_order:
 

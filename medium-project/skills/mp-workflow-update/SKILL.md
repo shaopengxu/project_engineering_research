@@ -61,7 +61,7 @@ Issue 操作: {issue_ops 中的操作列表}
 1. 读取 `docs/architecture.md`，提取模块列表和 feature 列表
 2. 填写 `docs/workflow-state.md` 的 `module_order` 和 `feature_order`：
    - `module_order`：按依赖顺序列出所有模块（infra 在首位，前端模块在末位），例如 `[infra, user, order, product, web-app]`
-   - `feature_order`：列出每个前端模块的 feature 顺序，例如 `{ web-app: [auth, product, cart, settings] }`
+   - `feature_order`：**必须单行格式**，例如 `{ web-app: [auth, product, cart, settings], admin: [dashboard, users] }`
    - 顺序原则：被依赖的模块/feature 排在前面
 3. 批量创建 design Issue（每个后端模块/前端整体各一个、每个前端 feature 各一个、汇总检查一个）：
    - 后端模块 / 前端整体：`gh issue create --title "模块设计: {module}" --label "type:design,module:{module}" --body "跟踪 {module} 的模块设计和 Review 过程。"`
