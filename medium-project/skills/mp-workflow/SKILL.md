@@ -362,6 +362,8 @@ LGTM → `/mp-workflow-update {module} 模块 Review LGTM`
 
 #### 5f. L2 集成测试
 
+> 如果当前模块无关联的 L2 集成测试 Issue，`/mp-workflow-update` 在处理"模块 Review LGTM"时会自动跳过 5f，直接切换到下一模块或进入 Step 6。
+
 调用 skill：`/mp-test-integration {issue-number}`
 Agent review：`/mp-review-integration {issue-number}`
 技术负责人参考 Agent 结论确认

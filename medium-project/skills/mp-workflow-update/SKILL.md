@@ -60,7 +60,7 @@ argument-hint: "<状态变更描述> | init"
 | 用户描述 | workflow-state 更新 | GitHub Issue 操作 |
 |---------|-------------------|------------------|
 | Step 1 完成 | step → 2, substep → 清空 | **关闭阶段 Issue**: `type:prd-review` 标题含 "PRD Review" |
-| Step 2 review 通过 | step → 3, substep → 清空 | **关闭阶段 Issue**: `type:architecture` 标题含 "架构设计"；**批量创建 design Issue**（见下方） |
+| Step 2 review 通过 | step → 3, substep → 清空, 填写 module_order / feature_order（见下方） | **关闭阶段 Issue**: `type:architecture` 标题含 "架构设计"；**批量创建 design Issue**（见下方） |
 | {module} 模块设计 review 通过 | （不更新） | **关闭阶段 Issue**: `type:design` + `module:{module}` 标题含 "模块设计: {module}" |
 | {module} {feature} 模块设计 review 通过 | （不更新） | **关闭阶段 Issue**: `type:design` + `module:{module}` 标题含 "模块设计: {module}/{feature}" |
 | 前端整体设计完成 | 备注中记录 | **关闭阶段 Issue**（如存在）: `type:design` + `module:{module}` 标题含 "模块设计: {module}" |
@@ -73,10 +73,9 @@ argument-hint: "<状态变更描述> | init"
 | Issue #N review LGTM | substep → 5c（下一个 Task） | **关闭 Task Issue #N** |
 | {module} 模块所有 Task 完成 | substep → 5e | （不操作 Issue） |
 | {feature} 所有 Task 完成 | substep → 5e | （不操作 Issue） |
-| {module} {feature} Feature Review LGTM | substep → 5b（下一个 feature）或不变（等待模块 Review） | **关闭阶段 Issue**: `type:feature-review` + `module:{module}` 标题含 "Feature Review: {module}/{feature}" |
-| {module} 模块 Review LGTM | substep → 5f | **关闭阶段 Issue**: `type:module-review` + `module:{module}` 标题含 "模块 Review: {module}" |
-| L2 集成测试 #N 完成（非最后模块） | module → 下一个模块, substep → 5b | **关闭 Task Issue #N** |
-| L2 集成测试 #N 完成（最后模块） | step → 6, substep/module/feature → 清空 | **关闭 Task Issue #N** |
+| {module} {feature} Feature Review LGTM | （见下方"推进逻辑"） | **关闭阶段 Issue**: `type:feature-review` + `module:{module}` 标题含 "Feature Review: {module}/{feature}" |
+| {module} 模块 Review LGTM | （见下方"推进逻辑"） | **关闭阶段 Issue**: `type:module-review` + `module:{module}` 标题含 "模块 Review: {module}" |
+| L2 集成测试 #N 完成 | （见下方"推进逻辑"） | **关闭 Task Issue #N** |
 | 开始处理某模块 | module → 该模块, substep → 5b | （不操作 Issue） |
 | 开始处理某 feature | module → 该模块, feature → 该 feature, substep → 5b | （不操作 Issue） |
 | E2E 测试通过 | step → 7 | **关闭阶段 Issue**: `type:e2e` 标题含 "E2E 测试" |
@@ -93,6 +92,35 @@ argument-hint: "<状态变更描述> | init"
 下一步:
 {具体操作描述或 skill 调用命令}
 ```
+
+### Feature / 模块完成推进逻辑
+
+状态转换表中 Feature Review LGTM、模块 Review LGTM、L2 集成测试完成三种输入需要根据 `module_order` 和 `feature_order` 动态推进状态。
+
+**Feature Review LGTM 后**：
+1. 关闭 Feature Review Issue
+2. 读取 `feature_order` 中当前 module 的 feature 列表，定位当前 feature
+3. 非最后 feature → `feature → 下一个, substep → 5b`
+4. 最后 feature → `feature → 清空, substep → 5e`（等待模块级 Review）
+
+**模块 Review LGTM 后**：
+1. 关闭模块 Review Issue
+2. 查询 open 的 `type:integration-test` Issue：`gh issue list --label "type:integration-test" --state open --json number`
+3. 存在 open 的 L2 Issue → `substep → 5f`
+4. 不存在 → 执行下方"切换到下一模块"
+
+> 如果进入 5f 后技术负责人判断当前 L2 尚不可执行（被依赖模块未完成），可通过 `开始处理 {下一模块名} 模块` 跳过，后续再回来执行 L2。
+
+**L2 集成测试 #N 完成后**：
+1. 关闭 Task Issue #N
+2. 查询剩余 open 的 `type:integration-test` Issue
+3. 仍有 open → 保持 `substep: 5f`，提示继续执行下一个 L2 或开始下一模块
+4. 全部完成 → 执行下方"切换到下一模块"
+
+**切换到下一模块**：
+1. 读取 `module_order`，定位当前 module
+2. 非最后模块 → `module → module_order 中下一个, feature → 清空, substep → 5b`
+3. 最后模块 → `step → 6, substep/module/feature → 清空`
 
 ## GitHub Issue 同步
 
@@ -149,7 +177,16 @@ fi
    - 所有前端模块名称（如 web-app、admin）
    - 每个前端模块下的 feature 列表
 
-2. 按以下模板批量创建 Issue：
+2. 更新 `docs/workflow-state.md` 的 `module_order` 和 `feature_order`：
+   - `module_order`：按依赖顺序列出所有模块（infra 在首位，前端模块在末位），例如 `[infra, user, order, product, web-app]`
+   - `feature_order`：列出每个前端模块的 feature 顺序，例如：
+     ```
+     feature_order:
+       web-app: [auth, product, cart, settings]
+     ```
+   - 顺序原则：被依赖的模块/feature 排在前面
+
+3. 按以下模板批量创建 Issue：
 
    **后端模块 / 前端整体**（每个模块一个）：
    ```bash
@@ -166,4 +203,4 @@ fi
    gh issue create --title "模块设计: 汇总检查" --label "type:design" --body "跟踪所有模块设计完成后的汇总检查和 Review 过程。"
    ```
 
-3. 在输出中列出所有创建的 Issue 编号和标题，供技术负责人确认。
+4. 在输出中列出所有创建的 Issue 编号和标题，供技术负责人确认。
