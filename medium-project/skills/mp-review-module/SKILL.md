@@ -9,7 +9,17 @@ argument-hint: "<module-name>"
 
 模块名：$ARGUMENTS
 
-该模块的所有 Task 已逐个 Review 通过。本次 Review 关注模块级的一致性和完整性。
+该模块的所有 Task 应已逐个 Review 通过。本次 Review 关注模块级的一致性和完整性。
+
+### 前置校验
+
+开始 Review 前，先确认所有实现 Task 已完成：
+```bash
+gh issue list --label "module:{module}" --label "type:impl" --state open --json number,title
+```
+如果有未关闭的 `type:impl` Issue，**停止 Review** 并告知技术负责人哪些 Task 尚未完成。
+
+### Review
 
 请先阅读以下文件：
 - CLAUDE.md

@@ -19,6 +19,14 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 
 如果 `docs/workflow-state.md` 不存在，提示用户先调用 `/mp-workflow-update init` 初始化。
 
+## GitHub Issue 创建策略
+
+流程中的 Issue 有三种创建来源：
+
+1. **Design Issue**（`type:design`）：Step 2 review 通过时由 `/mp-workflow-update` 批量创建
+2. **Task Issue**（`type:infra`、`type:contract-test`、`type:impl`、`type:integration-test`）：Step 4b 由 `/mp-task-split` 批量创建
+3. **其他阶段 Issue**（`type:prd-review`、`type:architecture`、`type:scaffold`、`type:task-split`、`type:feature-review`、`type:module-review`、`type:e2e`、`type:acceptance`）：由对应的 review skill 在执行时按需创建（搜索→未找到则创建）
+
 ## 查询逻辑
 
 1. 读取 `docs/workflow-state.md`，获取 step/substep/module/feature

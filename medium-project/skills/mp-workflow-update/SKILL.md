@@ -64,10 +64,10 @@ argument-hint: "<状态变更描述> | init"
 | {module} 模块设计 review 通过 | （不更新） | **关闭阶段 Issue**: `type:design` + `module:{module}` 标题含 "模块设计: {module}" |
 | {module} {feature} 模块设计 review 通过 | （不更新） | **关闭阶段 Issue**: `type:design` + `module:{module}` 标题含 "模块设计: {module}/{feature}" |
 | 前端整体设计完成 | 备注中记录 | **关闭阶段 Issue**（如存在）: `type:design` + `module:{module}` 标题含 "模块设计: {module}" |
-| Step 3 review 通过 | step → 4, substep → 清空 | **关闭阶段 Issue**: `type:design` 标题含 "模块设计: 汇总检查" |
+| Step 3 review 通过 | step → 4, substep → 4a | **关闭阶段 Issue**: `type:design` 标题含 "模块设计: 汇总检查" |
 | 脚手架 review 通过 | step → 4, substep → 4b | **关闭阶段 Issue**: `type:scaffold` 标题含 "脚手架" |
-| Issues review 通过 | step → 5, substep → 5a | **关闭阶段 Issue**: `type:task-split` 标题含 "任务拆分" |
-| infra #N review 通过 | substep → 5b | **关闭 Task Issue #N** |
+| Issues review 通过 | step → 5, substep → 5a, module → infra | **关闭阶段 Issue**: `type:task-split` 标题含 "任务拆分" |
+| infra #N review 通过 | substep → 5b, module → module_order 中 infra 之后的第一个模块 | **关闭 Task Issue #N** |
 | {module} 契约测试 #N review 通过 | substep → 5c | **关闭 Task Issue #N** |
 | Issue #N 实现完成 | substep → 5c-review | （不操作 Issue） |
 | Issue #N review LGTM | substep → 5c（下一个 Task） | **关闭 Task Issue #N** |
@@ -76,8 +76,8 @@ argument-hint: "<状态变更描述> | init"
 | {module} {feature} Feature Review LGTM | （见下方"推进逻辑"） | **关闭阶段 Issue**: `type:feature-review` + `module:{module}` 标题含 "Feature Review: {module}/{feature}" |
 | {module} 模块 Review LGTM | （见下方"推进逻辑"） | **关闭阶段 Issue**: `type:module-review` + `module:{module}` 标题含 "模块 Review: {module}" |
 | L2 集成测试 #N 完成 | （见下方"推进逻辑"） | **关闭 Task Issue #N** |
-| 开始处理某模块 | module → 该模块, substep → 5b | （不操作 Issue） |
-| 开始处理某 feature | module → 该模块, feature → 该 feature, substep → 5b | （不操作 Issue） |
+| 开始处理某模块 | module → 该模块；substep：Step 5 中设为 5b，其他 Step 不变 | （不操作 Issue） |
+| 开始处理某 feature | module → 该模块, feature → 该 feature；substep：Step 5 中设为 5b，其他 Step 不变 | （不操作 Issue） |
 | E2E 测试通过 | step → 7 | **关闭阶段 Issue**: `type:e2e` 标题含 "E2E 测试" |
 | 验收通过 | step → done | **关闭阶段 Issue**: `type:acceptance` 标题含 "验收预检" |
 

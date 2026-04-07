@@ -9,7 +9,17 @@ argument-hint: "<module-name> <feature-name>"
 
 参数：$ARGUMENTS（格式：模块名 feature名）
 
-该 feature 的所有 Task 已逐个 Review 通过。本次 Review 关注 feature 级的一致性和完整性。
+该 feature 的所有 Task 应已逐个 Review 通过。本次 Review 关注 feature 级的一致性和完整性。
+
+### 前置校验
+
+开始 Review 前，先确认该 feature 的实现 Task 已完成：
+```bash
+gh issue list --label "module:{module}" --label "type:impl" --state open --json number,title
+```
+筛选标题中包含 feature 名的 Issue。如果有未关闭的相关 `type:impl` Issue，**停止 Review** 并告知技术负责人哪些 Task 尚未完成。
+
+### Review
 
 请先阅读以下文件：
 - CLAUDE.md

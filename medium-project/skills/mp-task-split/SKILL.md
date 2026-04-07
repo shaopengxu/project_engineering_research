@@ -94,6 +94,8 @@ description: "拆分任务并创建 GitHub Issues"
 - 不要写业务代码和测试代码
 - Issues 创建完成后在 commit message 中记录
 
+> **本阶段创建的 Issue 类型**：`type:infra`、`type:contract-test`、`type:impl`、`type:integration-test`。其他阶段 Issue（`type:feature-review`、`type:module-review`、`type:e2e`、`type:acceptance` 等）不在此阶段创建，由对应的 review skill 在执行时按需创建。
+
 完成后更新 `docs/workflow-state.md`：设置 `step: 4`，`substep: 4b-review`。
 
 > **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。

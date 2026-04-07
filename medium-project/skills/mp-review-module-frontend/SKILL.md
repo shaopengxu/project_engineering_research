@@ -9,7 +9,17 @@ argument-hint: "<module-name>"
 
 模块名：$ARGUMENTS
 
-该前端模块的所有 feature 已各自通过 Feature Review。本次 Review 关注跨 feature 的一致性和模块级完整性。
+该前端模块的所有 feature 应已各自通过 Feature Review。本次 Review 关注跨 feature 的一致性和模块级完整性。
+
+### 前置校验
+
+开始 Review 前，先确认所有 Feature Review 已完成：
+```bash
+gh issue list --label "module:{module}" --label "type:feature-review" --state open --json number,title
+```
+如果有未关闭的 `type:feature-review` Issue，**停止 Review** 并告知技术负责人哪些 Feature Review 尚未通过。
+
+### Review
 
 请先阅读以下文件：
 - CLAUDE.md
