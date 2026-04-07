@@ -30,34 +30,11 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 ## 查询逻辑
 
 1. 读取 `docs/workflow-state.md`，获取 step/substep/module/feature
-2. 查询 GitHub Issues 重建模块进度（见下方"模块进度查询"）
+2. 运行 `python medium-project/scripts/mp-progress.py` 生成模块进度表
 3. 根据 step/substep 确定当前位置
 4. 结合模块进度确定哪些模块/feature 已完成、当前在处理哪个
 5. 输出当前阶段、模块进度、下一步操作
 6. **如果下一步是技术负责人操作，输出下方对应的操作指引和 checklist**
-
-## 模块进度查询
-
-从 GitHub Issues 查询各模块进度：
-
-1. 获取所有 Issues：
-   `gh issue list --state all --limit 200 --json number,title,labels,state`
-
-2. 按 `module:*` 标签分组，每个模块内按 `type:*` 标签统计：
-
-| type 标签 | 对应进度列 | 判定方法 |
-|----------|-----------|---------|
-| `type:design` | 设计 | closed → done；open → open；不存在 → - |
-| `type:contract-test` | 契约测试 | 全部 closed → done；部分 closed → {closed}/{total}；不存在 → - |
-| `type:impl` | 实现 | 全部 closed → done；部分 closed → {closed}/{total}；不存在 → - |
-| `type:feature-review` | Feature Review | closed → done；open → review；不存在 → -（仅前端模块） |
-| `type:module-review` | 模块 Review | closed → done；open → review；不存在 → - |
-| `type:integration-test` | L2 集成测试 | closed → done；open → review；不存在 → - |
-
-3. 特殊处理：
-   - **infra**：只看 `type:infra` 标签的 Issue，报告实现状态（done/review/-）
-   - **前端模块**：`type:impl` 和 `type:contract-test` 的 Issue 按标题中的 feature 名拆行显示
-   - **无 module 标签的 Issue**（`type:architecture`, `type:scaffold`, `type:prd-review` 等）不纳入模块进度表，属于全局阶段 Issue
 
 ## 输出格式
 
