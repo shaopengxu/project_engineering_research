@@ -64,8 +64,9 @@ Issue 操作: {issue_ops 中的操作列表}
    - `feature_order`：列出每个前端模块的 feature 顺序，例如 `{ web-app: [auth, product, cart, settings] }`
    - 顺序原则：被依赖的模块/feature 排在前面
 3. 批量创建 design Issue（每个后端模块/前端整体各一个、每个前端 feature 各一个、汇总检查一个）：
-   - 使用 `python medium-project/scripts/mp-issue-helper.py find-or-create --label "type:design,module:{module}" --search "模块设计: {module}" --create-title "模块设计: {module}" --create-body "跟踪 {module} 的模块设计和 Review 过程。"`
-   - 汇总检查：`--label "type:design" --search "模块设计: 汇总检查" --create-title "模块设计: 汇总检查"`
+   - 后端模块 / 前端整体：`gh issue create --title "模块设计: {module}" --label "type:design,module:{module}" --body "跟踪 {module} 的模块设计和 Review 过程。"`
+   - 前端 feature：`gh issue create --title "模块设计: {module}/{feature}" --label "type:design,module:{module}" --body "跟踪 {module}/{feature} 的模块设计和 Review 过程。"`
+   - 汇总检查：`gh issue create --title "模块设计: 汇总检查" --label "type:design" --body "跟踪所有模块设计完成后的汇总检查和 Review 过程。"`
 4. 在输出中列出所有创建的 Issue 编号和标题
 
 > **Project Board 配置**：在 GitHub Project Settings → Workflows 中启用 "Item closed → set Status to Done"，这样关闭 Issue 后 Project Board Status 会自动更新为 Done，无需手动操作。

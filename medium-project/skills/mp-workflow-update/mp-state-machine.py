@@ -15,7 +15,6 @@ import os
 import re
 import subprocess
 import sys
-from pathlib import Path
 
 # ── 状态文件读写 ─────────────────────────────────────────
 
@@ -85,38 +84,48 @@ def parse_feature_order(val):
     return result
 
 
-# ── Issue 操作（调用 mp-issue-helper） ────────────────────
-
-HELPER = str(Path(__file__).resolve().parent.parent / "scripts" / "mp-issue-helper.py")
+# ── Issue 操作 ────────────────────────────────────────────
 
 
-def issue_find_and_close(labels, search_keyword):
-    """搜索并关闭阶段 Issue。"""
-    cmd = [sys.executable, HELPER, "find-and-close",
-           "--search", search_keyword]
+def _gh(args):
+    """执行 gh CLI 命令，返回 subprocess.CompletedProcess。"""
+    return subprocess.run(["gh"] + args, capture_output=True, text=True)
+
+
+def _issue_search(labels, title_keyword, state="open"):
+    """按标签 + 标题关键词搜索 Issue，返回 [{number, title, state}]。"""
+    cmd = ["issue", "list", "--state", state,
+           "--json", "number,title,state", "--limit", "10"]
     for label in labels:
         cmd.extend(["--label", label])
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    return result.stdout.strip()
+    if title_keyword:
+        cmd.extend(["--search", f"{title_keyword} in:title"])
+    result = _gh(cmd)
+    if result.returncode != 0:
+        return []
+    return json.loads(result.stdout or "[]")
 
 
 def issue_close(number, comment="Review 通过，Task 完成。"):
-    """关闭指定 Task Issue。"""
-    cmd = [sys.executable, HELPER, "close",
-           "--issue", str(number), "--close-comment", comment]
-    subprocess.run(cmd, capture_output=True, text=True)
+    """关闭指定 Issue，可附带 comment。"""
+    cmd = ["issue", "close", str(number)]
+    if comment:
+        cmd.extend(["--comment", comment])
+    _gh(cmd)
+
+
+def issue_find_and_close(labels, search_keyword, comment="Review 通过，阶段完成。"):
+    """搜索 open Issue 并关闭。返回描述字符串。"""
+    issues = _issue_search(labels, search_keyword)
+    if issues:
+        issue_close(issues[0]["number"], comment)
+        return f"已关闭 #{issues[0]['number']}"
+    return "未找到匹配的 open Issue（跳过）"
 
 
 def has_open_integration_issues():
     """查询是否有 open 的 integration-test Issue。"""
-    result = subprocess.run(
-        ["gh", "issue", "list", "--label", "type:integration-test",
-         "--state", "open", "--json", "number"],
-        capture_output=True, text=True
-    )
-    if result.returncode != 0:
-        return False
-    issues = json.loads(result.stdout or "[]")
+    issues = _issue_search(["type:integration-test"], None)
     return len(issues) > 0
 
 
