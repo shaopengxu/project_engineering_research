@@ -30,7 +30,7 @@ description: "流程管控：查看当前阶段、指导下一步操作（只读
 ## 查询逻辑
 
 1. 读取 `docs/workflow-state.md`，获取 step/substep/module/feature
-2. 运行 `python medium-project/scripts/mp-progress.py` 生成模块进度表
+2. 运行本 skill 目录下的 [mp-progress.py](mp-progress.py) 生成模块进度表
 3. 根据 step/substep 确定当前位置
 4. 结合模块进度确定哪些模块/feature 已完成、当前在处理哪个
 5. 输出当前阶段、模块进度、下一步操作
