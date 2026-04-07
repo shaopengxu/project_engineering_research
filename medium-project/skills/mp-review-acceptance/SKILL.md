@@ -15,14 +15,17 @@ description: "验收前的自动化预检"
 
 检查清单：
 1. 所有模块的 `type:module-review` Issue 均已关闭（`gh issue list --label "type:module-review" --state open` 应为空）
-2. 全量测试通过（运行 `npm test` 验证）
-3. E2E 测试全部通过（运行 E2E 测试命令验证）
-4. 逐条核对 PRD 验收标准：
+2. 所有契约测试 Issue 均已关闭（`gh issue list --label "type:contract-test" --state open` 应为空）
+3. 所有实现类 Task Issue 均已关闭（`gh issue list --label "type:impl" --state open` 应为空）
+4. 所有 L2 集成测试 Issue 均已关闭（`gh issue list --label "type:integration-test" --state open` 应为空）
+5. 所有 E2E 测试 Issue 均已关闭（`gh issue list --label "type:e2e" --state open` 应为空）
+6. 全量测试通过（运行 `npm test` 验证）
+7. E2E 测试全部通过（运行 E2E 测试命令验证）
+8. 逐条核对 PRD 验收标准：
    - 每条验收标准有对应的 E2E 测试
    - 对应的 E2E 测试处于通过状态
-5. 所有实现类 Task Issue 均已关闭（运行 `gh issue list --state open --label "type:impl"` 检查）
-6. README.md 包含项目启动说明
-7. .env.example 包含所有必要的环境变量
+9. README.md 包含项目启动说明
+10. .env.example 包含所有必要的环境变量
 
 输出格式：
 - MUST FIX: 模块未完成、测试未通过、验收标准无对应测试

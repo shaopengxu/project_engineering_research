@@ -58,6 +58,10 @@ argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-n
   - 错误码全局不重复（检查已有模块的错误码）
   - 不要修改已有模块的设计文件。如发现不一致，停下来指出问题
 
+完成后：
+- commit，commit message 格式：`docs(module-design): {module} - 模块设计`
+- 在 Issue 中写入完成信息：`gh issue comment {issue-number} --body "模块设计完成，等待 Review。"`
+
 ---
 
 ## 前端整体设计
@@ -93,6 +97,10 @@ argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-n
 - 各 feature 的详细设计将在独立会话中通过 `/mp-module-design {module-name} {issue-number} {feature}` 产出
 - Feature 划分应与后端模块对应（如 auth feature 对应 user 后端模块）
 - 如果 admin 页面较少（< 5 个），可以不拆 feature，一个文件写完整体 + 页面细节
+
+完成后：
+- commit，commit message 格式：`docs(module-design): {module} - 前端整体设计`
+- 在 Issue 中写入完成信息：`gh issue comment {issue-number} --body "模块设计完成，等待 Review。"`
 
 ---
 
@@ -132,6 +140,10 @@ argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-n
 - 不要设计其他 feature 的内容
 - 使用整体设计中定义的共享组件和全局状态，不要重复定义
 
+完成后：
+- commit，commit message 格式：`docs(module-design): {module}/{feature} - feature 级设计`
+- 在 Issue 中写入完成信息：`gh issue comment {issue-number} --body "模块设计完成，等待 Review。"`
+
 ---
 
 ## 汇总补充（--summary）
@@ -157,15 +169,8 @@ argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-n
 - 如果发现 PRD 中的功能点/业务规则在已有接口中未覆盖，停下来指出遗漏
 
 完成后：
+- commit，commit message 格式：`docs(module-design): 汇总补充`
+- 在 Issue 中写入完成信息：`gh issue comment {issue-number} --body "汇总补充完成，等待 Review。"`
+- 更新 `docs/workflow-state.md`，设置 `step: 3`，`substep: review`
 
-### Issue 更新
-
-设计完成后，在参数指定的 GitHub Issue 中写入完成信息：
-`gh issue comment {issue-number} --body "模块设计完成，等待 Review。"`
-
-### 状态更新
-
-- **后端模块 / 前端整体设计 / 前端 feature 级设计**：不更新 `docs/workflow-state.md`（模块级进度通过 GitHub Issues 追踪）
-- **`--summary`**：更新 `docs/workflow-state.md`，设置 `step: 3`，`substep: review`
-
-> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。
+> **状态更新边界**：只有 --summary 模式更新 workflow-state。其他三种模式不更新（模块级进度通过 GitHub Issues 追踪）。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。

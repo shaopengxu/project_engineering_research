@@ -29,6 +29,10 @@ description: "根据 PRD 验收标准编写 E2E 测试"
 - **种子数据不足**：缺少必要的基础数据 — 标注需要补充的 fixture
 - **疑似业务 bug**：标注涉及的模块和接口，供技术负责人决定修复路径
 
-完成后更新 `docs/workflow-state.md`：设置 `step: 6`，`substep: review`。
+commit，commit message 格式：`test(e2e): <描述>`
 
-> **状态更新边界**：skill 只将状态推进到"等待 review"。Review 通过/不通过的状态转换由技术负责人通过 `/mp-workflow-update` 触发。
+完成后更新 `docs/workflow-state.md`：
+- **全部通过**：设置 `step: 6`，`substep: review`
+- **有失败用例**：设置 `step: 6`，`substep: fixing`（不进入 review，等待技术负责人根据失败分类决定修复路径）
+
+> **状态更新边界**：skill 只将状态推进到"等待 review"或"等待修复"。后续状态转换由技术负责人通过 `/mp-workflow-update` 触发。
