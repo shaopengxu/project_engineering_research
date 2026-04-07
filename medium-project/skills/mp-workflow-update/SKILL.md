@@ -19,7 +19,11 @@ argument-hint: "<状态变更描述> | init"
 
 ## 状态更新职责边界
 
-执行类 skill（mp-impl、mp-test-contract 等）在完成后会自动将 workflow-state 的 step/substep 推进到"等待 review"状态。Review 类 skill（mp-review-task、mp-review-module 等）只输出结论并写入 GitHub Issue comment，不修改状态。
+**会自动推进 workflow-state 的执行类 skill**：mp-architecture、mp-scaffold、mp-task-split、mp-impl-infra、mp-impl-task、mp-fix-task、mp-test-e2e、mp-module-design --summary。这些 skill 在完成后会将 step/substep 推进到"等待 review"状态。
+
+**不更新 workflow-state 的执行类 skill**：mp-test-contract、mp-test-frontend、mp-test-integration。这三个是按 Issue 逐个执行的测试编写 skill，一个模块可能有多个测试 Issue，由技术负责人在 review 通过后通过本 skill 统一推进状态。
+
+**Review 类 skill**（mp-review-task、mp-review-module 等）只输出结论并写入 GitHub Issue comment，不修改状态。
 
 **本 skill（mp-workflow-update）负责所有人工闸门的状态转换**：技术负责人 review 通过/不通过后，调用本 skill 推进或回退状态。同时负责同步 GitHub Issue 状态——关闭已完成的 Task Issue 和阶段 Issue。
 

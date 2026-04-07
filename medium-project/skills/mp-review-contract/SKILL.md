@@ -30,6 +30,7 @@ argument-hint: "<module-name> <issue-number> [feature]"
 3. 测试独立（无共享状态、不依赖执行顺序）
 4. 测试注释标注了业务规则来源
 5. 测试能编译/加载（允许执行失败 — TDD 红阶段）
+6. 第三方外部 API 依赖按 architecture.md 外部依赖清单的 Mock 策略处理（契约测试层级应使用 Mock/Stub）
 
 检查清单（前端契约测试，如涉及）：
 6. API 层测试验证请求格式和响应处理

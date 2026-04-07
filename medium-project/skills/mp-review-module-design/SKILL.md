@@ -18,6 +18,8 @@ argument-hint: "<module-name> <issue-number> [feature-name] | --summary <issue-n
 - docs/architecture.md（验证与架构一致）
 - docs/module-design/{module}.md（待 review 的模块设计）
 - 已有的其他 module-design/*.md（检查错误码冲突、接口风格一致性）
+- 前端整体设计还需读：docs/prd.md（验证路由覆盖所有页面、布局与 PRD 一致）
+- 前端 feature 设计还需读：docs/module-design/{module}-{feature}.md（待 review 的 feature 设计）+ 该 feature 消费的后端模块 module-design（验证后端接口有定义）+ docs/prd.md（验证 UI 原型引用）
 
 根据 `docs/architecture.md` 判断该模块是后端还是前端，使用对应的检查清单。
 

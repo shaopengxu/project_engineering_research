@@ -44,7 +44,7 @@ description: "拆分任务并创建 GitHub Issues"
    ```bash
    gh issue create \
      --title "[infra] {任务描述}" \
-     --label "type:infra" \
+     --label "type:infra,module:infra" \
      --milestone "{milestone}" \
      --project "{project-name}" \
      --body "## 任务描述\n{一句话描述}\n\n## 所属模块\ninfra\n\n## 依赖\n无\n\n## 验收标准\n- [ ] 数据库连接成功\n- [ ] 错误处理中间件可用\n- [ ] npm run dev:server 能启动"
@@ -64,7 +64,7 @@ description: "拆分任务并创建 GitHub Issues"
    ```bash
    gh issue create \
      --title "[integration] L2: {关键路径描述}" \
-     --label "type:integration-test" \
+     --label "type:integration-test,module:{module-a},module:{module-b}" \
      --milestone "{milestone}" \
      --project "{project-name}" \
      --body "## 任务描述\n验证 {module-a} → {module-b} 的关键路径集成。\n\n## 涉及模块\n{module-a}, {module-b}\n\n## 依赖\n- Depends on #{module-a-issue}\n- Depends on #{module-b-issue}\n\n## 测试路径\ntests/integration/paths/{path-name}.test.ts\n\n## 验收标准\n- [ ] 真实模块间调用（不 Mock）\n- [ ] 覆盖正常流程和关键异常流程"
